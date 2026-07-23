@@ -2,8 +2,8 @@ FROM php:8.2-apache
 
 # Installer les dépendances
 RUN apt-get update && apt-get install -y \
-    zip unzip curl git libzip-dev libpq-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo pdo_pgsql zip mbstring bcmath
+    zip unzip curl git libzip-dev libpq-dev libonig-dev libxml2-dev default-mysql-client \
+    && docker-php-ext-install pdo pdo_pgsql pdo_mysql mysqli zip mbstring bcmath
 
 # Activer mod_rewrite pour Laravel
 RUN a2enmod rewrite
@@ -22,9 +22,11 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Installer les dépendances PHP (hors dev)
 RUN composer install --no-dev --optimize-autoloader
 
+# Pointer le DocumentRoot vers /public (AVANT le CMD)
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+
 # Expose port 80 (Apache)
 EXPOSE 80
 
 # Démarrage par défaut d'Apache (gère le serveur HTTP)
 CMD ["apache2-foreground"]
-RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
