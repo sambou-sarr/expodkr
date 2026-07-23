@@ -141,7 +141,7 @@
 
 
     {{-- ══════════════════════════════════════════════
-         HERO ÉVÉNEMENT (compact)
+         HERO ÉVÉNEMENT (compact) form
          ══════════════════════════════════════════════ --}}
     <div style="background:linear-gradient(135deg,var(--blue-night),var(--blue-electric)); padding:2rem 1.5rem;">
         <div style="max-width:64rem; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; gap:1.25rem;">

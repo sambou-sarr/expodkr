@@ -800,6 +800,7 @@
 
                         {{-- CTA Réserver --}}
                         @if($statusLabel !== 'Terminé')
+                            
                             <a href="{{ route('reservations.create', $event->id) }}"
                                style="display:block;width:100%;padding:1rem;border-radius:.875rem;text-align:center;font-weight:700;font-size:1rem;color:white;text-decoration:none;background:linear-gradient(135deg,var(--blue),var(--blue-dark));box-shadow:0 6px 20px rgba(37,99,235,.35);transition:filter .2s,transform .15s,box-shadow .2s;"
                                onmouseover="this.style.filter='brightness(1.08)';this.style.boxShadow='0 8px 28px rgba(37,99,235,.45)'"

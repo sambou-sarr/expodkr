@@ -1,3 +1,12 @@
+# ── Stage 1 : build des assets front-end (Vite) ──
+FROM node:20-alpine AS assets
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# ── Stage 2 : image PHP finale ──
 FROM php:8.2-apache
 
 # Installer les dépendances
@@ -13,6 +22,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copier les fichiers du projet
 COPY . /var/www/html
+
+# Copier les assets compilés depuis le stage Node
+COPY --from=assets /app/public/build /var/www/html/public/build
 
 WORKDIR /var/www/html
 
