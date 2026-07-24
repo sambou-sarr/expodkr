@@ -34,11 +34,15 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Installer les dépendances PHP (hors dev)
 RUN composer install --no-dev --optimize-autoloader
 
-# Pointer le DocumentRoot vers /public (AVANT le CMD)
+# Pointer le DocumentRoot vers /public
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# Expose port 80 (Apache)
+# Copier le script d'entrée qui gère le port dynamique de Render
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Expose port (indicatif — Render utilisera $PORT dynamiquement au runtime)
 EXPOSE 80
 
-# Démarrage par défaut d'Apache (gère le serveur HTTP)
-CMD ["apache2-foreground"]
+# Démarrage via le script qui adapte le port au démarrage
+CMD ["docker-entrypoint.sh"]
