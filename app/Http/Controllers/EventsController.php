@@ -6,7 +6,7 @@ use App\Models\CategorieStand;
 use App\Models\Evenement;
 use App\Models\Exposant;
 use Illuminate\Http\Request;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Cloudinary\Cloudinary;
 
 class EventsController extends Controller
 {
@@ -15,16 +15,21 @@ class EventsController extends Controller
 $request->validate([
     'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
 ]);
-$image = null;
+$url = null;
 
 if ($request->hasFile('image') && $request->file('image')->isValid()) {
 
     $file = $request->file('image');
 
-    $filename = time() . '_' . $file->getClientOriginalName();
+    $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
 
-    $image = $file->storeAs('events', $filename, 'public');
-    }
+    $uploadedFile = $cloudinary->uploadApi()->upload($file->getRealPath(), [
+        'folder' => 'events',
+    ]);
+
+    $url = $uploadedFile['secure_url'];       // URL à stocker en BDD
+    $publicId = $uploadedFile['public_id'];   // utile pour suppression future
+}
         $event = new Evenement();
     $event->titre = $request->titre;
     $event->description = $request->description;
@@ -33,7 +38,7 @@ if ($request->hasFile('image') && $request->file('image')->isValid()) {
     $event->date_debut = $request->date_debut;
     $event->date_fin = $request->date_fin;
     $event->exposant_id = $request->exposant_id;
-    $event->image = $image;
+    $event->image = $url;
      $event->statut = 'en attente';
     $event->save();
 
@@ -74,13 +79,18 @@ public function listevents()
     public function update(Request $request, $id)
 {
     $event = Evenement::findOrFail($id);
-    $image = $event->image;
+    $imageUrl = $event->image;
 
-    if ($request->hasFile('image')) {
-        $image = Cloudinary::upload(
+    if ($request->hasFile('image') && $request->file('image')->isValid()) {
+
+        $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
+
+        $uploadedFile = $cloudinary->uploadApi()->upload(
             $request->file('image')->getRealPath(),
-            ['folder' => 'expo-dkr/events']
-        )->getSecurePath();
+            ['folder' => 'events']
+        );
+
+        $imageUrl = $uploadedFile['secure_url'];
     }
 
     $event->update([
@@ -91,7 +101,7 @@ public function listevents()
         'description' => $request->description,
         'id_categorie' => $request->id_categorie,
         'exposant_id' => $request->exposant_id,
-        'image' => $image,
+        'image' => $imageUrl,
     ]);
 
     return redirect()->route('events.index')
