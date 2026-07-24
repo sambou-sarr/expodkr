@@ -41,7 +41,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+            'url' => rtrim(env('APP_URL', 'https://expodkr.onrender.com'), '/').'/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
@@ -59,9 +59,9 @@ return [
             'throw' => false,
             'report' => false,
         ],
-        'cloudinary' => [
-    'driver' => 'cloudinary',
-],
+         'cloudinary' => [
+        'driver' => 'cloudinary',
+    ],
 
     ],
 
