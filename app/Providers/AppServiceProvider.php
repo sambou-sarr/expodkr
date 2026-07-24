@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -15,6 +16,9 @@ class AppServiceProvider extends ServiceProvider
         //
          Schema::defaultStringLength(191);
          \Carbon\Carbon::setLocale('fr');
+         if (env('APP_ENV') === 'production') {
+        URL::forceScheme('https');
+    }
     }
 
     /**
