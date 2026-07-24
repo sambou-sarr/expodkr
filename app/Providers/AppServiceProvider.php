@@ -16,9 +16,7 @@ class AppServiceProvider extends ServiceProvider
         //
          Schema::defaultStringLength(191);
          \Carbon\Carbon::setLocale('fr');
-         if (env('APP_ENV') === 'production') {
         URL::forceScheme('https');
-    }
     }
 
     /**
