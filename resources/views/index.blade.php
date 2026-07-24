@@ -709,7 +709,7 @@
                 {{-- Image --}}
                 <div class="event-img-wrap relative h-52">
                     @if($event->image)
-                        <img src="{{ Storage::url($event->image) }}"
+                        <img src="{{ $event->image }}"
                              alt="{{ $event->titre }}"
                              class="w-full h-full object-cover">
                     @else

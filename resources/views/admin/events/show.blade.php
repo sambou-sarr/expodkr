@@ -127,7 +127,7 @@
     <div class="relative mx-6 lg:mx-8 rounded-3xl overflow-hidden mb-8" style="height:380px;">
 
         {{-- Image --}}
-        <img src="{{ Storage::url($event->image) }}"
+        <img src="{{$event->image}}"
              alt="{{ $event->titre }}"
              class="w-full h-full object-cover">
 

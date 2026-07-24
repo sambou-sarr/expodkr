@@ -245,7 +245,7 @@
     {{-- Image de fond --}}
     <div style="position:absolute;inset:0;z-index:0;">
         @if(true)
-            <img src="{{ Storage::url($event->image) }}"
+            <img src="{{ $event->image }}"
                  alt="{{ $event->titre }}"
                  style="width:100%;height:100%;object-fit:cover;"
                  loading="eager">

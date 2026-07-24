@@ -176,7 +176,7 @@
                                 <div class="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0"
                                      style="background: linear-gradient(135deg, #0A1628, #2563EB);">
                                     @if($event->image)
-                                        <img src="{{ Storage::url($event->image) }}"
+                                        <img src="{{$event->image}}"
                                              alt="{{ $event->titre }}"
                                              class="w-full h-full object-cover">
                                     @else

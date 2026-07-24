@@ -39,7 +39,7 @@ if ($request->hasFile('image') && $request->file('image')->isValid()) {
     $event->date_fin = $request->date_fin;
     $event->exposant_id = $request->exposant_id;
     $event->image = $url;
-     $event->statut = 'en attente';
+     $event->statut = 'brouillon';
     $event->save();
 
     return redirect()->route('events.index')
