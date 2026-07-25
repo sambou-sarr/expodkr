@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Evenement;
 use App\Models\Exposant;
 use App\Models\Reservation;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
+use Cloudinary\Cloudinary;
 
 class ExposantController extends Controller
 {
@@ -45,16 +45,21 @@ class ExposantController extends Controller
     ]);
 
     // 2. UPLOAD IMAGE (STORAGE)
-    $logoPath = null;
+  $url = null;
 
-    if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
+if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
 
-        $file = $request->file('logo');
+    $file = $request->file('logo');
 
-        $filename = time() . '_' . $file->getClientOriginalName();
+    $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
 
-        $logoPath = $file->storeAs('exposants', $filename, 'public');
-    }
+    $uploadedFile = $cloudinary->uploadApi()->upload($file->getRealPath(), [
+        'folder' => 'events',
+    ]);
+
+    $url = $uploadedFile['secure_url'];       // URL à stocker en BDD
+    $publicId = $uploadedFile['public_id'];   // utile pour suppression future
+}
 
     // 3. SAVE WITH MODEL
     $exposant = new Exposant();
@@ -66,7 +71,7 @@ class ExposantController extends Controller
     $exposant->adresse = $data['adresse'] ?? null;
     $exposant->description = $data['description'] ?? null;
 
-    $exposant->logo = $logoPath;
+    $exposant->logo = $url ;
 
 $exposant->statut = $data['statut'] ?? 'actif'; 
     $exposant->secteur_activite = $data['secteur_activite'] ?? null;

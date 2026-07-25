@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
    use App\Models\Evenement;
 use App\Models\CategorieStand;
 use App\Models\Exposant;
+use App\Models\Pub;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,10 +17,13 @@ class VisteurController extends Controller
 
 public function index()
 {
-    $events = Evenement::with('categorie')->get();
-    $categories = CategorieStand::all();
-    $exposants = Exposant::take(6)->get();
-    return view('index', compact('events', 'categories','exposants'));
+    $events = Evenement::with('categorie')->limit(4)->get();
+    $categories = CategorieStand::take(3)->get();
+    $exposants = Exposant::take(3)->get();
+    $pubZones = Pub::all()->mapWithKeys(function ($pub) {
+        return [$pub->zone => ['image' => $pub->image, 'lien' => '#']];
+    })->toArray();
+    return view('index', compact('events', 'categories', 'exposants', 'pubZones'));
 }
 
     /**

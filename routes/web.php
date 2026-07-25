@@ -16,6 +16,7 @@ use App\Http\Controllers\Organisateur\EvenementPackController;
 
 // Controllers - Admin
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PubController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategorieController;
@@ -149,6 +150,10 @@ Route::middleware(['auth','admin'])->group(function () {
 
     Route::get('/admin/user/list', [UserController::class, 'index'])->name('users.index');
     Route::get('/admin/user/{id}', [UserController::class, 'show'])->name('users.show');
+
+
+Route::get('/admin/pubs', [PubController::class, 'index'])->name('admin.pubs.index');
+Route::post('/admin/pubs/{zone}', [PubController::class, 'update'])->name('admin.pubs.update');
     
 });
 
