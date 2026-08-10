@@ -136,7 +136,7 @@
 
 
 {{-- ══════════════════════════════════════════════════════════════
-     NAVBAR
+     NAVBAR img
      ══════════════════════════════════════════════════════════════ --}}
 <header class="navbar-solid sticky top-0 z-50" role="banner">
     <div class="max-w-7xl mx-auto px-6 lg:px-16">
@@ -344,7 +344,7 @@
                 {{-- Image cover --}}
                 <div class="event-img-wrap relative h-48">
                     @if($event->image)
-                        <img src="{{ Storage::url($event->image) }}" alt="{{ $event->titre }}" class="w-full h-full object-cover">
+                        <img src="{{ $event->image }}" alt="{{ $event->titre }}" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full flex items-center justify-center"
                              style="background: linear-gradient(135deg, var(--blue-night), var(--blue-electric));">
