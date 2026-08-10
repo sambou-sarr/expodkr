@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
    use App\Models\Evenement;
 use App\Models\CategorieStand;
 use App\Models\Exposant;
+use App\Models\Article;
 use App\Models\Pub;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,7 +24,13 @@ public function index()
     $pubZones = Pub::all()->mapWithKeys(function ($pub) {
         return [$pub->zone => ['image' => $pub->image, 'lien' => '#']];
     })->toArray();
-    return view('index', compact('events', 'categories', 'exposants', 'pubZones'));
+    $articles = Article::where('statut', 'publie')
+    ->whereNotNull('date_publication')
+    ->where('date_publication', '<=', now())
+    ->orderByDesc('date_publication')
+    ->take(3)
+    ->get();
+    return view('index', compact('events', 'categories', 'exposants', 'pubZones','articles'));
 }
 
     /**
@@ -130,5 +137,21 @@ public function listevents(Request $request)
         ];
 
         return view('visiteur.mon-compte', compact('reservations', 'stats'));
+    }
+  public function index1()
+    {
+        $categories = CategorieStand::withCount('evenements')->get();
+
+        return view('visiteur.listcategorie', compact('categories'));
+    }
+
+    public function show1(CategorieStand $categorie)
+    {
+        $events = $categorie->evenements()
+            ->with('exposant')
+            ->latest()
+            ->paginate(9);
+
+        return view('visiteur.showcategorie', compact('categorie', 'events'));
     }
 }

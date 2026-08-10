@@ -13,6 +13,7 @@ use App\Http\Controllers\ProfileController;
 // Controllers - Organisateur
 use App\Http\Controllers\OrganisateurController;
 use App\Http\Controllers\Organisateur\EvenementPackController;
+use App\Http\Controllers\BlogController;
 
 // Controllers - Admin
 use App\Http\Controllers\Admin\DashboardController;
@@ -66,6 +67,31 @@ Route::get('/user/events/{id}', [VisteurController::class, 'show'])->name('user.
 Route::get('/user/exposants/{id}', [VisteurController::class, 'showex'])->name('user.exposants.show');
 Route::post('/user/newsletter', [VisteurController::class, 'subscribe'])->name('user.newsletter.subscribe');
 
+Route::get('/blog', [BlogController::class, 'index'])
+    ->name('blog.index');
+
+Route::get('/blog/{article:slug}', [BlogController::class, 'show'])
+    ->name('blog.show');
+
+Route::get('/contact', function () {
+    return view('visiteur.contact');
+})->name('contact');
+
+Route::post('/contact', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'nom' => 'required|string|max:255',
+        'email' => 'required|email',
+        'sujet' => 'nullable|string|max:255',
+        'message' => 'required|string',
+    ]);
+
+    // TODO: envoyer l'email / enregistrer le message (Mail::send, ou Contact::create(...))
+
+    return back()->with('status', 'Votre message a bien été envoyé, merci !');
+})->name('contact.send');
+
+Route::get('user/categories', [VisteurController::class, 'index1'])->name('user.categories.index');
+Route::get('user/categories/{categorie}', [VisteurController::class, 'show1'])->name('user.categories.show');
 // Tarification publique
 Route::get('/tarifs', [PackController::class, 'index'])->name('packs.index');
 
@@ -74,7 +100,19 @@ Route::get('/evenements/reserver/{event}', [ReservationController::class, 'creat
 Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
 Route::get('/reservations/{reservation}/succes', [ReservationController::class, 'success'])->name('reservations.success');
 
+use App\Http\Controllers\NewsletterController;
 
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
+    ->middleware('throttle:5,1') // 5 tentatives / minute / IP
+    ->name('user.newsletter.subscribe');
+
+Route::get('/newsletter/confirm/{subscriber}', [NewsletterController::class, 'confirm'])
+    ->middleware('signed')
+    ->name('user.newsletter.confirm');
+
+Route::get('/newsletter/unsubscribe/{subscriber}', [NewsletterController::class, 'unsubscribe'])
+    ->middleware('signed')
+    ->name('user.newsletter.unsubscribe');
 // ═══════════════════════════════════════════════
 // ESPACE UTILISATEUR CONNECTÉ (auth)
 // ═══════════════════════════════════════════════
@@ -141,6 +179,8 @@ Route::middleware(['auth','admin'])->group(function () {
     Route::get('/admin/events/edit/{id}', [EventsController::class, 'edit'])->name('events.edit');
     Route::delete('/admin/user/supprimer/{id}', [EventsController::class, 'destroy'])->name('events.destroy');
 
+
+    
     Route::get('admin/categories/list', [CategorieController::class, 'index'])->name('categories.index');
     Route::get('admin/categories/create', [CategorieController::class, 'create'])->name('categories.create');
     Route::post('admin/categories/create', [CategorieController::class, 'store'])->name('categories.store');
@@ -164,15 +204,14 @@ Route::post('/admin/pubs/{zone}', [PubController::class, 'update'])->name('admin
 
 Route::resource('exposants', ExposantController::class)->middleware(['auth']);
 
-
 // ═══════════════════════════════════════════════
 // ROUTES DE PREVIEW (test rapide, sans logique métier)
 // ═══════════════════════════════════════════════
 
-Route::get('/preview/tarifs', function () {
+Route::get('/tarifs', function () {
     $packs = \App\Models\Pack::where('actif', true)->orderBy('ordre')->get();
     return view('visiteur.organisateur.pack.index', compact('packs'));
-})->name('preview.tarifs');
+})->name('tarifs');
 
 Route::get('/preview/packs/choisir', function () {
     $evenement = \App\Models\Evenement::first();

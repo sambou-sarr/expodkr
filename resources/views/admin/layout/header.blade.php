@@ -233,7 +233,7 @@
                 <span class="nav-label">Catégories</span>
             </a>
             <a href="{{ route('admin.pubs.index') }}"
-               class="nav-link {{ str_contains($currentRoute, 'categories') ? 'nav-active' : '' }}">
+               class="nav-link {{ str_contains($currentRoute, 'admin.pubs') ? 'nav-active' : '' }}">
                 <span class="nav-dot"></span>
    
                 <span class="nav-label">Pubs</span>

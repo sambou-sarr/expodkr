@@ -21,5 +21,8 @@ $this->call([PackSeeder::class]);
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+         $this->call([
+            ArticleSeeder::class,
+        ]);
     }
 }

@@ -145,7 +145,7 @@
             {{-- Logo --}}
             <a href="{{ route('home') }}" class="flex items-center gap-3" aria-label="ExpoDKR – Accueil">
                     <span style="display:flex;align-items:center;justify-content:center;width:2.25rem;height:2.25rem;border-radius:.625rem;background:background: linear-gradient(135deg, #3B82F6, #1E5FD8);">
-            <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782085416/ChatGPT_Image_Jun_21__2026__07_24_51_PM-removebg-preview_zi77k0.png"  alt="Logo ExpoDakar" class="h-12 w-auto object-contain">
+            <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1786364683/ChatGPT_Image_10_ao%C3%BBt_2026__02_24_21-removebg-preview_spadbb.png" alt="Logo ExpoDakar" class="h-12 w-auto object-contain">
 
             </span>
                 <span class="font-display text-xl text-white">Expo<span class="text-gold-gradient">DKR</span></span>

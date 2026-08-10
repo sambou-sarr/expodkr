@@ -1,366 +1,258 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExpoDakar - Événements Sénégal</title>
+    <title>ExpoDakar - La plateforme des événements professionnels du Sénégal</title>
+    <meta name="description" content="Découvrez, réservez et exposez sur les salons, conférences et forums professionnels du Sénégal.">
 
-    <!-- Tailwind + Alpine -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <!-- Font -->
-    {{-- AVANT --}}
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-{{-- APRÈS --}}
-<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
+    {{-- ── Préconnexions : accélère la résolution DNS / TLS des domaines tiers critiques ── --}}
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    {{-- ── Préchargement de l'image hero (LCP) ── --}}
+    <link rel="preload" as="image" href="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782659620/ChatGPT_Image_Jun_28_2026_03_00_42_PM_qkpjbj.png" fetchpriority="high">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    {{-- Lenis (smooth scroll) + GSAP / ScrollTrigger — chargés en différé : ils ne servent qu'après DOMContentLoaded, donc ne doivent pas bloquer le premier rendu --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+    {{-- Une seule famille display (Instrument Serif) + une seule famille texte (Inter) : cohérence typographique sur toute la page, et un fichier de police en moins à télécharger --}}
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --blue-night:    #0A1628;
             --blue-deep:     #0D2145;
             --blue-electric: #1E5FD8;
-            --blue-light:    #3B82F6;
             --gold:          #C9A84C;
             --gold-light:    #E8C96A;
             --pearl:         #F7F8FC;
             --gray-soft:     #EEF0F6;
             --gray-mid:      #8892A4;
-            --text-main:     #0A1628;
         }
-        
 
-      body {
-        font-family: 'Inter', sans-serif;
-        color: var(--text-main);
-        background: #fff;
-        overflow-x: hidden;
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { overflow-x: hidden; max-width: 100%; }
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
 
-        /* 🔥 FIX TYPO PREMIUM */
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-rendering: optimizeLegibility;
-        font-optical-sizing: auto;
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--blue-night);
+            background: #fff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
+        section, header, footer, div, article, aside, nav { max-width: 100%; }
 
         .font-display { font-family: 'Instrument Serif', serif; }
+        [x-cloak] { display: none !important; }
 
-
-        /* ── Navbar ─────────────────────────────────────────── */
         .navbar-transparent { background: transparent; }
-        .navbar-solid       { background: var(--blue-night); box-shadow: 0 2px 24px rgba(10,22,40,.18); }
+        .navbar-solid { background: var(--blue-night); box-shadow: 0 2px 24px rgba(10,22,40,.18); }
 
-        /* ── Hero grid overlay ───────────────────────────────── */
         .hero-grid-overlay {
             background-image:
                 linear-gradient(rgba(196,168,76,.12) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(196,168,76,.12) 1px, transparent 1px);
             background-size: 60px 60px;
-            background-position: center center;
         }
 
-        /* ── Gold gradient text ──────────────────────────────── */
         .text-gold-gradient {
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
 
-        /* ── Reveal animation ────────────────────────────────── */
-        .reveal { opacity: 0; transform: translateY(32px); transition: opacity .7s ease, transform .7s ease; }
-        .reveal.visible { opacity: 1; transform: translateY(0); }
-        .reveal-delay-1 { transition-delay: .1s; }
-        .reveal-delay-2 { transition-delay: .2s; }
-        .reveal-delay-3 { transition-delay: .3s; }
-        .reveal-delay-4 { transition-delay: .4s; }
+        .reveal { opacity: 0; transform: translateY(28px); }
+        .reveal.visible { opacity: 1; transform: translateY(0); transition: opacity .7s cubic-bezier(.22,.8,.24,1), transform .7s cubic-bezier(.22,.8,.24,1); }
+        .reveal-delay-1 { transition-delay: .06s; } .reveal-delay-2 { transition-delay: .12s; }
+        .reveal-delay-3 { transition-delay: .18s; } .reveal-delay-4 { transition-delay: .24s; }
 
-        /* ── Card hover lift ─────────────────────────────────── */
-        .card-lift {
-            transition: transform .3s ease, box-shadow .3s ease;
-        }
-        .card-lift:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 24px 60px rgba(10,22,40,.13);
-        }
+        .card-lift { transition: transform .3s ease, box-shadow .3s ease; }
+        .card-lift:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(10,22,40,.12); }
 
-        /* ── Search bar ──────────────────────────────────────── */
         .search-input:focus { outline: none; box-shadow: 0 0 0 3px rgba(196,168,76,.3); }
-
-        /* ── Stat counter ────────────────────────────────────── */
         .stat-card { border-top: 3px solid var(--gold); }
+        .cat-pill { transition: background .25s, color .25s, border-color .25s; }
+        .cat-pill:hover, .cat-pill.active { background: var(--blue-electric); color: #fff; border-color: var(--blue-electric); }
 
-        /* ── Category pill ───────────────────────────────────── */
-        .cat-pill {
-            transition: background .25s, color .25s, border-color .25s, box-shadow .25s;
-        }
-        .cat-pill:hover, .cat-pill.active {
-            background: var(--blue-electric);
-            color: #fff;
-            border-color: var(--blue-electric);
-            box-shadow: 0 4px 16px rgba(30,95,216,.3);
-        }
-
-        /* ── Event card image zoom ───────────────────────────── */
         .event-img-wrap { overflow: hidden; }
         .event-img-wrap img { transition: transform .45s ease; }
         .event-card:hover .event-img-wrap img { transform: scale(1.06); }
 
-        /* ── FAQ accordion ───────────────────────────────────── */
-        [x-cloak] { display: none !important; }
-
-        /* ── Partner logo grayscale → color ──────────────────── */
         .partner-logo { filter: grayscale(1) opacity(.5); transition: filter .3s; }
         .partner-logo:hover { filter: grayscale(0) opacity(1); }
 
-        /* ── Section divider ─────────────────────────────────── */
-        .section-eyebrow {
-            font-size: .72rem;
-            font-weight: 600;
-            letter-spacing: .18em;
-            text-transform: uppercase;
-            color: var(--gold);
-        }
-
-        /* ── Newsletter input ────────────────────────────────── */
+        .section-eyebrow { font-size: .7rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
         .nl-input:focus { outline: none; box-shadow: 0 0 0 3px rgba(196,168,76,.35); }
-
-        /* ── Scrollbar ───────────────────────────────────────── */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--pearl); }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--blue-electric); border-radius: 99px; }
-        /* ── Conteneur global uniforme ── */
-        .container-main {
-            max-width: 80rem;
-            margin-left: auto;
-            margin-right: auto;
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
-        }
-        @media (min-width: 1024px) {
-            .container-main {
-                padding-left: 4rem;
-                padding-right: 4rem;
-            }
-        }
-        /* ── Atout icons ── */
-.atout-icon svg {
-    width: 1.25rem;
-    height: 1.25rem;
-    stroke: white;
-}
 
-        /* ══════════════════════════════════════════════════
-           ESPACES PUBLICITAIRES (bannières louables)
-           ══════════════════════════════════════════════════ */
-        .pub-slot {
-            transition: box-shadow .25s ease, transform .25s ease;
+        .pub-slot { transition: box-shadow .25s; overflow: hidden; }
+        .pub-slot-label { position: absolute; top: 4px; left: 4px; z-index: 2; padding: 2px 7px; border-radius: 4px; font-size: 9px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; background: rgba(10,22,40,.72); color: #fff; pointer-events: none; }
+        .pub-empty { background: repeating-linear-gradient(45deg, var(--gray-soft), var(--gray-soft) 10px, #fff 10px, #fff 20px); }
+
+        /* ── Marquee partenaires ── */
+        .marquee-track { display: flex; width: max-content; animation: marquee 34s linear infinite; }
+        .marquee-track:hover { animation-play-state: paused; }
+        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .marquee-mask { mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+
+        /* ── Calendrier ── */
+        .cal-rail { position: relative; }
+        .cal-rail::before { content: ''; position: absolute; left: 1.4rem; top: 0; bottom: 0; width: 2px; background: var(--gray-soft); }
+        .cal-dot { width: .7rem; height: .7rem; border-radius: 50%; background: var(--blue-electric); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--blue-electric); }
+
+        /* ── Fonctionnement (process) ── */
+        .process-line { position: relative; }
+        .process-line::before { content: ''; position: absolute; top: 1.75rem; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--gray-soft), var(--gold), var(--gray-soft)); }
+        @media (max-width: 1023px) { .process-line::before { display: none; } }
+
+        /* ── Témoignages carousel ── */
+        .testi-track { display: flex; transition: transform .6s cubic-bezier(.22,.8,.24,1); }
+        .testi-slide { flex: 0 0 100%; }
+        @media (min-width: 768px) { .testi-slide { flex: 0 0 33.3333%; } }
+
+        /* ── Galerie masonry ── */
+        .masonry { column-count: 2; column-gap: .9rem; }
+        @media (min-width: 1024px) { .masonry { column-count: 4; } }
+        .masonry-item { break-inside: avoid; margin-bottom: .9rem; border-radius: 1rem; overflow: hidden; position: relative; }
+        .masonry-item img, .masonry-item video { width: 100%; display: block; transition: transform .5s ease; }
+        .masonry-item:hover img, .masonry-item:hover video { transform: scale(1.06); }
+        .masonry-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(10,22,40,.25); }
+
+        /* ── CTA final ── */
+        .cta-final { position: relative; overflow: hidden; }
+        .cta-final::before {
+            content: ''; position: absolute; inset: -20%;
+            background: radial-gradient(circle at 30% 20%, rgba(30,95,216,.35), transparent 55%),
+                        radial-gradient(circle at 75% 80%, rgba(201,168,76,.28), transparent 50%);
+            animation: cta-drift 16s ease-in-out infinite;
         }
-        .pub-slot:hover {
-            box-shadow: 0 8px 28px rgba(10,22,40,.12);
-        }
-        .pub-slot-label {
-            position: absolute;
-            top: 6px;
-            left: 6px;
-            z-index: 2;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 9px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-            background: rgba(10,22,40,.72);
-            color: #fff;
-            pointer-events: none;
-        }
-        .pub-empty {
-            background:
-                repeating-linear-gradient(45deg, var(--gray-soft), var(--gray-soft) 10px, #fff 10px, #fff 20px);
-        }
+        @keyframes cta-drift { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-3%,3%) scale(1.06); } }
     </style>
 </head>
 
-<body class="bg-slate-50">
-<!-- APP -->
-<div x-data="eventApp(@js($events), @js($categories))">
-
-    {{-- ══════════════════════════════════════════════════════════════
-         0. ESPACES PUBLICITAIRES — helper de rendu
-         ──────────────────────────────────────────────────────────────
-         Version STATIQUE : chaque zone est un placeholder. Pour publier
-         une bannière, il suffit de renseigner "image" et "lien" dans le
-         tableau $pubZones ci-dessous (ou, plus tard, de faire remonter
-         ces mêmes clés depuis une table `publicites` en base).
-
-         Nomenclature reprise du plan de bannières fourni (façon Seneweb) :
-           - AP_HABILLAGE : habillage plein écran, page d'accueil (160×900 ×2)
-           - TOP_A2M      : bannière haute page d'accueil     (970×250)
-           - SPLH         : bannière horizontale spéciale     (1000×120)
-           - A1R          : pavé latéral droit                (300×600)
-           - BLOC_SPECIAL : bloc rectangle "premium"          (300×600)
-           - B1L / B1R    : bannières basses gauche / droite  (300×250)
-         Pages intérieures (fiche événement, fiche exposant…) : réutiliser
-         le même helper avec API_HABILLAGE et A2M (728×90).
-         ══════════════════════════════════════════════════════════════ --}}
-    @php
-        $pubZones = $pubZones ?? [];
-
-        $pub = function (string $zone, int $w, int $h, string $label) use ($pubZones) {
-            $data = $pubZones[$zone] ?? null;
-            $img  = $data['image'] ?? null;
-            $lien = $data['lien']  ?? '#';
-
-            ob_start(); ?>
-            <div class="pub-slot relative rounded-xl overflow-hidden border border-dashed w-full h-full <?= $img ? '' : 'pub-empty' ?>"
-                 style="border-color: var(--gray-soft); background-color: var(--pearl);"
-                 data-zone="<?= e($zone) ?>" data-size="<?= $w ?>x<?= $h ?>">
-                <span class="pub-slot-label">Pub · <?= $w ?>×<?= $h ?></span>
-                <a href="<?= e($lien) ?>" target="_blank" rel="noopener sponsored"
-                   class="flex items-center justify-center w-full h-full" style="aspect-ratio: <?= $w ?>/<?= $h ?>;">
-                    <?php if ($img): ?>
-                        <img src="<?= e($img) ?>" alt="Publicité <?= e($label) ?>" class="w-full h-full object-cover">
-                    <?php else: ?>
-                        <div class="flex flex-col items-center justify-center gap-1 text-center px-3">
-                            <span class="text-[10px] font-semibold uppercase tracking-widest" style="color: var(--gray-mid);">
-                                Emplacement disponible
-                            </span>
-                            <span class="text-xs font-bold" style="color: var(--blue-night);"><?= e($label) ?></span>
-                            <span class="text-[10px]" style="color: var(--gray-mid);"><?= $w ?> × <?= $h ?> px</span>
-                        </div>
-                    <?php endif; ?>
-                </a>
-            </div>
-            <?php
-            return ob_get_clean();
-        };
-    @endphp
-
-    {{-- AP_HABILLAGE : deux colonnes fixes de part et d'autre du site, visibles uniquement sur très grands écrans --}}
-    <div class="hidden 2xl:block fixed top-0 left-0 h-screen w-[160px] z-30" aria-hidden="true">
-        {!! $pub('ap_habillage_gauche', 160, 900, 'Habillage gauche') !!}
-    </div>
-    <div class="hidden 2xl:block fixed top-0 right-0 h-screen w-[160px] z-30" aria-hidden="true">
-        {!! $pub('ap_habillage_droite', 160, 900, 'Habillage droite') !!}
-    </div>
-
-    <!-- ================= NAVBAR ================= -->
-
+<body>
 {{--
 |--------------------------------------------------------------------------
-| ExpoDakar – Page d'accueil Premium
-| Laravel 12 • Blade • Tailwind CSS v4 • Alpine.js 3
+| ExpoDakar – Page d'accueil (refonte complète)
 |--------------------------------------------------------------------------
 --}}
 
+@php
+    $pubZones = $pubZones ?? [];
 
-{{-- ══════════════════════════════════════════════════════════════
-     1. NAVBAR PREMIUM
-     ══════════════════════════════════════════════════════════════ --}}
+    $pub = function (string $zone, int $w, int $h, string $label) use ($pubZones) {
+        $data = $pubZones[$zone] ?? null;
+        $img  = $data['image'] ?? null;
+        $lien = $data['lien']  ?? '#';
+        ob_start(); ?>
+        <div class="pub-slot relative rounded-xl overflow-hidden border border-dashed w-full h-full <?= $img ? '' : 'pub-empty' ?>"
+             style="border-color: var(--gray-soft); background-color: var(--pearl);"
+             data-zone="<?= e($zone) ?>">
+            <span class="pub-slot-label">Pub · <?= $w ?>×<?= $h ?></span>
+            <a href="<?= e($lien) ?>" target="_blank" rel="noopener sponsored" class="flex items-center justify-center w-full h-full">
+                <?php if ($img): ?>
+                    <img src="<?= e($img) ?>" alt="Publicité <?= e($label) ?>" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                <?php else: ?>
+                    <div class="flex flex-col items-center justify-center gap-1 text-center px-3 py-4">
+                        <span style="font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--gray-mid);">Emplacement disponible</span>
+                        <span style="font-size:.8rem; font-weight:700; color:var(--blue-night);"><?= e($label) ?></span>
+                        <span style="font-size:9px; color:var(--gray-mid);"><?= $w ?> × <?= $h ?> px</span>
+                    </div>
+                <?php endif; ?>
+            </a>
+        </div>
+        <?php return ob_get_clean();
+    };
+@endphp
+
+<div class="hidden 2xl:block fixed top-0 left-0 h-screen w-[160px] z-30 overflow-hidden" aria-hidden="true">
+    {!! $pub('ap_habillage_gauche', 160, 900, 'Habillage gauche') !!}
+</div>
+<div class="hidden 2xl:block fixed top-0 right-0 h-screen w-[160px] z-30 overflow-hidden" aria-hidden="true">
+    {!! $pub('ap_habillage_droite', 160, 900, 'Habillage droite') !!}
+</div>
+
+<div class="2xl:mx-[160px]">
+
+
+{{-- ══ 1. NAVBAR ══ ExpoDakar en images--}}
 <header
-    x-data="{
-        open: false,
-        scrolled: false,
-        init() {
-            window.addEventListener('scroll', () => {
-                this.scrolled = window.scrollY > 60;
-            });
-        }
-    }"
+    x-data="{ open:false, scrolled:false, init(){ window.addEventListener('scroll',()=>{this.scrolled=window.scrollY>60;}); } }"
     :class="scrolled ? 'navbar-solid' : 'navbar-transparent'"
     class="fixed inset-x-0 top-0 z-50 transition-all duration-300"
-    x-init="init()"
->
-    <div class="max-w-7xl mx-auto px-6 lg:px-16">
-        <div class="flex items-center justify-between h-20">
+    x-init="init()">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="flex items-center justify-between h-16 sm:h-20">
+          <a href="{{ route('home') }}" class="flex items-center gap-2 sm:gap-3 shrink-0" aria-label="ExpoDakar">
+    <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1786364683/ChatGPT_Image_10_ao%C3%BBt_2026__02_24_21-removebg-preview_spadbb.png"
+         alt="Logo ExpoDakar"
+         class="h-14 sm:h-16 w-auto object-contain"
+         width="80"
+         height="80"
+         fetchpriority="high">
 
-            {{-- Logo --}}
-            <a href="{{ route('home') }}" class="flex items-center gap-3 group" aria-label="ExpoDakar accueil">
-                
-                <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782085416/ChatGPT_Image_Jun_21__2026__07_24_51_PM-removebg-preview_zi77k0.png"  alt="Logo ExpoDakar" class="h-12 w-auto object-contain">
-    
-     
-                <span class="font-display text-2xl text-white">
-                    Expo<span class="text-gold-gradient">Dakar</span>
-                </span>
-            </a>
+    <span class="font-display text-xl sm:text-2xl text-white">
+        Expo<span class="text-gold-gradient">Dakar</span>
+    </span>
+</a>
 
-            {{-- Navigation desktop --}}
-            <nav class="hidden lg:flex items-center gap-8" aria-label="Navigation principale">
+            <nav class="hidden lg:flex items-center gap-8">
                 <a href="#evenements" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Événements</a>
-                <a href="#categories"  class="text-sm font-medium text-white/80 hover:text-white transition-colors">Catégories</a>
-                <a href="#exposants"   class="text-sm font-medium text-white/80 hover:text-white transition-colors">Exposants</a>
-                <a href="#faq"         class="text-sm font-medium text-white/80 hover:text-white transition-colors">FAQ</a>
+                <a href="{{ route('user.categories.index') }}" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Catégories</a>
+                <a href="#calendrier" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Calendrier</a>
+                <a href="#exposants" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Exposants</a>
+                <a href="#faq" class="text-sm font-medium text-white/80 hover:text-white transition-colors">FAQ</a>
             </nav>
 
-            {{-- CTA desktop --}}
             <div class="hidden lg:flex items-center gap-3">
                 @guest
-                    <a href="{{route('login')}}"
-                       class="text-sm font-medium text-white/80 hover:text-white transition-colors px-4 py-2 rounded-lg hover:bg-white/10">
-                        Connexion
-                    </a>
-                    <a href="{{route('register')}}"
-                       class="text-sm font-semibold text-white px-5 py-2.5 rounded-xl transition-all duration-200"
-                       style="background: linear-gradient(135deg, var(--gold), var(--gold-light));">
-                        S'inscrire gratuitement
-                    </a>
+                <a href="{{ route('login') }}" class="text-sm font-medium text-white/80 hover:text-white px-4 py-2 rounded-lg hover:bg-white/10 transition-colors">Connexion</a>
+                <a href="{{ route('register') }}" class="text-sm font-semibold text-white px-5 py-2.5 rounded-xl" style="background:linear-gradient(135deg,var(--gold),var(--gold-light));">S'inscrire</a>
                 @endguest
-
                 @auth
-                    <a href="{{route('account')}}"
-                       class="text-sm font-semibold text-white px-5 py-2.5 rounded-xl transition-all duration-200"
-                       style="background: linear-gradient(135deg, var(--blue-electric), #1248b0);">
-                        Mon espace
-                    </a>
+                <a href="{{ route('account') }}" class="text-sm font-semibold text-white px-5 py-2.5 rounded-xl" style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">Mon espace</a>
                 @endauth
             </div>
 
-            {{-- Burger mobile --}}
-            <button @click="open = !open"
-                    class="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg text-white hover:bg-white/10 transition"
-                    aria-label="Ouvrir le menu"
-                    :aria-expanded="open">
-                <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-                <svg x-show="open" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-            </button>
+            <div class="flex items-center gap-2 lg:hidden">
+                @auth
+                <a href="{{ route('account') }}" class="text-xs font-semibold text-white px-3 py-1.5 rounded-lg" style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">Mon espace</a>
+                @endauth
+                <button @click="open=!open" class="flex items-center justify-center w-10 h-10 rounded-lg text-white hover:bg-white/10 transition" aria-label="Menu">
+                    <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <svg x-show="open" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
         </div>
     </div>
 
-    {{-- Menu mobile --}}
-    <div x-show="open"
-         x-cloak
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0 -translate-y-2"
-         x-transition:enter-end="opacity-100 translate-y-0"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100 translate-y-0"
-         x-transition:leave-end="opacity-0 -translate-y-2"
-         class="lg:hidden border-t border-white/10"
-         style="background: var(--blue-night);"
-         role="dialog" aria-label="Menu mobile">
-        <nav class="flex flex-col gap-1 px-6 py-4">
+    <div x-show="open" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+         class="lg:hidden border-t border-white/10" style="background:var(--blue-night);">
+        <nav class="flex flex-col gap-1 px-4 py-4">
             <a href="#evenements" @click="open=false" class="px-4 py-3 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">Événements</a>
-            <a href="#categories"  @click="open=false" class="px-4 py-3 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">Catégories</a>
-            <a href="#exposants"   @click="open=false" class="px-4 py-3 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">Exposants</a>
-            <a href="#faq"         @click="open=false" class="px-4 py-3 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">FAQ</a>
+            <a href="{{ route('user.categories.index') }}" @click="open=false" class="px-4 py-3 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">Catégories</a>
+            <a href="#calendrier" @click="open=false" class="px-4 py-3 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">Calendrier</a>
+            <a href="#exposants" @click="open=false" class="px-4 py-3 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">Exposants</a>
+            <a href="#faq" @click="open=false" class="px-4 py-3 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">FAQ</a>
             <hr class="border-white/10 my-2">
             @guest
-                <a href="{{ route('login') }}"    class="px-4 py-3 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">Connexion</a>
-                <a href="{{ route('register') }}" class="mt-1 px-4 py-3 text-sm font-semibold text-center text-white rounded-xl" style="background: linear-gradient(135deg,var(--gold),var(--gold-light));">S'inscrire gratuitement</a>
+            <a href="{{ route('login') }}" class="px-4 py-3 text-sm text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">Connexion</a>
+            <a href="{{ route('register') }}" class="mt-1 px-4 py-3 text-sm font-semibold text-center rounded-xl" style="background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--blue-night);">S'inscrire gratuitement</a>
             @endguest
             @auth
-                <a href="{{ route('dashboard') }}" class="px-4 py-3 text-sm font-semibold text-center text-white rounded-xl" style="background: linear-gradient(135deg,var(--blue-electric),#1248b0);">Mon espace</a>
+            <a href="{{ route('account') }}" class="px-4 py-3 text-sm font-semibold text-center text-white rounded-xl" style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">Mon espace</a>
             @endauth
         </nav>
     </div>
@@ -368,664 +260,245 @@
 
 
 {{-- ══════════════════════════════════════════════════════════════
-     2. HERO
+     HERO img
      ══════════════════════════════════════════════════════════════ --}}
-<section   class="relative min-h-screen flex flex-col justify-center overflow-hidden" style="background: var(--blue-night);" aria-label="Bannière principale" >
+<section id="hero" class="relative h-screen min-h-[720px] flex flex-col overflow-hidden" style="background:var(--blue-night);" aria-label="Bannière principale">
 
-    {{-- Background image --}}
     <div class="absolute inset-0 z-0">
-        <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782659620/ChatGPT_Image_Jun_28_2026_03_00_42_PM_qkpjbj.png"
-             alt=""
-             class="w-full h-full object-cover opacity-25"
-             aria-hidden="true">
-        {{-- Gradient overlay --}}
-        <div class="absolute inset-0"
-             style="background: linear-gradient(135deg, rgba(10,22,40,.0) 0%, rgba(13,33,69,.0) 60%, rgba(30,95,216,.-1) 100%);"
-             aria-hidden="true"></div>
-        {{-- Grid perspective --}}
-        <div class="absolute inset-0 hero-grid-overlay opacity-40" aria-hidden="true"></div>
-        {{-- Glow accent --}}
-        <div class="absolute -bottom-40 -right-40 w-[600px] h-[600px] rounded-full blur-[120px] opacity-20"
-             style="background: var(--blue-electric);" aria-hidden="true"></div>
-        <div class="absolute top-1/3 -left-20 w-[400px] h-[400px] rounded-full blur-[100px] opacity-10"
-             style="background: var(--gold);" aria-hidden="true"></div>
+        <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1786363396/ChatGPT_Image_10_ao%C3%BBt_2026_02_20_43_vifa4p.png"
+             alt="" class="w-full h-full object-cover opacity-40" aria-hidden="true" fetchpriority="high" decoding="async">
+        <div class="absolute inset-0 opacity-[.25] hero-tech-grid" aria-hidden="true"></div>
+        <div class="absolute inset-0 opacity-[.05] hero-noise" aria-hidden="true"></div>
+        <div class="absolute top-[-10%] right-[8%] w-[32rem] h-[32rem] rounded-full blur-[120px] opacity-30 hero-glow-drift" style="background:var(--blue-electric);" aria-hidden="true"></div>
+        <div class="absolute bottom-[-15%] left-[5%] w-[26rem] h-[26rem] rounded-full blur-[110px] opacity-20 hero-glow-drift" style="background:var(--gold); animation-delay:-6s;" aria-hidden="true"></div>
+        <div class="absolute inset-0 hero-particles" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
     </div>
 
-    <div class="relative z-10 max-w-[1700px]  mx-auto px-10 lg:px-20 pt-32 pb-24">
+    <div class="relative z-10 flex-1 w-full max-w-[92rem] mx-auto px-4 sm:px-6 lg:px-16 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center pt-28 sm:pt-32 lg:pt-24 pb-14">
 
-       <div class="max-w-6xl">
-
-            {{-- Eyebrow --}}
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 bg-white/5 backdrop-blur-sm mb-8">
-                <span class="w-2 h-2 rounded-full animate-pulse" style="background: var(--gold);"></span>
-                <span class="section-eyebrow" style="color: var(--gold-light);">Plateforme officielle — Sénégal</span>
+        <div class="max-w-2xl" data-hero-reveal>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-white/15 bg-white/5 backdrop-blur-md mb-6 sm:mb-8" data-hero-item style="--d:0">
+                <span class="w-2 h-2 rounded-full animate-pulse shrink-0" style="background:var(--gold);"></span>
+                <span class="section-eyebrow text-xs tracking-widest uppercase" style="color:var(--gold-light);">Plateforme officielle — Sénégal</span>
             </div>
 
-            {{-- Title --}}
-            <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl text-white leading-tight mb-6">
-                Le rendez-vous des
-                <em class="not-italic text-gold-gradient">événements pro</em><br>
-                au Sénégal
+            <h1 class="font-display text-[2.75rem] leading-[1.05] sm:text-6xl lg:text-[5.2rem] text-white mb-5 sm:mb-6 tracking-tight" data-hero-item style="--d:1">
+               <span class="block hero-gold-gradient"> Le rendez-vous 
+                des événements pro
+                au Sénégal</span>
             </h1>
 
-            {{-- Subtitle --}}
-            <p class="text-lg text-white/65 max-w-xl mx-auto leading-relaxed mb-10">
-                Salons, conférences, forums, expositions — découvrez, réservez et promouvez
-                les événements qui façonnent l'économie sénégalaise.
+            <p class="text-base sm:text-lg text-white/60 max-w-lg leading-relaxed mb-8 sm:mb-10" data-hero-item style="--d:2">
+                Salons, conférences, forums, expositions — découvrez, réservez et promouvez les événements qui façonnent l'économie sénégalaise.
             </p>
 
-            {{-- Search bar --}}
-            <form action="{{ route('user.events.search') }}" method="GET" class="flex flex-col sm:flex-row gap-3 justify-center gap-10 ml-20 max-w-2xl mb-14" role="search" aria-label="Rechercher un événement">                  
-                @csrf
-                <div class="relative flex-1">
-                    <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none" aria-hidden="true">
-                        <svg class="w-5 h-5 text-white/40" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607z"/>
-                        </svg>
-                    </div>
-                    <input type="search"
-                           name="q"
-                           placeholder="Rechercher un salon, conférence, exposant…"
-                           class="search-input w-full pl-12 pr-4 py-4 rounded-xl bg-white/10 backdrop-blur text-white placeholder-white/40 border border-white/15 text-sm transition"
-                           aria-label="Recherche">
-                </div>
-                <button type="submit"
-                        class="px-7 py-4 rounded-xl font-semibold text-sm text-white transition-all duration-200 hover:brightness-110 active:scale-95 whitespace-nowrap"
-                        style="background: linear-gradient(135deg, var(--gold), var(--gold-light));">
-                    Rechercher
-                </button>
-            </form>
 
-            {{-- Stats rapides --}}
-            <div class="flex flex-wrap justify-center gap-10 translate-x-8">
+            <div class="flex flex-wrap gap-3 sm:gap-4 mb-12 sm:mb-16" data-hero-item style="--d:4">
+                <a href="{{ route('user.events.index') }}"
+                   class="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-sm transition-all hover:brightness-110 active:scale-95"
+                   style="background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--blue-night); box-shadow:0 10px 28px rgba(201,168,76,.28);">
+                    Explorer les événements
+                    <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"/></svg>
+                </a>
+                <a href=""
+                   class="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-sm text-white border border-white/25 transition-all hover:border-white/60 hover:bg-white/5 active:scale-95">
+                    Voir les exposants
+                </a>
+            </div>
+
+            <div class="flex flex-wrap gap-8 sm:gap-12" data-hero-item style="--d:5">
+                @foreach([['+240','Événements référencés'],['+180','Exposants actifs'],['+15k','Visiteurs inscrits']] as [$v,$l])
                 <div>
-                    <div class="font-display text-4xl text-white">+240</div>
-                    <div class="text-xs text-white/50 mt-1">Événements référencés</div>
+                    <div class="font-display text-3xl sm:text-4xl text-white hero-counter" data-count="{{ $v }}">0</div>
+                    <div class="text-xs text-white/45 mt-1.5 tracking-wide">{{ $l }}</div>
                 </div>
-                <div class="w-px bg-white/15 self-stretch hidden sm:block" aria-hidden="true"></div>
-                <div>
-                    <div class="font-display text-4xl text-white">+180</div>
-                    <div class="text-xs text-white/50 mt-1">Exposants actifs</div>
-                </div>
-                <div class="w-px bg-white/15 self-stretch hidden sm:block" aria-hidden="true"></div>
-                <div>
-                    <div class="font-display text-4xl text-white">+15k</div>
-                    <div class="text-xs text-white/50 mt-1">Visiteurs inscrits</div>
-                </div>
+                @endforeach
             </div>
         </div>
-    </div>
 
-    {{-- Scroll hint --}}
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 opacity-60" aria-hidden="true">
-      <!--  <span class="text-xs text-white/50 tracking-widest uppercase">Découvrir</span> -->
-        <div class="w-px h-10 bg-gradient-to-b from-white/30 to-transparent animate-pulse"></div>
-    </div>
-</section>
-<br>
-        {{-- TOP_A2M : bannière haute, sous la navbar --}}
-        <div class="max-w-4xl mx-auto mb-10 h-[90px] sm:h-[120px] lg:h-[130px]">
-            {!! $pub('top_a2m', 970, 250, 'Top bannière') !!}
-        </div>
+        <div class="relative hidden lg:block h-full min-h-[34rem]" data-hero-reveal style="--d:2">
+            <div class="hero-scene absolute inset-0">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[26rem] h-[26rem] rounded-full blur-[90px] opacity-25" style="background:radial-gradient(circle, var(--blue-electric), transparent 70%);" aria-hidden="true"></div>
 
-{{-- ══════════════════════════════════════════════════════════════
-     3. LOGOS PARTENAIRES
-     ══════════════════════════════════════════════════════════════ --}}
-<section class="py-14 border-y" style="border-color: var(--gray-soft);" aria-label="Nos partenaires">
-    <div class="max-w-7xl mx-auto px-6 lg:px-16">
-        <p class="text-center text-xs font-semibold tracking-widest uppercase mb-10" style="color: var(--gray-mid);">
-            Ils nous font confiance
-        </p>
-        <div class="flex flex-wrap items-center justify-center gap-10 lg:gap-16">
-            @foreach(['CCIAD', 'ANSD', 'APIX', 'DER/FJ', 'ADEPME', 'CTIC Dakar', 'Banque de l\'UEMOA'] as $partner)
-            <div class="partner-logo cursor-default select-none text-xl font-display font-medium"
-                 style="color: var(--blue-night);" aria-label="{{ $partner }}">
-                {{ $partner }}
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-
-{{-- ══════════════════════════════════════════════════════════════
-     4. STATISTIQUES ANIMÉES
-     ══════════════════════════════════════════════════════════════ --}}
-<section
-    class="py-24"
-    style="background: var(--pearl);"
-    aria-label="Chiffres clés"
-    x-data="{
-        stats: [
-            { value: 240, suffix: '+', label: 'Événements organisés', icon: 'calendar' },
-            { value: 180, suffix: '+', label: 'Exposants référencés', icon: 'building' },
-            { value: 15000, suffix: '+', label: 'Visiteurs enregistrés', icon: 'users' },
-            { value: 14,   suffix: '',  label: 'Régions couvertes',    icon: 'map' },
-        ],
-        animated: false,
-        counts: [0, 0, 0, 0],
-        initCounters() {
-            if (this.animated) return;
-            this.animated = true;
-            this.stats.forEach((stat, i) => {
-              const duration = 3500;
-              const steps = 120;
-                const increment = stat.value / steps;
-                let current = 0;
-                const timer = setInterval(() => {
-                    current = Math.min(current + increment, stat.value);
-                    this.counts[i] = Math.floor(current);
-                    if (current >= stat.value) clearInterval(timer);
-                }, duration / steps);
-            });
-        }
-    }"
-    x-init="
-    const observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-            initCounters();
-            observer.disconnect();
-        }
-    }, { threshold: 0.9 });
-    observer.observe($el);
-"
->
-    <div class="max-w-7xl mx-auto px-6 lg:px-16">
-        <div class="text-center mb-16 reveal" x-init="
-    const io = new IntersectionObserver((e) => {
-        if (e[0].isIntersecting) { $el.classList.add('visible'); io.disconnect(); }
-    }, { threshold: 0.1 });
-    io.observe($el);
-">
-            <p class="section-eyebrow mb-3">Chiffres clés</p>
-            <h2 class="font-display text-4xl lg:text-5xl" style="color: var(--blue-night);">
-                ExpoDakar en quelques chiffres
-            </h2>
-        </div>
-
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            @php
-            $statIcons = [
-                'calendar' => '<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>',
-                'building'  => '<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/>',
-                'users'     => '<path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Zm-13.5 0a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>',
-                'map'       => '<path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z"/>',
-            ];
-            $statData = [
-                ['value' => 240,  'suffix' => '+', 'label' => 'Événements organisés', 'icon' => 'calendar'],
-                ['value' => 180,  'suffix' => '+', 'label' => 'Exposants référencés',  'icon' => 'building'],
-                ['value' => 15000,'suffix' => '+', 'label' => 'Visiteurs enregistrés', 'icon' => 'users'],
-                ['value' => 14,   'suffix' => '',  'label' => 'Régions couvertes',      'icon' => 'map'],
-            ];
-            @endphp
-
-            @foreach($statData as $i => $stat)
-            <div class="stat-card bg-white rounded-2xl p-8 reveal reveal-delay-{{ $i + 1 }}"
-                 x-intersect.once="$el.classList.add('visible')"
-                 style="box-shadow: 0 4px 24px rgba(10,22,40,.06);">
-                <div class="flex items-center justify-between mb-5">
-                    <span class="font-display text-5xl font-light" style="color: var(--blue-night);">
-                        <span x-text="counts[{{ $i }}].toLocaleString('fr-FR')">{{ number_format($stat['value'], 0, ',', ' ') }}</span>{{ $stat['suffix'] }}
-                    </span>
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                         style="background: var(--pearl);">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
-                             style="color: var(--blue-electric);" aria-hidden="true">
-                            {!! $statIcons[$stat['icon']] !!}
-                        </svg>
-                    </div>
-                </div>
-                <p class="text-sm font-medium" style="color: var(--gray-mid);">{{ $stat['label'] }}</p>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-
-{{-- ══════════════════════════════════════════════════════════════
-     5. CATÉGORIES POPULAIRES
-     ══════════════════════════════════════════════════════════════ --}}
-<section id="categories" class="py-24 bg-white" aria-label="Catégories d'événements">
-    <div class="max-w-7xl mx-auto px-6 lg:px-16">
-
-        <div class="text-center mb-16 reveal" x-intersect.once="$el.classList.add('visible')">
-            <p class="section-eyebrow mb-3">Explorer par thème</p>
-            <h2 class="font-display text-4xl lg:text-5xl mb-4" style="color: var(--blue-night);">Catégories populaires</h2>
-            <p class="text-base max-w-lg mx-auto" style="color: var(--gray-mid);">
-                Trouvez les événements qui correspondent à votre secteur d'activité.
-            </p>
-        </div>
-
-        {{-- Filtre dynamique --}}
-        <div class="flex flex-wrap justify-center gap-3 mb-12 reveal" x-intersect.once="$el.classList.add('visible')"
-             x-data="{ active: 'all' }">
-            <button @click="active='all'"
-                    :class="active==='all' ? 'active' : ''"
-                    class="cat-pill px-5 py-2.5 text-sm font-medium rounded-full border transition"
-                    style="border-color: var(--gray-soft); color: var(--blue-night);">
-                Tous
-            </button>
-            @foreach($categories as $cat)
-            <button @click="active='{{ $cat->id }}'"
-                    :class="active==='{{ $cat->id }}' ? 'active' : ''"
-                    class="cat-pill px-5 py-2.5 text-sm font-medium rounded-full border transition"
-                    style="border-color: var(--gray-soft); color: var(--blue-night);">
-                {{ $cat->nom }}
-            </button>
-            @endforeach
-        </div>
-
-        {{-- Grille catégories --}}
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-            @php
-                $catIcons = [
-                    '<svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>',
-                    '<svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>',
-                    '<svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg>',
-                    '<svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 3.741-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"/></svg>',
-                    '<svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>',
-                    '<svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253"/></svg>',
-                    '<svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>',
-                    '<svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 1-6.23-.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21a48.25 48.25 0 0 1-8.135-.687c-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/></svg>',
-                ];
-            @endphp
-            @foreach($categories as $idx => $cat)
-            <a href="{{ route('user.events.index', ['categorie' => $cat->id]) }}"
-               class="group flex flex-col items-center gap-4 p-8 rounded-2xl border text-center transition-all duration-300 hover:border-blue-200 reveal reveal-delay-{{ ($idx % 4) + 1 }}"
-               style="border-color: var(--gray-soft);"
-               x-intersect.once="$el.classList.add('visible')">
-                {{-- APRÈS --}}
-                <div class="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
-                    style="background: var(--blue-soft, #EFF6FF);">
-                    <span class="w-6 h-6" style="color: var(--blue-electric);">
-                        {!! $catIcons[$idx % count($catIcons)] !!}
-                    </span>
-                </div>
-                <div>
-                    <div class="font-semibold text-sm mb-1" style="color: var(--blue-night);">{{ $cat->nom }}</div>
-                    @if(isset($cat->events_count))
-                    <div class="text-xs" style="color: var(--gray-mid);">{{ $cat->events_count }} événement{{ $cat->events_count > 1 ? 's' : '' }}</div>
-                    @endif
-                </div>
-            </a>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-
-{{-- ══════════════════════════════════════════════════════════════
-     5bis. SPLH — bannière spéciale pleine largeur
-     ══════════════════════════════════════════════════════════════ --}}
-<section class="py-8 bg-white" aria-label="Espace publicitaire">
-    <div class="max-w-7xl mx-auto px-6 lg:px-16">
-        <div class="h-[100px] sm:h-[110px] lg:h-[120px]">
-            {!! $pub('splh', 1000, 120, 'Bannière SPLH') !!}
-        </div>
-    </div>
-</section>
-
-
-{{-- ══════════════════════════════════════════════════════════════
-     6. ÉVÉNEMENTS POPULAIRES
-     ══════════════════════════════════════════════════════════════ --}}
-<section id="evenements" class="py-24" style="background: var(--pearl);" aria-label="Événements à la une">
-    <div class="max-w-7xl mx-auto px-6 lg:px-16">
-
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-16">
-            <div class="reveal" x-intersect.once="$el.classList.add('visible')">
-                <p class="section-eyebrow mb-3">À ne pas manquer</p>
-                <h2 class="font-display text-4xl lg:text-5xl" style="color: var(--blue-night);">Événements populaires</h2>
-            </div>
-            <a href="{{ route('user.events.index') }}"
-               class="reveal reveal-delay-2 inline-flex items-center gap-2 text-sm font-semibold transition-colors group"
-               style="color: var(--blue-electric);"
-               x-intersect.once="$el.classList.add('visible')">
-                Voir tous les événements
-                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
-                </svg>
-            </a>
-        </div>
-
-        {{-- Corps : grille événements + pavé A1R en sticky --}}
-        <div class="lg:flex lg:items-start lg:gap-8">
-
-        {{-- A1R : pavé latéral, visible à partir de lg, sticky pendant le scroll --}}
-        <aside class="hidden lg:block lg:w-[300px] flex-shrink-0 order-2 sticky top-28 self-start" aria-label="Espace publicitaire">
-            <div class="h-[600px]">
-                {!! $pub('a1r', 300, 600, 'Pavé A1R') !!}
-            </div>
-        </aside>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-7 order-1 flex-1">
-            @foreach($events as $idx => $event)
-            <article class="event-card card-lift bg-white rounded-2xl overflow-hidden reveal reveal-delay-{{ ($idx % 3) + 1 }}"
-                     style="box-shadow: 0 4px 24px rgba(10,22,40,.07);"
-                     x-intersect.once="$el.classList.add('visible')"
-                     aria-label="{{ $event->titre }}">
-
-                {{-- Image --}}
-                <div class="event-img-wrap relative h-52">
-                    @if($event->image)
-                        <img src="{{ $event->image }}"
-                             alt="{{ $event->titre }}"
-                             class="w-full h-full object-cover">
-                    @else
-                        <div class="w-full h-full flex items-center justify-center"
-                             style="background: linear-gradient(135deg, var(--blue-night), var(--blue-electric));">
-                            <svg class="w-12 h-12 text-white/30" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>
-                            </svg>
-                        </div>
-                    @endif
-
-                    {{-- Badge catégorie --}}
-                    @if($event->categorie)
-                    <span class="absolute top-4 left-4 px-3 py-1 text-xs font-semibold rounded-full backdrop-blur-sm"
-                          style="background: rgba(10,22,40,.7); color: var(--gold-light);">
-                        {{ $event->categorie->nom }}
-                    </span>
-                    @endif
-
-                    {{-- Badge date --}}
-                    <div class="absolute top-4 right-4 flex flex-col items-center justify-center w-12 h-12 rounded-xl bg-white shadow-lg">
-                        <span class="text-xs font-bold leading-none" style="color: var(--blue-electric);">
-                            {{ \Carbon\Carbon::parse($event->date_debut)->format('d') }}
-                        </span>
-                        <span class="text-xs uppercase leading-none mt-0.5" style="color: var(--gray-mid);">
-                            {{ \Carbon\Carbon::parse($event->date_debut)->translatedFormat('M') }}
-                        </span>
+                <div class="hero-card hero-float" style="--x:4%; --y:6%; --w:15.5rem; --delay:0s;">
+                    <div class="hero-card-media" style="background-image:url('https://res.cloudinary.com/dstbqtuxm/image/upload/v1782659620/ChatGPT_Image_Jun_28_2026_03_00_42_PM_qkpjbj.png'); background-position:20% 30%;"></div>
+                    <div class="hero-card-body">
+                        <span class="hero-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M4.5 21V7.5l7.5-4.5 7.5 4.5V21M9 21v-6h6v6"/></svg></span>
+                        <div><p class="hero-card-title">Salon professionnel</p><p class="hero-card-sub">Stands & networking B2B</p></div>
                     </div>
                 </div>
 
-                {{-- Contenu --}}
-                <div class="p-6">
-
-                    {{-- Exposant --}}
-                    @if($event->exposant)
-                    <div class="flex items-center gap-2 mb-3">
-                      
-                        <span class="text-xs font-medium" style="color: var(--gray-mid);">{{ $event->exposant->nom }}</span>
+                <div class="hero-card hero-float" style="--x:52%; --y:2%; --w:14rem; --delay:1.2s;">
+                    <div class="hero-card-body hero-card-body--solo">
+                        <span class="hero-card-icon" style="background:rgba(201,168,76,.15); color:var(--gold-light);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-1.68 9-3.75S16.97 12.75 12 12.75s-9 1.68-9 3.75 4.03 3.75 9 3.75Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 12.75V3.75m0 0L8.25 6M12 3.75 15.75 6"/></svg></span>
+                        <div><p class="hero-card-title">Conférence</p><p class="hero-card-sub">Intervenants experts</p></div>
                     </div>
-                    @endif
-
-                    <h3 class="font-semibold text-base leading-snug mb-3 line-clamp-2" style="color: var(--blue-night);">
-                        {{ $event->titre }}
-                    </h3>
-
-                    {{-- Lieu + durée --}}
-                    <div class="flex items-center gap-4 text-xs mb-5" style="color: var(--gray-mid);">
-                        <span class="flex items-center gap-1.5">
-                            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
-                            </svg>
-                            {{ $event->lieu }}
-                        </span>
-                        <span class="flex items-center gap-1.5">
-                            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                            </svg>
-                            {{ \Carbon\Carbon::parse($event->date_debut)->diffInDays($event->date_fin) + 1 }}j
-                        </span>
-                    </div>
-
-                    {{-- CTA --}}
-                    <a href="{{ route('user.events.show', $event->id) }}"
-                       class="block w-full text-center py-3 rounded-xl text-sm font-semibold transition-all duration-200 hover:brightness-105 active:scale-95"
-                       style="background: linear-gradient(135deg, var(--blue-electric), #1248b0); color: white;">
-                        Voir les détails
-                    </a>
                 </div>
-            </article>
-            @endforeach
-        </div>
 
-        @if($events->isEmpty())
-        <div class="text-center py-20 flex-1">
-            <div class="text-5xl mb-4">📅</div>
-            <p class="font-semibold text-lg mb-2" style="color: var(--blue-night);">Aucun événement disponible</p>
-            <p class="text-sm" style="color: var(--gray-mid);">De nouveaux événements seront bientôt publiés.</p>
-        </div>
-        @endif
+                <div class="hero-card hero-float" style="--x:58%; --y:40%; --w:15rem; --delay:.5s;">
+                    <div class="hero-card-body hero-card-body--solo">
+                        <span class="hero-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 10.5h7.5m-7.5 3h4.5m-8.25 5.25L9 15.75H5.25A2.25 2.25 0 0 1 3 13.5v-6a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v6a2.25 2.25 0 0 1-2.25 2.25H15l-2.625 3-.375-3"/></svg></span>
+                        <div><p class="hero-card-title">Forum</p><p class="hero-card-sub">Échanges & décideurs</p></div>
+                    </div>
+                </div>
 
-        </div> {{-- /flex grille + A1R --}}
+                <div class="hero-card hero-float" style="--x:6%; --y:52%; --w:16rem; --delay:1.8s;">
+                    <div class="hero-card-media" style="background-image:url('https://res.cloudinary.com/dstbqtuxm/image/upload/v1782659620/ChatGPT_Image_Jun_28_2026_03_00_42_PM_qkpjbj.png'); background-position:70% 60%;"></div>
+                    <div class="hero-card-body">
+                        <span class="hero-card-icon" style="background:rgba(201,168,76,.15); color:var(--gold-light);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75 8.25 9l4.5 4.5 3-3 6 6M3.75 3.75h16.5A1.5 1.5 0 0 1 21.75 5.25v13.5a1.5 1.5 0 0 1-1.5 1.5H3.75a1.5 1.5 0 0 1-1.5-1.5V5.25a1.5 1.5 0 0 1 1.5-1.5Z"/></svg></span>
+                        <div><p class="hero-card-title">Exposition</p><p class="hero-card-sub">Vitrine produits & services</p></div>
+                    </div>
+                </div>
+
+                <div class="hero-card hero-card--pill hero-float" style="--x:38%; --y:72%; --w:11.5rem; --delay:2.4s;">
+                    <div class="hero-card-body hero-card-body--solo">
+                        <span class="hero-card-icon" style="background:rgba(255,255,255,.12);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg></span>
+                        <div><p class="hero-card-title">Networking</p><p class="hero-card-sub">Mise en relation ciblée</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="relative z-10 pb-6 flex justify-center" aria-hidden="true">
+        <div class="flex flex-col items-center gap-2 opacity-50">
+            <span class="text-[.65rem] tracking-[.2em] uppercase text-white/50">Défiler</span>
+            <div class="w-px h-8 bg-gradient-to-b from-white/40 to-transparent animate-pulse"></div>
+        </div>
     </div>
 </section>
 
+<style>
+    /* Le hero utilise désormais la même famille display (Instrument Serif) que le reste du site : plus de rupture typographique */
+    #hero{ font-family:'Inter', sans-serif; }
+    .hero-gold-gradient{ background:linear-gradient(100deg, var(--gold-light), var(--gold) 45%, #F3DFA0 90%); -webkit-background-clip:text; background-clip:text; color:transparent; font-style:normal; }
+    .hero-tech-grid{ background-image:linear-gradient(rgba(255,255,255,.14) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.14) 1px, transparent 1px); background-size:56px 56px; mask-image:radial-gradient(ellipse 70% 60% at 30% 40%, #000 40%, transparent 90%); }
+    .hero-noise{ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); mix-blend-mode:overlay; }
+    @keyframes hero-glow-drift{ 0%,100%{ transform:translate(0,0) scale(1); } 50%{ transform:translate(-4%,3%) scale(1.08); } }
+    .hero-glow-drift{ animation:hero-glow-drift 14s ease-in-out infinite; }
+    .hero-particles span{ position:absolute; width:3px; height:3px; border-radius:50%; background:var(--gold-light); opacity:.5; animation:hero-particle-drift linear infinite; box-shadow:0 0 8px 1px rgba(232,201,106,.6); }
+    .hero-particles span:nth-child(1){ left:12%; top:80%; animation-duration:16s; animation-delay:0s; }
+    .hero-particles span:nth-child(2){ left:28%; top:65%; animation-duration:21s; animation-delay:-4s; }
+    .hero-particles span:nth-child(3){ left:47%; top:88%; animation-duration:18s; animation-delay:-9s; }
+    .hero-particles span:nth-child(4){ left:65%; top:70%; animation-duration:24s; animation-delay:-2s; }
+    .hero-particles span:nth-child(5){ left:81%; top:85%; animation-duration:19s; animation-delay:-12s; }
+    .hero-particles span:nth-child(6){ left:92%; top:60%; animation-duration:22s; animation-delay:-7s; }
+    @keyframes hero-particle-drift{ 0%{ transform:translateY(0) translateX(0); opacity:0; } 10%{ opacity:.6; } 90%{ opacity:.4; } 100%{ transform:translateY(-70vh) translateX(3vw); opacity:0; } }
+    .hero-search-shell{ transition:border-color .3s, box-shadow .3s; }
+    .hero-search-shell:focus-within{ border-color:rgba(201,168,76,.5); box-shadow:0 0 0 4px rgba(201,168,76,.12); }
+    [data-hero-item]{ opacity:0; transform:translateY(22px); animation:hero-item-in .8s cubic-bezier(.22,.8,.24,1) forwards; animation-delay:calc(var(--d) * 90ms + 150ms); }
+    @keyframes hero-item-in{ to{ opacity:1; transform:none; } }
+    .hero-scene{ perspective:1400px; transform-style:preserve-3d; }
+    .hero-card{ position:absolute; left:var(--x); top:var(--y); width:var(--w); border-radius:1.25rem; overflow:hidden; background:rgba(255,255,255,.07); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border:1px solid rgba(255,255,255,.14); box-shadow:0 20px 50px -12px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12); transition:transform .4s cubic-bezier(.22,.8,.24,1), box-shadow .4s; will-change:transform; }
+    .hero-card:hover{ transform:translateY(-6px) scale(1.03) !important; box-shadow:0 28px 60px -10px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.18); z-index:5; }
+    .hero-card-media{ height:6.5rem; background-size:cover; filter:saturate(1.1); }
+    .hero-card-body{ display:flex; align-items:center; gap:.75rem; padding:1rem 1.1rem; }
+    .hero-card-body--solo{ padding:1.15rem 1.2rem; }
+    .hero-card-icon{ width:2.35rem; height:2.35rem; flex-shrink:0; border-radius:.75rem; background:rgba(30,95,216,.22); color:#BFD3FF; display:flex; align-items:center; justify-content:center; }
+    .hero-card-icon svg{ width:1.15rem; height:1.15rem; }
+    .hero-card-title{ font-size:.86rem; font-weight:700; color:#fff; line-height:1.2; }
+    .hero-card-sub{ font-size:.72rem; color:rgba(255,255,255,.5); margin-top:.15rem; }
+    @keyframes hero-float{ 0%,100%{ transform:translate(0,0) rotate(0deg); } 50%{ transform:translate(0,-14px) rotate(.6deg); } }
+    .hero-float{ animation:hero-float 7s ease-in-out infinite; animation-delay:var(--delay); }
+    @media (prefers-reduced-motion: reduce){ .hero-float, .hero-glow-drift, .hero-particles span, [data-hero-item]{ animation:none !important; opacity:1 !important; transform:none !important; } }
+    @media (max-width:1023px){ #hero{ height:auto; min-height:100svh; } }
+</style>
+
+
+{{-- ══ TOP A2M ══ --}}
+<div class="w-full bg-white py-3 px-4">
+    <div class="max-w-4xl mx-auto h-[80px] sm:h-[100px] lg:h-[120px]">
+        {!! $pub('top_a2m', 970, 250, 'Top bannière') !!}
+    </div>
+</div>
+
 
 {{-- ══════════════════════════════════════════════════════════════
-     7. EXPOSANTS PREMIUM
+     SECTION 1 — PARTENAIRES (marquee infini)
      ══════════════════════════════════════════════════════════════ --}}
-<section id="exposants" class="py-24 bg-white" aria-label="Exposants premium">
-    <div class="max-w-7xl mx-auto px-6 lg:px-16">
-
-        <div class="text-center mb-16 reveal" x-intersect.once="$el.classList.add('visible')">
-            <p class="section-eyebrow mb-3">Ils exposent sur ExpoDakar</p>
-            <h2 class="font-display text-4xl lg:text-5xl mb-4" style="color: var(--blue-night);">Exposants premium</h2>
-            <p class="text-base max-w-lg mx-auto" style="color: var(--gray-mid);">
-                Des entreprises de premier plan qui font confiance à notre plateforme pour toucher leur audience.
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($exposants as $idx => $exposant)
-            <div class="card-lift group flex flex-col gap-5 p-7 rounded-2xl border reveal reveal-delay-{{ ($idx % 3) + 1 }}"
-                 style="border-color: var(--gray-soft); box-shadow: 0 2px 16px rgba(10,22,40,.04);"
-                 x-intersect.once="$el.classList.add('visible')">
-
-                {{-- Header --}}
-                <div class="flex items-center gap-4">
-                    {{-- Logo ou initiale --}}
-                    <div class="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden"
-                         style="background: var(--pearl);">
-                        @if($exposant->logo)
-                            <img src="{{ Storage::url($exposant->logo) }}"
-                                 alt="Logo {{ $exposant->nom }}"
-                                 class="w-full h-full object-contain p-2">
-                        @else
-                            <span class="font-display text-2xl font-bold" style="color: var(--blue-electric);">
-                                {{ strtoupper(substr($exposant->nom, 0, 1)) }}
-                            </span>
-                        @endif
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-base" style="color: var(--blue-night);">{{ $exposant->nom }}</h3>
-                        @if($exposant->secteur)
-                        <span class="text-xs px-2 py-0.5 rounded-full mt-1 inline-block"
-                              style="background: rgba(30,95,216,.08); color: var(--blue-electric);">
-                            {{ $exposant->secteur }}
-                        </span>
-                        @endif
-                    </div>
-                </div>
-
-                {{-- Description --}}
-                @if($exposant->description)
-                <p class="text-sm leading-relaxed line-clamp-3 flex-1" style="color: var(--gray-mid);">
-                    {{ $exposant->description }}
-                </p>
-                @endif
-
-                {{-- Footer : liens --}}
-                <div class="flex items-center gap-3 pt-4 border-t" style="border-color: var(--gray-soft);">
-                    @if($exposant->site_web)
-                    <a href="{{ $exposant->site_web }}" target="_blank" rel="noopener noreferrer"
-                       class="flex items-center gap-1.5 text-xs font-medium transition-colors"
-                       style="color: var(--blue-electric);"
-                       aria-label="Site web de {{ $exposant->nom }}">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253"/>
-                        </svg>
-                        Site web
-                    </a>
-                    @endif
-                    @if($exposant->linkedin)
-                    <a href="{{ $exposant->linkedin }}" target="_blank" rel="noopener noreferrer"
-                       class="flex items-center justify-center w-7 h-7 rounded-lg transition hover:opacity-80"
-                       style="background: #0077B5; color: white;"
-                       aria-label="LinkedIn de {{ $exposant->nom }}">
-                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                        </svg>
-                    </a>
-                    @endif
-                    <a href="{{ route('user.exposants.show', $exposant->id) }}"
-                       class="ml-auto text-xs font-semibold transition-colors" style="color: var(--gray-mid);">
-                        Voir le profil →
-                    </a>
-                </div>
+<section class="py-12 border-y" style="border-color:var(--gray-soft);" aria-label="Partenaires">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <p class="text-center text-xs font-semibold tracking-widest uppercase mb-8" style="color:var(--gray-mid);">Ils nous font confiance</p>
+    </div>
+    <div class="marquee-mask overflow-hidden">
+        <div class="marquee-track">
+            @for($i = 0; $i < 2; $i++)
+            <div class="flex items-center gap-10 sm:gap-16 pr-10 sm:pr-16">
+                @foreach(['CCIAD','ANSD','APIX','DER/FJ','ADEPME','CTIC Dakar','ONFP','FONGIP'] as $p)
+                <div class="partner-logo text-base sm:text-xl font-display font-medium whitespace-nowrap" style="color:var(--blue-night);">{{ $p }}</div>
+                @endforeach
             </div>
-            @endforeach
+            @endfor
         </div>
     </div>
 </section>
 
 
 {{-- ══════════════════════════════════════════════════════════════
-     7bis. BLOC_SPECIAL — emplacement premium
+     SECTION 2 — POURQUOI EXPODAKAR
      ══════════════════════════════════════════════════════════════ --}}
-<section class="py-16 bg-white" aria-label="Espace publicitaire premium">
-    <div class="max-w-7xl mx-auto px-6 lg:px-16">
-        <div class="rounded-2xl p-8 lg:p-10 grid lg:grid-cols-[1fr_300px] gap-8 items-center"
-             style="background: var(--pearl);">
-            <div>
-                <p class="section-eyebrow mb-3">Espace partenaire</p>
-                <h3 class="font-display text-3xl lg:text-4xl mb-3" style="color: var(--blue-night);">
-                    Mettez votre marque en avant
-                </h3>
-                <p class="text-sm leading-relaxed max-w-md" style="color: var(--gray-mid);">
-                    Cet emplacement premium (BLOC SPECIAL) est visible par tous les visiteurs de la
-                    page d'accueil. Contactez-nous pour réserver votre créneau publicitaire.
-                </p>
-            </div>
-            <div class="h-[600px] mx-auto w-full max-w-[300px]">
-                {!! $pub('bloc_special', 300, 600, 'Bloc spécial') !!}
-            </div>
-        </div>
-    </div>
-</section>
-
-
-{{-- ══════════════════════════════════════════════════════════════
-     8. POURQUOI CHOISIR EXPODAKAR
-     ══════════════════════════════════════════════════════════════ --}}
-<section class="py-24 overflow-hidden" style="background: var(--blue-night);" aria-label="Nos atouts">
-    <div class="max-w-7xl mx-auto px-6 lg:px-16">
-
-        <div class="grid lg:grid-cols-2 gap-16 items-center">
-            {{-- Texte --}}
+<section class="py-16 sm:py-24 overflow-hidden" style="background:var(--blue-night);" aria-label="Nos atouts">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="grid lg:grid-cols-2 gap-10 sm:gap-16 items-center mb-14 sm:mb-20">
             <div>
                 <p class="section-eyebrow mb-4">Notre valeur ajoutée</p>
-                <h2 class="font-display text-4xl lg:text-5xl text-white mb-6">
+                <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl text-white mb-4 sm:mb-6">
                     Pourquoi choisir<br><span class="text-gold-gradient">ExpoDakar</span> ?
                 </h2>
-                <p class="text-white/60 text-base leading-relaxed mb-10">
-                    Une plateforme pensée pour l'écosystème économique sénégalais, connectant visiteurs,
-                    entreprises et organisateurs en toute simplicité.
+                <p class="text-white/60 text-sm sm:text-base leading-relaxed mb-8 sm:mb-10">
+                    Une plateforme pensée pour l'écosystème économique sénégalais.
                 </p>
-
-                <div class="space-y-6">
-                    @php
-                        $atouts = [
-                            [
-                                'icon' => '<svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>',
-                                'title' => 'Découverte simplifiée',
-                                'desc'  => 'Trouvez rapidement les événements pertinents grâce à une recherche avancée et des filtres intelligents.',
-                            ],
-                            [
-                                'icon' => '<svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z"/></svg>',
-                                'title' => 'Réservation instantanée',
-                                'desc'  => 'Réservez votre place en quelques clics. Recevez votre billet QR par email immédiatement.',
-                            ],
-                            [
-                                'icon' => '<svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 0 1-1.44-4.282m3.102.069a18.03 18.03 0 0 1-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 0 1 8.835 2.535M10.34 6.66a23.847 23.847 0 0 1 8.835-2.535m0 0A23.74 23.74 0 0 1 18.795 3m.38 1.125a23.91 23.91 0 0 1 1.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 0 0 1.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 0 1 0 3.46"/></svg>',
-                                'title' => 'Visibilité maximale',
-                                'desc'  => 'Exposants et organisateurs bénéficient d\'outils de promotion performants pour maximiser leur impact.',
-                            ],
-                            [
-                                'icon' => '<svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>',
-                                'title' => 'Tableau de bord complet',
-                                'desc'  => 'Suivez vos inscriptions, gérez vos événements et analysez vos performances en temps réel.',
-                            ],
-                        ];
-                    @endphp
-
-                    @foreach($atouts as $idx => $atout)
-                    <div class="flex gap-5 reveal reveal-delay-{{ $idx + 1 }}" x-intersect.once="$el.classList.add('visible')">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-                            style="background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1);">
-                            <span class="w-5 h-5 text-white" style="display:flex;">
-                                {!! $atout['icon'] !!}
-                            </span>
+                <div class="space-y-5 sm:space-y-6">
+                    @foreach([
+                        ['Découverte simplifiée','Trouvez rapidement les événements pertinents grâce à une recherche avancée.','M9.348 14.652a7.5 7.5 0 1 0-1.06 1.06l4.157 4.158a.75.75 0 1 0 1.06-1.06l-4.157-4.158ZM3 9.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Z'],
+                        ['Réservation instantanée','Réservez votre place en quelques clics. Recevez votre billet QR par email.','M2.25 8.25h19.5M6 4.5v3.75m12-3.75v3.75M6.75 12h.008v.008H6.75V12Zm3 0h.008v.008h-.008V12Zm3 0h.008v.008h-.008V12Zm3 0h.008v.008h-.008V12Zm-9 3h.008v.008H6.75V15Zm3 0h.008v.008h-.008V15Zm3 0h.008v.008h-.008V15Zm3 0h.008v.008h-.008V15ZM4.5 6.75h15a.75.75 0 0 1 .75.75v11.25a.75.75 0 0 1-.75.75h-15a.75.75 0 0 1-.75-.75V7.5a.75.75 0 0 1 .75-.75Z'],
+                        ['Visibilité maximale','Exposants et organisateurs bénéficient d\'outils de promotion performants.','M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178ZM15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z'],
+                        ['Tableau de bord complet','Suivez vos inscriptions et gérez vos événements en temps réel.','M3 13.5V21m0-7.5 4.5-4.5m-4.5 4.5 4.5 4.5M12 3v18m0-18 4.5 4.5M12 3l-4.5 4.5M18.75 8.25V21m0-12.75 2.25 2.25m-2.25-2.25L16.5 10.5'],
+                    ] as $i => [$title,$desc,$icon])
+                    <div class="flex gap-4 reveal reveal-delay-{{ $i+1 }}" x-intersect.once="$el.classList.add('visible')">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 mt-0.5" style="background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.1);">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $icon }}"/></svg>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-white mb-1">{{ $atout['title'] }}</h3>
-                            <p class="text-sm text-white/55 leading-relaxed">{{ $atout['desc'] }}</p>
+                            <h3 class="font-semibold text-white text-sm sm:text-base mb-1">{{ $title }}</h3>
+                            <p class="text-xs sm:text-sm text-white/55 leading-relaxed">{{ $desc }}</p>
                         </div>
                     </div>
                     @endforeach
                 </div>
             </div>
 
-            {{-- Visuel --}}
             <div class="relative reveal reveal-delay-2" x-intersect.once="$el.classList.add('visible')">
-                <div class="relative rounded-3xl overflow-hidden"
-                     style="background: linear-gradient(135deg, rgba(30,95,216,.2), rgba(196,168,76,.1)); border: 1px solid rgba(255,255,255,.08);">
-                    <div class="p-8 grid grid-cols-2 gap-5">
-                        @php
-                        $cards = [
-                            ['label' => 'Événements actifs',   'value' => '48',    'change' => '+12%'],
-                            ['label' => 'Inscriptions ce mois','value' => '1 240',  'change' => '+28%'],
-                            ['label' => 'Exposants vérifiés',  'value' => '183',   'change' => '+5%'],
-                            ['label' => 'Satisfaction client', 'value' => '98%',   'change' => '↑'],
-                        ];
-                        @endphp
-                        @foreach($cards as $card)
-                        <div class="rounded-2xl p-5" style="background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08);">
-                            <div class="text-xs mb-3" style="color: rgba(255,255,255,.45);">{{ $card['label'] }}</div>
-                            <div class="font-display text-3xl text-white mb-1">{{ $card['value'] }}</div>
-                            <div class="text-xs font-medium" style="color: var(--gold-light);">{{ $card['change'] }}</div>
+                <div class="relative rounded-2xl sm:rounded-3xl overflow-hidden" style="background:linear-gradient(135deg,rgba(30,95,216,.2),rgba(196,168,76,.1)); border:1px solid rgba(255,255,255,.08);">
+                    <div class="p-5 sm:p-8 grid grid-cols-2 gap-3 sm:gap-5">
+                        @foreach([['Événements actifs','48','+12%'],['Inscriptions mois','1 240','+28%'],['Exposants vérifiés','183','+5%'],['Satisfaction','98%','↑']] as $c)
+                        <div class="rounded-xl sm:rounded-2xl p-4 sm:p-5" style="background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08);">
+                            <div class="text-xs mb-2" style="color:rgba(255,255,255,.45);">{{ $c[0] }}</div>
+                            <div class="font-display text-2xl sm:text-3xl text-white mb-1">{{ $c[1] }}</div>
+                            <div class="text-xs font-medium" style="color:var(--gold-light);">{{ $c[2] }}</div>
                         </div>
                         @endforeach
                     </div>
                 </div>
-                {{-- Deco glow --}}
-                <div class="absolute -bottom-10 -left-10 w-48 h-48 rounded-full blur-3xl opacity-30"
-                     style="background: var(--gold);" aria-hidden="true"></div>
             </div>
         </div>
-    </div>
-</section>
 
-
-{{-- ══════════════════════════════════════════════════════════════
-     9. GALERIE
-     ══════════════════════════════════════════════════════════════ --}}
-<section class="py-24 bg-white" aria-label="Galerie photos">
-    <div class="max-w-7xl mx-auto px-6 lg:px-16">
-
-        <div class="text-center mb-16 reveal" x-intersect.once="$el.classList.add('visible')">
-            <p class="section-eyebrow mb-3">Nos moments forts</p>
-            <h2 class="font-display text-4xl lg:text-5xl" style="color: var(--blue-night);">
-                ExpoDakar en images
-            </h2>
-        </div>
-
-        {{-- Grille galerie mosaïque --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="col-span-2 row-span-2 rounded-2xl overflow-hidden h-80 lg:h-auto reveal"
-                 x-intersect.once="$el.classList.add('visible')">
-                <img src="https://www.firstevent.co.uk/wp-content/uploads/2024/09/Cardano-D1-316-1-1.jpg" alt="Salon professionnel Dakar"
-                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
-            </div>
-            @foreach(['https://www.conferenceexpo.com/wp-content/uploads/2019/02/conference-expo-by-nimlok-gallery-d.jpg','https://elleevents.com.au/wp-content/uploads/2020/06/conference-exhibition-CLIA_Sydney2018.jpg','https://elleevents.com.au/wp-content/uploads/2020/06/conference-exhibitionC360-opt.jpg','https://www.graynoise.com.au/wp-content/uploads/2017/11/TM20240516_0507web.jpg'] as $idx => $img)
-            <div class="rounded-2xl overflow-hidden h-40 reveal reveal-delay-{{ $idx + 1 }}"
-                 x-intersect.once="$el.classList.add('visible')">
-                <img src="{{  $img }}" alt="Événement ExpoDakar"
-                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+        {{-- 4 cartes : Découvrir / Réserver / Exposer / Développer son réseau --}}
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+            @foreach([
+                ['Découvrir','Parcourez tous les événements professionnels du pays en un seul endroit.','M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z'],
+                ['Réserver','Sécurisez votre place en quelques secondes, billet QR envoyé instantanément.','M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h4.5c.621 0 1.125-.504 1.125-1.125V3.375c0-.621-.504-1.125-1.125-1.125Z M17.625 5.25h-4.5c-.621 0-1.125.504-1.125 1.125v14.25c0 .621.504 1.125 1.125 1.125h4.5c.621 0 1.125-.504 1.125-1.125V6.375c0-.621-.504-1.125-1.125-1.125Z M8.25 6h.008v.008H8.25V6Zm0 3h.008v.008H8.25V9Zm0 3h.008v.008H8.25V12Zm0 3h.008v.008H8.25V15Z'],
+                ['Exposer','Présentez votre entreprise à des milliers de visiteurs qualifiés.','M2.25 21h19.5M3 21V9.75m18 11.25V9.75M4.5 9.75l7.5-6 7.5 6M9 21v-6.75h6V21'],
+                ['Développer son réseau','Connectez-vous aux bons interlocuteurs grâce au networking ciblé.','M13.5 21v-5.25a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21M8.25 21v-5.25a.75.75 0 0 1 .75-.75h.008a.75.75 0 0 1 .75.75V21M2.25 21h19.5M3 21V6.75c0-.621.504-1.125 1.125-1.125h1.5c.621 0 1.125.504 1.125 1.125V21m9-14.25v-1.5c0-.621.504-1.125 1.125-1.125h1.5c.621 0 1.125.504 1.125 1.125v1.5m-3.75 0h3.75'],
+            ] as $i => [$t,$d,$icon])
+            <div class="rounded-2xl p-5 sm:p-6 reveal reveal-delay-{{ $i+1 }}" style="background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.09);" x-intersect.once="$el.classList.add('visible')">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style="background:linear-gradient(135deg,var(--gold),var(--gold-light));">
+                    <svg class="w-5 h-5" style="color:var(--blue-night);" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $icon }}"/></svg>
+                </div>
+                <h3 class="font-semibold text-white text-sm sm:text-base mb-1.5">{{ $t }}</h3>
+                <p class="text-xs sm:text-sm text-white/50 leading-relaxed">{{ $d }}</p>
             </div>
             @endforeach
         </div>
@@ -1034,53 +507,247 @@
 
 
 {{-- ══════════════════════════════════════════════════════════════
-     10. TÉMOIGNAGES
+     SECTION 3 — ÉVÉNEMENTS EN VEDETTE
      ══════════════════════════════════════════════════════════════ --}}
-<section class="py-24" style="background: var(--pearl);" aria-label="Témoignages clients">
-    <div class="max-w-7xl mx-auto px-6 lg:px-16">
-
-        <div class="text-center mb-16 reveal" x-intersect.once="$el.classList.add('visible')">
-            <p class="section-eyebrow mb-3">Ce qu'ils en disent</p>
-            <h2 class="font-display text-4xl lg:text-5xl" style="color: var(--blue-night);">Témoignages</h2>
+<section id="evenements" class="py-16 sm:py-24" style="background:var(--pearl);" aria-label="Événements">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-16">
+            <div>
+                <p class="section-eyebrow mb-2">À ne pas manquer</p>
+                <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl" style="color:var(--blue-night);">Événements en vedette</h2>
+            </div>
+            <a href="{{ route('user.events.index') }}" class="text-sm font-semibold group shrink-0" style="color:var(--blue-electric);">
+                Voir tout <span class="group-hover:translate-x-1 inline-block transition-transform">→</span>
+            </a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div class="lg:flex lg:items-start lg:gap-8">
+            <aside class="hidden lg:block lg:w-[300px] shrink-0 order-2 sticky top-28 self-start" aria-label="Espace publicitaire">
+                <div class="h-[600px]">{!! $pub('a1r', 300, 600, 'Pavé A1R') !!}</div>
+            </aside>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-7 order-1 flex-1 w-full">
+                @forelse($events as $idx => $event)
+                @php $debut = \Carbon\Carbon::parse($event->date_debut); @endphp
+                <article class="event-card card-lift bg-white rounded-2xl overflow-hidden reveal reveal-delay-{{ ($idx%3)+1 }}"
+                         style="box-shadow:0 4px 24px rgba(10,22,40,.07);"
+                         x-intersect.once="$el.classList.add('visible')"
+                         aria-label="{{ $event->titre }}">
+                    <div class="event-img-wrap relative h-48 sm:h-52">
+                        @if($event->image)
+                        <img src="{{ $event->image }}" alt="{{ $event->titre }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                        @else
+                        <div class="w-full h-full flex items-center justify-center" style="background:linear-gradient(135deg,var(--blue-night),var(--blue-electric));">
+                            <svg class="w-10 h-10 text-white/30" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159"/></svg>
+                        </div>
+                        @endif
+                        <div class="absolute inset-0" style="background:linear-gradient(0deg, rgba(10,22,40,.55) 0%, transparent 45%);"></div>
+                        @if($event->categorie)
+                        <span class="absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold rounded-full" style="background:rgba(10,22,40,.7);color:var(--gold-light);">{{ $event->categorie->nom }}</span>
+                        @endif
+                        <div class="absolute top-3 right-3 flex flex-col items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white shadow-lg">
+                            <span class="text-xs font-bold leading-none" style="color:var(--blue-electric);">{{ $debut->format('d') }}</span>
+                            <span class="text-xs uppercase leading-none mt-0.5" style="color:var(--gray-mid);">{{ $debut->translatedFormat('M') }}</span>
+                        </div>
+                        @if(isset($event->visiteurs_count))
+                        <div class="absolute bottom-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium text-white" style="background:rgba(10,22,40,.55); backdrop-filter:blur(4px);">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Z"/></svg>
+                            {{ $event->visiteurs_count }} visiteurs
+                        </div>
+                        @endif
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        @if($event->exposant)
+                        <p class="text-xs mb-2" style="color:var(--gray-mid);">{{ $event->exposant->nom }}</p>
+                        @endif
+                        <h3 class="font-semibold text-sm sm:text-base leading-snug mb-2 sm:mb-3 line-clamp-2" style="color:var(--blue-night);">{{ $event->titre }}</h3>
+                        <div class="flex items-center gap-3 text-xs mb-4 flex-wrap" style="color:var(--gray-mid);">
+                            <span class="flex items-center gap-1 min-w-0">
+                                <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+                                <span class="truncate">{{ $event->lieu }}</span>
+                            </span>
+                            <span class="shrink-0">{{ $debut->diffInDays($event->date_fin)+1 }}j</span>
+                            @if(isset($event->prix))
+                            <span class="shrink-0 font-semibold" style="color:var(--blue-electric);">{{ $event->prix > 0 ? number_format($event->prix,0,',',' ').' FCFA' : 'Gratuit' }}</span>
+                            @endif
+                        </div>
+                        <a href="{{ route('user.events.show', $event->id) }}"
+                           class="block w-full text-center py-2.5 sm:py-3 rounded-xl text-sm font-semibold transition hover:brightness-105"
+                           style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);color:white;">
+                            Voir plus
+                        </a>
+                    </div>
+                </article>
+                @empty
+                <div class="col-span-2 text-center py-16">
+                    <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="var(--gray-mid)" stroke-width="1.4" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
+                    <p class="font-semibold text-lg mb-1" style="color:var(--blue-night);">Aucun événement disponible</p>
+                </div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{{-- ══ SPLH ══ --}}
+<div class="bg-white py-4 px-4">
+    <div class="max-w-7xl mx-auto h-[80px] sm:h-[100px] lg:h-[120px]">{!! $pub('splh', 1000, 120, 'Bannière SPLH') !!}</div>
+</div>
+
+
+{{-- ══════════════════════════════════════════════════════════════
+     SECTION 4 — CATÉGORIES
+     ══════════════════════════════════════════════════════════════ --}}
+<section id="categories" class="py-16 sm:py-24 bg-white" aria-label="Catégories">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="text-center mb-10 sm:mb-16">
+            <p class="section-eyebrow mb-3">Explorer par thème</p>
+            <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-3" style="color:var(--blue-night);">Catégories populaires</h2>
+            <p class="text-sm max-w-lg mx-auto" style="color:var(--gray-mid);">Trouvez les événements qui correspondent à votre secteur.</p>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-10 sm:mb-12" x-data="{ active:'all' }">
+            <button @click="active='all'" :class="active==='all'?'active':''" class="cat-pill px-4 py-2 text-xs sm:text-sm font-medium rounded-full border transition" style="border-color:var(--gray-soft);color:var(--blue-night);">Tous</button>
+            @foreach($categories as $cat)
+            <button @click="active='{{ $cat->id }}'" :class="active==='{{ $cat->id }}'?'active':''" class="cat-pill px-4 py-2 text-xs sm:text-sm font-medium rounded-full border transition" style="border-color:var(--gray-soft);color:var(--blue-night);">{{ $cat->nom }}</button>
+            @endforeach
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
             @php
-            $temoignages = [
-                ['name' => 'Aminata Diallo',    'role' => 'Directrice Marketing, TechHub Dakar',  'stars' => 5, 'text' => 'ExpoDakar a transformé la façon dont nous gérons nos participations aux salons. Interface intuitive, gain de temps remarquable et une visibilité inégalée.'],
-                ['name' => 'Moussa Konaté',     'role' => 'PDG, Import-Export Sénégal',           'stars' => 5, 'text' => 'Grâce à ExpoDakar, nous avons généré 3 fois plus de leads lors du dernier FOIRE de Dakar. La plateforme est tout simplement indispensable.'],
-                ['name' => 'Fatou Mbodj',       'role' => 'Organisatrice d\'événements',          'stars' => 5, 'text' => 'La gestion des inscriptions et des billets QR a rendu nos conférences tellement plus fluides. Nos participants adorent l\'expérience.'],
+            $catIcons = [
+                'M2.25 21h19.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5v1.5H9v-1.5Zm4.5 0H15v1.5h-1.5v-1.5ZM9 11.25h1.5v1.5H9v-1.5Zm4.5 0H15v1.5h-1.5v-1.5ZM9 15.75h1.5v1.5H9v-1.5Zm4.5 0H15v1.5h-1.5v-1.5Z',
+                'M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25',
+                'M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z',
+                'M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z',
+                'M4.5 12.75l6 6 9-13.5',
+                'M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.625c.621 0 1.125.504 1.125 1.125v.375m-18 0h18M4.5 4.5v.75c0 .414-.336.75-.75.75h-.75m19.5-1.5v.75c0 .414.336.75.75.75h.75m-1.5 0v.375c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 6.375V6m18 6v.375c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 18.375V18m18-6h-1.5m1.5 0v-.75a.75.75 0 0 0-.75-.75h-.75M4.5 12H3m1.5 0v-.75A.75.75 0 0 0 3.75 10.5H3m0 0v.75c0 .414.336.75.75.75h.75m0-1.5H4.5',
+                'M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205 3 1.09m1.5.545-1.5-.546M6.75 7.364V3h-3v18m3-13.636 10.5-3.819',
+                'M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155',
             ];
             @endphp
-
-            @foreach($temoignages as $idx => $temoignage)
-            <div class="card-lift bg-white rounded-2xl p-8 flex flex-col gap-5 reveal reveal-delay-{{ $idx + 1 }}"
-                 style="box-shadow: 0 4px 24px rgba(10,22,40,.06);"
-                 x-intersect.once="$el.classList.add('visible')">
-                {{-- Étoiles --}}
-                <div class="flex gap-1" aria-label="{{ $temoignage['stars'] }} étoiles sur 5">
-                    @for($s = 0; $s < $temoignage['stars']; $s++)
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" style="color: var(--gold);" aria-hidden="true">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            @foreach($categories as $idx => $cat)
+            <a href="{{ route('user.events.index', ['categorie'=>$cat->id]) }}"
+               class="group flex flex-col items-center gap-3 p-4 sm:p-8 rounded-2xl border text-center transition-all hover:border-blue-200 card-lift reveal reveal-delay-{{ ($idx%4)+1 }}"
+               style="border-color:var(--gray-soft);" x-intersect.once="$el.classList.add('visible')">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110" style="background:#EFF6FF;">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" style="color:var(--blue-electric);" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="{{ $catIcons[$idx % count($catIcons)] }}"/>
                     </svg>
-                    @endfor
                 </div>
+                <div>
+                    <div class="font-semibold text-xs sm:text-sm mb-0.5" style="color:var(--blue-night);">{{ $cat->nom }}</div>
+                    @if(isset($cat->events_count))
+                    <div class="text-xs" style="color:var(--gray-mid);">{{ $cat->events_count }} évén.</div>
+                    @endif
+                </div>
+            </a>
+            @endforeach
+        </div>
+    </div>
+</section>
 
-                {{-- Texte --}}
-                <p class="text-sm leading-relaxed flex-1 italic" style="color: var(--gray-mid);">
-                    "{{ $temoignage['text'] }}"
-                </p>
 
-                {{-- Auteur --}}
-                <div class="flex items-center gap-3 pt-4 border-t" style="border-color: var(--gray-soft);">
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center font-semibold text-white text-sm flex-shrink-0"
-                         style="background: linear-gradient(135deg, var(--blue-electric), var(--blue-night));">
-                        {{ strtoupper(substr($temoignage['name'], 0, 1)) }}
+{{-- ══════════════════════════════════════════════════════════════
+     SECTION 5 — CALENDRIER
+     ══════════════════════════════════════════════════════════════ --}}
+@php
+    // Regroupement simple par mois à partir de la collection $events déjà disponible.
+    // (idéalement précalculé côté contrôleur pour de gros volumes)
+    $calendrier = collect($events)->sortBy('date_debut')->groupBy(function($e){
+        return \Carbon\Carbon::parse($e->date_debut)->translatedFormat('F Y');
+    });
+@endphp
+<section id="calendrier" class="py-16 sm:py-24" style="background:var(--pearl);" aria-label="Calendrier des événements">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="text-center mb-10 sm:mb-16">
+            <p class="section-eyebrow mb-3">Planifiez votre agenda</p>
+            <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-3" style="color:var(--blue-night);">Calendrier des événements</h2>
+            <p class="text-sm max-w-lg mx-auto" style="color:var(--gray-mid);">Tous les événements à venir, mois par mois.</p>
+        </div>
+
+        <div x-data="{ month:'all' }">
+            <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-10 sm:mb-14">
+                <button @click="month='all'" :class="month==='all' ? 'active' : ''" class="cat-pill px-4 py-2 text-xs sm:text-sm font-medium rounded-full border transition" style="border-color:var(--gray-soft);color:var(--blue-night);">Tous les mois</button>
+                @foreach($calendrier->keys() as $m)
+                <button @click="month='{{ $m }}'" :class="month==='{{ $m }}' ? 'active' : ''" class="cat-pill px-4 py-2 text-xs sm:text-sm font-medium rounded-full border transition capitalize" style="border-color:var(--gray-soft);color:var(--blue-night);">{{ $m }}</button>
+                @endforeach
+            </div>
+
+            @forelse($calendrier as $mois => $evs)
+            <div x-show="month==='all' || month==='{{ $mois }}'" x-cloak class="mb-12 sm:mb-16 last:mb-0">
+                <h3 class="font-display text-xl sm:text-2xl capitalize mb-6 sm:mb-8" style="color:var(--blue-night);">{{ $mois }}</h3>
+                <div class="cal-rail pl-10 sm:pl-12 space-y-6 sm:space-y-8">
+                    @foreach($evs as $ev)
+                    @php $d = \Carbon\Carbon::parse($ev->date_debut); @endphp
+                    <div class="relative reveal reveal-delay-1" x-intersect.once="$el.classList.add('visible')">
+                        <span class="cal-dot absolute -left-[2.15rem] sm:-left-[2.45rem] top-1.5"></span>
+                        <a href="{{ route('user.events.show', $ev->id) }}" class="card-lift flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 bg-white rounded-2xl p-4 sm:p-5" style="box-shadow:0 4px 20px rgba(10,22,40,.06);">
+                            <div class="flex flex-col items-center justify-center w-14 h-14 rounded-xl shrink-0" style="background:var(--pearl);">
+                                <span class="text-base font-bold leading-none" style="color:var(--blue-electric);">{{ $d->format('d') }}</span>
+                                <span class="text-[10px] uppercase leading-none mt-1" style="color:var(--gray-mid);">{{ $d->translatedFormat('M') }}</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-semibold text-sm sm:text-base truncate" style="color:var(--blue-night);">{{ $ev->titre }}</p>
+                                <p class="text-xs mt-1" style="color:var(--gray-mid);">{{ $ev->lieu }} @if($ev->categorie) · {{ $ev->categorie->nom }} @endif</p>
+                            </div>
+                            <span class="text-xs font-semibold shrink-0" style="color:var(--blue-electric);">Détails →</span>
+                        </a>
                     </div>
-                    <div>
-                        <div class="text-sm font-semibold" style="color: var(--blue-night);">{{ $temoignage['name'] }}</div>
-                        <div class="text-xs" style="color: var(--gray-mid);">{{ $temoignage['role'] }}</div>
+                    @endforeach
+                </div>
+            </div>
+            @empty
+            <p class="text-center text-sm" style="color:var(--gray-mid);">Aucun événement programmé pour le moment.</p>
+            @endforelse
+        </div>
+    </div>
+</section>
+
+
+{{-- ══════════════════════════════════════════════════════════════
+     SECTION 6 — EXPOSANTS PREMIUM
+     ══════════════════════════════════════════════════════════════ --}}
+<section id="exposants" class="py-16 sm:py-24 bg-white" aria-label="Exposants">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="text-center mb-10 sm:mb-16">
+            <p class="section-eyebrow mb-3">Ils exposent sur ExpoDakar</p>
+            <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-3" style="color:var(--blue-night);">Exposants premium</h2>
+            <p class="text-sm max-w-lg mx-auto" style="color:var(--gray-mid);">Des entreprises de premier plan qui font confiance à notre plateforme.</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            @foreach($exposants as $idx => $exposant)
+            <div class="card-lift flex flex-col gap-4 p-5 sm:p-7 rounded-2xl border reveal reveal-delay-{{ ($idx%3)+1 }}" style="border-color:var(--gray-soft);" x-intersect.once="$el.classList.add('visible')">
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center shrink-0 overflow-hidden" style="background:var(--pearl);">
+                        @if($exposant->logo)
+                        <img src="{{ $exposant->logo }}" alt="Logo {{ $exposant->nom_entreprise ?? $exposant->nom }}" class="w-full h-full object-contain p-1.5" loading="lazy" decoding="async">
+                        @else
+                        <span class="font-display text-2xl font-bold" style="color:var(--blue-electric);">{{ strtoupper(substr($exposant->nom_entreprise ?? $exposant->nom, 0, 1)) }}</span>
+                        @endif
                     </div>
+                    <div class="min-w-0">
+                        <h3 class="font-semibold text-sm sm:text-base truncate" style="color:var(--blue-night);">{{ $exposant->nom_entreprise ?? $exposant->nom }}</h3>
+                        @if($exposant->secteur_activite ?? $exposant->secteur ?? null)
+                        <span class="text-xs px-2 py-0.5 rounded-full mt-1 inline-block" style="background:rgba(30,95,216,.08);color:var(--blue-electric);">{{ $exposant->secteur_activite ?? $exposant->secteur }}</span>
+                        @endif
+                    </div>
+                </div>
+                @if(isset($exposant->stand))
+                <p class="text-xs" style="color:var(--gray-mid);">Stand <span class="font-semibold" style="color:var(--blue-night);">{{ $exposant->stand }}</span></p>
+                @endif
+                @if($exposant->description ?? null)
+                <p class="text-xs sm:text-sm leading-relaxed line-clamp-3 flex-1" style="color:var(--gray-mid);">{{ $exposant->description }}</p>
+                @endif
+                <div class="flex items-center gap-3 pt-3 border-t" style="border-color:var(--gray-soft);">
+                    @if($exposant->site_web ?? null)
+                    <a href="{{ $exposant->site_web }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-medium" style="color:var(--blue-electric);">
+                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"/></svg>
+                        Site web
+                    </a>
+                    @endif
+                    <a href="{{ route('user.exposants.show', $exposant->id) }}" class="ml-auto text-xs font-semibold" style="color:var(--gray-mid);">Voir →</a>
                 </div>
             </div>
             @endforeach
@@ -1089,69 +756,50 @@
 </section>
 
 
-{{-- ══════════════════════════════════════════════════════════════
-     11. FAQ ACCORDÉON ALPINE.JS
-     ══════════════════════════════════════════════════════════════ --}}
-<section id="faq" class="py-24 bg-white" aria-label="Questions fréquentes">
-    <div class="max-w-3xl mx-auto px-6 lg:px-8">
-
-        <div class="text-center mb-16 reveal" x-intersect.once="$el.classList.add('visible')">
-            <p class="section-eyebrow mb-3">Vous avez des questions ?</p>
-            <h2 class="font-display text-4xl lg:text-5xl mb-4" style="color: var(--blue-night);">
-                Questions fréquentes
-            </h2>
-            <p class="text-base" style="color: var(--gray-mid);">
-                Tout ce que vous devez savoir sur ExpoDakar.
-            </p>
+{{-- ══ BLOC SPECIAL ══ --}}
+<section class="py-12 sm:py-16 bg-white" aria-label="Espace partenaire">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="rounded-2xl p-6 sm:p-10 grid lg:grid-cols-[1fr_300px] gap-6 sm:gap-8 items-center" style="background:var(--pearl);">
+            <div>
+                <p class="section-eyebrow mb-3">Espace partenaire</p>
+                <h3 class="font-display text-2xl sm:text-4xl mb-3" style="color:var(--blue-night);">Mettez votre marque en avant</h3>
+                <p class="text-sm leading-relaxed max-w-md" style="color:var(--gray-mid);">Cet emplacement premium est visible par tous les visiteurs d'ExpoDakar.</p>
+            </div>
+            <div class="h-[250px] sm:h-[400px] lg:h-[600px] w-full lg:max-w-[300px] lg:mx-auto">{!! $pub('bloc_special', 300, 600, 'Bloc spécial') !!}</div>
         </div>
+    </div>
+</section>
 
-        @php
-        $faqs = [
-            ['q' => 'Comment réserver un événement sur ExpoDakar ?', 'a' => 'Il vous suffit de créer un compte gratuit, de parcourir les événements disponibles et de cliquer sur "Réserver". Votre billet QR est immédiatement envoyé par email.'],
-            ['q' => 'Comment inscrire mon entreprise en tant qu\'exposant ?', 'a' => 'Rendez-vous dans la section "Devenir exposant" et complétez votre profil entreprise. Notre équipe valide les inscriptions sous 48h.'],
-            ['q' => 'ExpoDakar est-il gratuit pour les visiteurs ?', 'a' => 'L\'accès à la plateforme et la consultation des événements sont entièrement gratuits. Certains événements peuvent avoir un tarif d\'entrée fixé par l\'organisateur.'],
-            ['q' => 'Comment promouvoir mon événement sur la plateforme ?', 'a' => 'Les organisateurs disposent d\'un tableau de bord dédié avec des outils de promotion : mise en avant en page d\'accueil, emailings ciblés et partages sur les réseaux sociaux.'],
-            ['q' => 'Puis-je annuler ou modifier ma réservation ?', 'a' => 'Oui, depuis votre espace personnel, vous pouvez gérer vos réservations jusqu\'à 24h avant l\'événement. Les modalités de remboursement dépendent de la politique de chaque organisateur.'],
-            ['q' => 'ExpoDakar couvre-t-il toutes les régions du Sénégal ?', 'a' => 'Nous couvrons actuellement les 14 régions du Sénégal, avec une forte concentration sur Dakar, Thiès, Saint-Louis et Ziguinchor.'],
-        ];
-        @endphp
 
-        <div class="space-y-4" x-data="{ open: null }" role="list">
-            @foreach($faqs as $idx => $faq)
-            <div class="rounded-2xl border overflow-hidden reveal reveal-delay-{{ ($idx % 3) + 1 }}"
-                 style="border-color: var(--gray-soft);"
-                 x-intersect.once="$el.classList.add('visible')"
-                 role="listitem">
-                <button @click="open === {{ $idx }} ? open = null : open = {{ $idx }}"
-                        class="w-full flex items-center justify-between gap-4 px-6 py-5 text-left transition-colors hover:bg-gray-50"
-                        :aria-expanded="open === {{ $idx }}"
-                        aria-controls="faq-{{ $idx }}">
-                    <span class="font-semibold text-sm" style="color: var(--blue-night);">{{ $faq['q'] }}</span>
-                    <div class="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors"
-                         :style="open === {{ $idx }} ? 'background: var(--blue-electric);' : 'background: var(--gray-soft);"'>
-                        <svg class="w-3.5 h-3.5 transition-transform duration-300"
-                             :class="open === {{ $idx }} ? 'rotate-180 text-white' : ''"
-                             :style="open === {{ $idx }} ? 'color: white;' : 'color: var(--gray-mid);'"
-                             fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
-                        </svg>
-                    </div>
-                </button>
-
-                <div x-show="open === {{ $idx }}"
-                     x-cloak
-                     x-transition:enter="transition ease-out duration-200"
-                     x-transition:enter-start="opacity-0 -translate-y-2"
-                     x-transition:enter-end="opacity-100 translate-y-0"
-                     x-transition:leave="transition ease-in duration-150"
-                     x-transition:leave-start="opacity-100 translate-y-0"
-                     x-transition:leave-end="opacity-0 -translate-y-2"
-                     id="faq-{{ $idx }}"
-                     role="region">
-                    <div class="px-6 pb-5 text-sm leading-relaxed" style="color: var(--gray-mid);">
-                        {{ $faq['a'] }}
-                    </div>
-                </div>
+{{-- ══════════════════════════════════════════════════════════════
+     SECTION 7 — STATISTIQUES
+     ══════════════════════════════════════════════════════════════ --}}
+<section class="py-16 sm:py-24" style="background:var(--pearl);" aria-label="Chiffres clés"
+    x-data="{
+        animated:false,
+        init() {
+            const io = new IntersectionObserver(e => { if(e[0].isIntersecting){ this.startCounters(); io.disconnect(); } },{threshold:.3});
+            io.observe(this.$el);
+        },
+        startCounters() {
+            if(this.animated) return; this.animated=true;
+            this.$el.querySelectorAll('[data-final]').forEach(el => {
+                const val = parseInt(el.dataset.final, 10);
+                let cur = 0; const steps = 80; const inc = val/steps;
+                const t = setInterval(() => { cur = Math.min(cur+inc, val); el.textContent = Math.floor(cur).toLocaleString('fr-FR'); if(cur>=val) clearInterval(t); }, 40);
+            });
+        }
+    }" x-init="init()">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="text-center mb-10 sm:mb-16">
+            <p class="section-eyebrow mb-3">Chiffres clés</p>
+            <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl" style="color:var(--blue-night);">ExpoDakar en quelques chiffres</h2>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            @foreach([['240','+','Événements organisés','#1E5FD8'],['180','+','Exposants référencés','#7C3AED'],['15000','+','Visiteurs enregistrés','#059669'],['50','+','Partenaires institutionnels','#D97706']] as $i=>[$val,$suf,$lbl,$clr])
+            <div class="stat-card bg-white rounded-2xl p-5 sm:p-8 reveal reveal-delay-{{ $i+1 }}" x-intersect.once="$el.classList.add('visible')" style="box-shadow:0 4px 24px rgba(10,22,40,.06);">
+                <p class="font-display text-3xl sm:text-5xl font-light mb-3 sm:mb-5" style="color:{{ $clr }};"><span data-final="{{ $val }}">0</span>{{ $suf }}</p>
+                <p class="text-xs sm:text-sm font-medium" style="color:var(--gray-mid);">{{ $lbl }}</p>
             </div>
             @endforeach
         </div>
@@ -1160,468 +808,750 @@
 
 
 {{-- ══════════════════════════════════════════════════════════════
-     12. NEWSLETTER
+     SECTION 8 — FONCTIONNEMENT
      ══════════════════════════════════════════════════════════════ --}}
-<section class="py-24 overflow-hidden" style="background: var(--blue-night);" aria-label="Newsletter">
-    <div class="max-w-3xl mx-auto px-6 lg:px-8 text-center">
-
-        {{-- Deco --}}
-        <div class="absolute left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full blur-[100px] opacity-15 pointer-events-none"
-             style="background: var(--blue-electric);" aria-hidden="true"></div>
-
-        <div class="relative reveal" x-intersect.once="$el.classList.add('visible')">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 bg-white/5 mb-8">
-                <span class="text-lg">📩</span>
-                <span class="section-eyebrow" style="color: var(--gold-light);">Restez informé</span>
+<section class="py-16 sm:py-24 bg-white" aria-label="Comment ça marche">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="text-center mb-14 sm:mb-20">
+            <p class="section-eyebrow mb-3">Simple et rapide</p>
+            <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-3" style="color:var(--blue-night);">Comment ça fonctionne</h2>
+            <p class="text-sm max-w-lg mx-auto" style="color:var(--gray-mid);">Cinq étapes pour tirer le meilleur parti d'ExpoDakar.</p>
+        </div>
+        <div class="process-line grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-6">
+            @foreach([
+                ['Découvrir','Explorez les événements et exposants qui correspondent à votre secteur.','M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418'],
+                ['Réserver','Choisissez votre événement et réservez votre place en quelques clics.','M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h4.5c.621 0 1.125-.504 1.125-1.125V3.375c0-.621-.504-1.125-1.125-1.125Z M17.625 5.25h-4.5c-.621 0-1.125.504-1.125 1.125v14.25c0 .621.504 1.125 1.125 1.125h4.5c.621 0 1.125-.504 1.125-1.125V6.375c0-.621-.504-1.125-1.125-1.125Z'],
+                ['Participer','Rendez-vous sur place avec votre billet QR, tout est prêt.','M2.25 5.25a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3V15a3 3 0 0 1-3 3h-3v.257c0 .597.237 1.17.659 1.591l.621.622a.75.75 0 0 1-.53 1.28h-9a.75.75 0 0 1-.53-1.28l.621-.622a2.25 2.25 0 0 0 .659-1.591V18h-3a3 3 0 0 1-3-3V5.25Zm1.5 0v7.5c0 .414.336.75.75.75h13.5a.75.75 0 0 0 .75-.75v-7.5a.75.75 0 0 0-.75-.75H4.5a.75.75 0 0 0-.75.75Z'],
+                ['Networker','Échangez avec exposants, visiteurs et décideurs présents.','M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z'],
+                ['Développer','Transformez vos échanges en opportunités concrètes pour votre activité.','M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941'],
+            ] as $i => [$t,$d,$icon])
+            <div class="relative flex flex-col items-center text-center reveal reveal-delay-{{ $i+1 }}" x-intersect.once="$el.classList.add('visible')">
+                <div class="relative z-10 w-14 h-14 rounded-2xl flex items-center justify-center mb-5 shadow-lg" style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $icon }}"/></svg>
+                    <span class="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold" style="background:var(--gold-light); color:var(--blue-night);">{{ $i+1 }}</span>
+                </div>
+                <h3 class="font-semibold text-sm sm:text-base mb-1.5" style="color:var(--blue-night);">{{ $t }}</h3>
+                <p class="text-xs sm:text-sm leading-relaxed" style="color:var(--gray-mid);">{{ $d }}</p>
             </div>
+            @endforeach
+        </div>
+    </div>
+</section>
 
-            <h2 class="font-display text-4xl lg:text-5xl text-white mb-4">
-                Ne manquez aucun événement
-            </h2>
-            <p class="text-white/55 mb-10 max-w-md mx-auto">
-                Recevez chaque semaine une sélection personnalisée des meilleurs événements professionnels au Sénégal.
-            </p>
 
-            <form action="{{ route('user.newsletter.subscribe') }}" method="POST"
-                  class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto"
-                  x-data="{ email: '', success: false }"
-                  @submit.prevent="success = true">
-                @csrf
-                <input type="email"
-                       name="email"
-                       x-model="email"
-                       placeholder="Votre adresse email professionnelle"
-                       class="nl-input flex-1 px-5 py-4 rounded-xl bg-white/10 backdrop-blur text-white placeholder-white/35 border border-white/15 text-sm transition"
-                       required
-                       aria-label="Adresse email pour la newsletter">
-                <button type="submit"
-                        class="px-7 py-4 rounded-xl font-semibold text-sm transition-all hover:brightness-110 active:scale-95 whitespace-nowrap"
-                        style="background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--blue-night);">
-                    S'abonner
+{{-- ══════════════════════════════════════════════════════════════
+     SECTION 9 — TÉMOIGNAGES (carousel)
+     ══════════════════════════════════════════════════════════════ --}}
+@php
+$temoignages = [
+    ['Aminata Diallo','Directrice Marketing, TechHub Dakar',5,'ExpoDakar a transformé la façon dont nous gérons nos participations aux salons. Interface intuitive et visibilité inégalée.'],
+    ['Moussa Konaté','PDG, Import-Export Sénégal',5,'Grâce à ExpoDakar, nous avons généré nettement plus de contacts qualifiés lors du dernier salon.'],
+    ['Fatou Mbodj','Organisatrice d\'événements',5,'La gestion des inscriptions et des billets QR a rendu nos conférences tellement plus fluides.'],
+    ['Ibrahima Sarr','Responsable Développement, Sen Agro',4,'Une plateforme sérieuse, bien pensée pour les professionnels. Le tableau de bord exposant est un vrai plus.'],
+];
+@endphp
+<section style="background:var(--pearl);" class="py-16 sm:py-24" aria-label="Témoignages"
+    x-data="{ i:0, n:{{ count($temoignages) }}, per(){ return window.innerWidth>=768?3:1 }, max(){ return Math.max(0,this.n-this.per()) }, next(){ this.i=Math.min(this.i+1,this.max()) }, prev(){ this.i=Math.max(this.i-1,0) } }">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-16">
+            <div>
+                <p class="section-eyebrow mb-3">Ce qu'ils en disent</p>
+                <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl" style="color:var(--blue-night);">Témoignages</h2>
+            </div>
+            <div class="flex gap-2 shrink-0">
+                <button @click="prev()" class="w-10 h-10 rounded-full border flex items-center justify-center hover:bg-white transition" style="border-color:var(--gray-soft);">
+                    <svg class="w-4 h-4" fill="none" stroke="var(--blue-night)" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
                 </button>
-            </form>
+                <button @click="next()" class="w-10 h-10 rounded-full border flex items-center justify-center hover:bg-white transition" style="border-color:var(--gray-soft);">
+                    <svg class="w-4 h-4" fill="none" stroke="var(--blue-night)" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+                </button>
+            </div>
+        </div>
 
-            <p class="text-xs mt-5" style="color: rgba(255,255,255,.3);">
-                Pas de spam. Désinscription en un clic. Données protégées.
+        <div class="overflow-hidden">
+            <div class="testi-track" :style="'transform:translateX(calc(-' + i + ' * (100% / ' + per() + ')))'">
+                @foreach($temoignages as $t)
+                <div class="testi-slide px-2 sm:px-3">
+                    <div class="rounded-2xl p-6 sm:p-8 flex flex-col gap-4 sm:gap-5 h-full" style="background:rgba(255,255,255,.75); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.6); box-shadow:0 4px 24px rgba(10,22,40,.06);">
+                        <div class="flex gap-1">@for($s=0;$s<$t[2];$s++)<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" style="color:var(--gold);"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>@endfor</div>
+                        <p class="text-sm leading-relaxed flex-1 italic" style="color:var(--gray-mid);">"{{ $t[3] }}"</p>
+                        <div class="flex items-center gap-3 pt-3 border-t" style="border-color:var(--gray-soft);">
+                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-semibold text-white text-sm shrink-0" style="background:linear-gradient(135deg,var(--blue-electric),var(--blue-night));">{{ strtoupper(substr($t[0],0,1)) }}</div>
+                            <div>
+                                <div class="text-sm font-semibold" style="color:var(--blue-night);">{{ $t[0] }}</div>
+                                <div class="text-xs" style="color:var(--gray-mid);">{{ $t[1] }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{{-- ══════════════════════════════════════════════════════════════
+     SECTION 10 — GALERIE (masonry)
+     ══════════════════════════════════════════════════════════════ --}}
+<section class="py-16 sm:py-24 bg-white" aria-label="Galerie">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="text-center mb-10 sm:mb-16">
+            <p class="section-eyebrow mb-3">Nos moments forts</p>
+            <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl" style="color:var(--blue-night);">ExpoDakar en images</h2>
+        </div>
+        <div class="masonry">
+            <div class="masonry-item">
+                <img src="https://www.firstevent.co.uk/wp-content/uploads/2024/09/Cardano-D1-316-1-1.jpg" alt="Salon professionnel Dakar" loading="lazy" decoding="async">
+            </div>
+            <div class="masonry-item">
+                <img src="https://www.conferenceexpo.com/wp-content/uploads/2019/02/conference-expo-by-nimlok-gallery-d.jpg" alt="Conférence" loading="lazy" decoding="async">
+            </div>
+            <div class="masonry-item">
+                <img src="https://elleevents.com.au/wp-content/uploads/2020/06/conference-exhibition-CLIA_Sydney2018.jpg" alt="Exposition" loading="lazy" decoding="async">
+            </div>
+            <div class="masonry-item relative">
+                {{-- Emplacement vidéo : remplacer src par une vraie vidéo de recap (mp4/poster) --}}
+                <img src="https://elleevents.com.au/wp-content/uploads/2020/06/conference-exhibitionC360-opt.jpg" alt="Vidéo récap ExpoDakar" loading="lazy" decoding="async">
+                <div class="masonry-play">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,.9);">
+                        <svg class="w-5 h-5 ml-0.5" fill="var(--blue-night)" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                </div>
+            </div>
+            <div class="masonry-item">
+                <img src="https://www.graynoise.com.au/wp-content/uploads/2017/11/TM20240516_0507web.jpg" alt="Networking" loading="lazy" decoding="async">
+            </div>
+            <div class="masonry-item">
+                <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782659620/ChatGPT_Image_Jun_28_2026_03_00_42_PM_qkpjbj.png" alt="Événement ExpoDakar" loading="lazy" decoding="async">
+            </div>
+                        <div class="masonry-item">
+                <img src="https://www.graynoise.com.au/wp-content/uploads/2017/11/TM20240516_0507web.jpg" alt="Networking" loading="lazy" decoding="async">
+            </div>
+            <div class="masonry-item">
+                <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782659620/ChatGPT_Image_Jun_28_2026_03_00_42_PM_qkpjbj.png" alt="Événement ExpoDakar" loading="lazy" decoding="async">
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+{{-- ══════════════════════════════════════════════════════════════
+     SECTION 11 — ACTUALITÉS
+     ══════════════════════════════════════════════════════════════ --}}
+<section style="background:var(--pearl);" class="py-16 sm:py-24" aria-label="Actualités">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+
+        {{-- En-tête --}}
+        <div class="text-center mb-10 sm:mb-16">
+            <p class="section-eyebrow mb-3">Le blog ExpoDakar</p>
+
+            <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl"
+                style="color:var(--blue-night);">
+                Actualités
+            </h2>
+
+            <p class="mt-3 max-w-2xl mx-auto text-sm sm:text-base"
+               style="color:var(--gray-mid);">
+                Conseils, tendances et actualités pour mieux comprendre
+                l'écosystème événementiel et professionnel au Sénégal.
             </p>
         </div>
-    </div>
-</section>
 
+        {{-- Articles --}}
+        @if(isset($articles) && $articles->count())
 
-{{-- ══════════════════════════════════════════════════════════════
-     12bis. B1L / B1R — bannières basses
-     ══════════════════════════════════════════════════════════════ --}}
-<section class="py-14 bg-white" aria-label="Espaces publicitaires">
-    <div class="max-w-7xl mx-auto px-6 lg:px-16">
-        <div class="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            <div class="h-[250px]">
-                {!! $pub('b1l', 300, 250, 'Bannière B1L') !!}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
+
+                @foreach($articles->take(3) as $article)
+
+                    <article
+                        class="card-lift bg-white rounded-2xl overflow-hidden group"
+                        style="box-shadow:0 4px 24px rgba(10,22,40,.06);">
+
+                        {{-- Image --}}
+                        <a href="{{ route('blog.show', $article) }}"
+                           class="block h-52 sm:h-56 overflow-hidden">
+
+                            @if($article->image)
+
+                                <img
+                                    src="{{ $article->image }}"
+                                    alt="{{ $article->titre }}"
+                                    class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                                    loading="lazy"
+                                    decoding="async">
+
+                            @else
+
+                                <div
+                                    class="w-full h-full flex items-center justify-center"
+                                    style="background:linear-gradient(135deg,var(--blue-night),var(--blue-deep));">
+
+                                    <span class="font-display text-3xl text-white/80">
+                                        Expo<span style="color:var(--gold-light);">Dakar</span>
+                                    </span>
+
+                                </div>
+
+                            @endif
+
+                        </a>
+
+                        {{-- Contenu --}}
+                        <div class="p-5 sm:p-6">
+
+                            {{-- Catégorie + date --}}
+                            <div class="flex items-center justify-between gap-3 mb-3">
+
+                                @if($article->categorie)
+                                    <span
+                                        class="font-mono text-[.62rem] uppercase tracking-[.12em]"
+                                        style="color:var(--gold);">
+                                        {{ $article->categorie }}
+                                    </span>
+                                @endif
+
+                                @if($article->date_publication)
+                                    <span
+                                        class="text-[.68rem]"
+                                        style="color:var(--gray-mid);">
+                                        {{ \Carbon\Carbon::parse($article->date_publication)->format('d/m/Y') }}
+                                    </span>
+                                @endif
+
+                            </div>
+
+                            {{-- Titre --}}
+                            <h3
+                                class="font-semibold text-base sm:text-lg leading-snug mb-2"
+                                style="color:var(--blue-night);">
+
+                                <a href="{{ route('blog.show', $article) }}"
+                                   class="hover:opacity-70 transition-opacity">
+
+                                    {{ $article->titre }}
+
+                                </a>
+
+                            </h3>
+
+                            {{-- Extrait --}}
+                            <p
+                                class="text-xs sm:text-sm leading-relaxed mb-5"
+                                style="color:var(--gray-mid);">
+
+                                {{ \Illuminate\Support\Str::limit(strip_tags($article->extrait), 120) }}
+
+                            </p>
+
+                            {{-- Lire --}}
+                            <a
+                                href="{{ route('blog.show', $article) }}"
+                                class="text-xs sm:text-sm font-semibold group/link inline-flex items-center gap-2"
+                                style="color:var(--blue-electric);">
+
+                                Lire l'article
+
+                                <span
+                                    class="inline-block transition-transform duration-300 group-hover/link:translate-x-1">
+                                    →
+                                </span>
+
+                            </a>
+
+                        </div>
+                    </article>
+
+                @endforeach
+
             </div>
-            <div class="h-[250px]">
-                {!! $pub('b1r', 300, 250, 'Bannière B1R') !!}
-            </div>
-        </div>
-    </div>
-</section>
 
+            {{-- Voir tout {{ route('blog.index') }} --}}
+            <div class="mt-10 sm:mt-12 text-center">
 
-{{-- ══════════════════════════════════════════════════════════════
-     13. FOOTER PREMIUMoute
-     ══════════════════════════════════════════════════════════════ --}}
-<footer style="background: #070f1d;" aria-label="Pied de page">
-    <div class="max-w-7xl mx-auto px-6 lg:px-16">
+                <a
+                    href="#"
+                    class="inline-flex items-center gap-2 px-6 py-3 rounded-full border font-semibold text-sm transition-all hover:bg-white hover:-translate-y-0.5"
+                    style="border-color:rgba(10,22,40,.15);color:var(--blue-night);">
 
-        {{-- Main footer --}}
-        <div class="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 border-b" style="border-color: rgba(255,255,255,.06);">
+                    Voir tous les articles
 
-            {{-- Brand --}}
-            <div class="lg:col-span-1">
-                <a href="{{ route('home') }}" class="flex items-center gap-3 mb-5" aria-label="ExpoDakar">
-                        <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782085416/ChatGPT_Image_Jun_21__2026__07_24_51_PM-removebg-preview_zi77k0.png"  alt="Logo ExpoDakar" class="h-12 w-auto object-contain">
-                    <span class="font-display text-2xl text-white">Expo<span class="text-gold-gradient">Dakar</span></span>
+                    <span>→</span>
+
                 </a>
-                <p class="text-sm leading-relaxed mb-6" style="color: rgba(255,255,255,.4);">
-                    La plateforme de référence pour les événements professionnels au Sénégal.
+
+            </div>
+
+        @else
+
+            {{-- Aucun article --}}
+            <div class="text-center py-12">
+
+                <div
+                    class="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center"
+                    style="background:var(--blue-soft);">
+
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="var(--blue-electric)"
+                        stroke-width="1.8"
+                        viewBox="0 0 24 24">
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M19.5 14.25v-8.5A2.25 2.25 0 0 0 17.25 3.5h-10.5A2.25 2.25 0 0 0 4.5 5.75v12.5a2.25 2.25 0 0 0 2.25 2.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-2.5m0-1.5h-6.75m6.75 0-2.25-2.25m2.25 2.25-2.25 2.25" />
+
+                    </svg>
+
+                </div>
+
+                <p
+                    class="text-sm"
+                    style="color:var(--gray-mid);">
+                    Aucun article publié pour le moment.
                 </p>
-                {{-- Réseaux sociaux --}}
+
+            </div>
+
+        @endif
+
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════════════════════════
+     SECTION 12 — FAQ
+     ══════════════════════════════════════════════════════════════ --}}
+<section id="faq" class="py-16 sm:py-24 bg-white" aria-label="FAQ">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10 sm:mb-16">
+            <p class="section-eyebrow mb-3">Vous avez des questions ?</p>
+            <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl mb-3" style="color:var(--blue-night);">Questions fréquentes</h2>
+        </div>
+        @php $faqs = [
+            ['Comment réserver un événement sur ExpoDakar ?','Créez un compte gratuit, parcourez les événements et cliquez sur "Réserver". Votre billet QR est envoyé par email.'],
+            ['Comment inscrire mon entreprise en tant qu\'exposant ?','Complétez votre profil entreprise dans la section "Devenir exposant". Notre équipe valide sous 48h.'],
+            ['ExpoDakar est-il gratuit pour les visiteurs ?','L\'accès à la plateforme est entièrement gratuit. Certains événements peuvent avoir un tarif fixé par l\'organisateur.'],
+            ['Comment promouvoir mon événement ?','Les organisateurs disposent d\'un tableau de bord avec outils de promotion, mise en avant et emailings ciblés.'],
+            ['Puis-je annuler ma réservation ?','Oui, depuis votre espace personnel jusqu\'à 24h avant l\'événement.'],
+            ['ExpoDakar couvre-t-il toutes les régions ?','Nous couvrons les 14 régions du Sénégal.'],
+        ]; @endphp
+        <div class="space-y-3 sm:space-y-4" x-data="{ open:null }">
+            @foreach($faqs as $i => $faq)
+            <div class="rounded-2xl border overflow-hidden" style="border-color:var(--gray-soft);">
+                <button @click="open==={{ $i }}?open=null:open={{ $i }}" class="w-full flex items-center justify-between gap-3 px-4 sm:px-6 py-4 sm:py-5 text-left hover:bg-gray-50 transition">
+                    <span class="font-semibold text-sm" style="color:var(--blue-night);">{{ $faq[0] }}</span>
+                    <div class="shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors" :style="open==={{ $i }}?'background:var(--blue-electric)':'background:var(--gray-soft)'">
+                        <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="open==={{ $i }}?'rotate-180':''" :style="open==={{ $i }}?'color:white':'color:var(--gray-mid)'" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+                    </div>
+                </button>
+                <div x-show="open==={{ $i }}" x-cloak x-transition class="px-4 sm:px-6 pb-4 sm:pb-5 text-sm leading-relaxed" style="color:var(--gray-mid);">{{ $faq[1] }}</div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+
+{{-- ══ TEASER TARIFS ══ --}}
+<section class="py-16 sm:py-24 bg-white" aria-label="Devenir exposant">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="rounded-2xl sm:rounded-3xl overflow-hidden" style="background:var(--blue-night);">
+            <div class="grid lg:grid-cols-2 items-center">
+                <div class="p-7 sm:p-10 lg:p-16">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/15 bg-white/5 mb-5 sm:mb-6">
+                        <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background:var(--gold);"></span>
+                        <span class="text-xs font-semibold tracking-widest uppercase" style="color:var(--gold-light);">Pour les entreprises</span>
+                    </div>
+                    <h2 class="font-display text-3xl sm:text-4xl text-white mb-3 sm:mb-4 leading-tight">
+                        Devenez exposant sur<br><span class="text-gold-gradient">ExpoDakar</span>
+                    </h2>
+                    <p class="text-sm text-white/60 leading-relaxed mb-6 sm:mb-8 max-w-md">
+                        Présentez votre entreprise et connectez-vous à des milliers de visiteurs professionnels. Sans engagement.
+                    </p>
+                    <div class="flex flex-wrap gap-3 mb-6 sm:mb-8">
+                        @foreach(['Sans abonnement','4 formules disponibles','Activation immédiate'] as $point)
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style="background:rgba(255,255,255,.08);">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="var(--gold-light)" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                            </div>
+                            <span class="text-xs text-white/70">{{ $point }}</span>
+                        </div>
+                        @endforeach
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="{{ route('tarifs') }}" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm hover:brightness-110 transition" style="background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--blue-night);">Voir les tarifs →</a>
+                        <a href="{{ route('contact') }}" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm text-white/80 border border-white/15 hover:text-white hover:bg-white/5 transition">Parler à un conseiller</a>
+                    </div>
+                </div>
+                <div class="hidden lg:block p-10 lg:p-16" style="background:rgba(255,255,255,.03); border-left:1px solid rgba(255,255,255,.06);">
+                    <div class="space-y-4">
+                        @foreach([['Essentiel','75 000',''],['Professionnel · Recommandé','150 000','border: 1.5px solid var(--gold);'],['Premium','300 000','']] as $pack)
+                        <div class="rounded-2xl p-5 flex items-center justify-between" style="background:rgba(255,255,255,{{ $pack[2]?'.08':'.05' }}); {{ $pack[2] }}">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wide" style="color:{{ $pack[2]?'var(--gold-light)':'rgba(255,255,255,.4)' }};">{{ $pack[0] }}</p>
+                                <p class="font-display text-2xl text-white mt-1">{{ $pack[1] }} <span class="text-xs font-sans font-normal" style="color:rgba(255,255,255,.4);">FCFA</span></p>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{{-- ══════════════════════════════════════════════════════════════
+     SECTION 13 — CTA FINAL
+     ══════════════════════════════════════════════════════════════ --}}
+<section class="cta-final py-20 sm:py-32" style="background:var(--blue-night);" aria-label="Appel à l'action final">
+    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal" x-intersect.once="$el.classList.add('visible')">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/15 bg-white/5 backdrop-blur-md mb-6 sm:mb-8">
+            <span class="w-2 h-2 rounded-full animate-pulse shrink-0" style="background:var(--gold);"></span>
+            <span class="section-eyebrow text-xs" style="color:var(--gold-light);">Rejoignez la plateforme</span>
+        </div>
+        <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl text-white mb-5 sm:mb-6 leading-[1.08]">
+            Prêt à participer au<br><span class="text-gold-gradient">prochain grand événement</span> ?
+        </h2>
+        <p class="text-white/60 text-base sm:text-lg max-w-xl mx-auto mb-9 sm:mb-12">
+            Que vous soyez visiteur, exposant ou organisateur, ExpoDakar vous connecte à l'écosystème professionnel du Sénégal.
+        </p>
+        <div class="flex flex-wrap justify-center gap-3 sm:gap-4">
+            <a href="{{ route('user.events.index') }}" class="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-sm sm:text-base transition-all hover:brightness-110 active:scale-95" style="background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--blue-night); box-shadow:0 12px 32px rgba(201,168,76,.3);">
+                Réserver ma place
+            </a>
+            <a href="{{ route('tarifs') }}" class="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-sm sm:text-base text-white border border-white/25 transition-all hover:border-white/60 hover:bg-white/5 active:scale-95">
+                Devenir exposant
+            </a>
+        </div>
+    </div>
+</section>
+
+
+{{-- ══ NEWSLETTER ══ --}}
+<section class="py-16 sm:py-24 overflow-hidden" style="background:var(--blue-night);" aria-label="Newsletter">
+    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal" x-intersect.once="$el.classList.add('visible')">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/15 bg-white/5 mb-6 sm:mb-8">
+            <svg class="w-4 h-4" fill="none" stroke="var(--gold-light)" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
+            <span class="section-eyebrow text-xs" style="color:var(--gold-light);">Restez informé</span>
+        </div>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl text-white mb-3 sm:mb-4">Ne manquez aucun événement</h2>
+        <p class="text-white/55 mb-8 sm:mb-10 max-w-md mx-auto text-sm sm:text-base">Recevez chaque semaine une sélection des meilleurs événements professionnels au Sénégal.</p>
+        <form action="{{ route('user.newsletter.subscribe') }}" method="POST" class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+            @csrf
+            <input type="email" name="email" placeholder="Votre adresse email professionnelle" required class="nl-input flex-1 px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl bg-white/10 text-white placeholder-white/35 border border-white/15 text-sm transition">
+            <button type="submit" class="px-6 sm:px-7 py-3.5 sm:py-4 rounded-xl font-semibold text-sm hover:brightness-110 whitespace-nowrap transition" style="background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--blue-night);">S'abonner</button>
+        </form>
+        <p class="text-xs mt-4 sm:mt-5" style="color:rgba(255,255,255,.3);">Pas de spam. Désinscription en un clic.</p>
+    </div>
+</section>
+
+
+{{-- ══ B1L / B1R ══ --}}
+<section class="py-10 sm:py-14 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-3xl mx-auto">
+            <div class="h-[160px] sm:h-[250px]">{!! $pub('b1l', 300, 250, 'Bannière B1L') !!}</div>
+            <div class="h-[160px] sm:h-[250px]">{!! $pub('b1r', 300, 250, 'Bannière B1R') !!}</div>
+        </div>
+    </div>
+</section>
+
+
+{{-- ══════════════════════════════════════════════════════════════
+     FOOTER
+     ══════════════════════════════════════════════════════════════ --}}
+<footer style="background:#070f1d;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="py-10 sm:py-16 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-12 border-b" style="border-color:rgba(255,255,255,.06);">
+            <div class="col-span-2 sm:col-span-2 lg:col-span-1">
+                <a href="{{ route('home') }}" class="flex items-center gap-2 mb-4">
+                    <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782085416/ChatGPT_Image_Jun_21__2026__07_24_51_PM-removebg-preview_zi77k0.png" alt="Logo" class="h-10 w-auto" loading="lazy" decoding="async">
+                    <span class="font-display text-xl text-white">Expo<span class="text-gold-gradient">Dakar</span></span>
+                </a>
+                <p class="text-sm leading-relaxed mb-5" style="color:rgba(255,255,255,.4);">La plateforme de référence pour les événements professionnels au Sénégal.</p>
                 <div class="flex gap-3">
                     @foreach([
-                        ['href' => '#', 'label' => 'Facebook',  'icon' => 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z'],
-                        ['href' => '#', 'label' => 'Twitter/X', 'icon' => 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z'],
-                        ['href' => '#', 'label' => 'LinkedIn',  'icon' => 'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z'],
-                    ] as $social)
-                    <a href="{{ $social['href'] }}"
-                       class="w-9 h-9 rounded-xl flex items-center justify-center transition hover:opacity-80"
-                       style="background: rgba(255,255,255,.07);"
-                       aria-label="{{ $social['label'] }}" rel="noopener noreferrer">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="{{ $social['icon'] }}"/>
-                        </svg>
+                        ['Facebook','M22 12.06C22 6.505 17.523 2 12 2S2 6.505 2 12.06c0 5.022 3.657 9.184 8.438 9.94v-7.03H7.898v-2.91h2.54V9.845c0-2.522 1.492-3.915 3.777-3.915 1.094 0 2.238.197 2.238.197v2.475h-1.26c-1.243 0-1.63.775-1.63 1.57v1.888h2.773l-.443 2.91h-2.33V22c4.78-.756 8.437-4.918 8.437-9.94Z'],
+                        ['LinkedIn','M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2ZM8.34 18.34H5.67V9.75h2.67v8.59ZM7 8.6a1.55 1.55 0 1 1 0-3.1 1.55 1.55 0 0 1 0 3.1Zm11.34 9.74h-2.67v-4.18c0-1-.02-2.28-1.39-2.28-1.39 0-1.6 1.08-1.6 2.2v4.26H10V9.75h2.56v1.17h.04c.36-.67 1.23-1.39 2.53-1.39 2.7 0 3.2 1.78 3.2 4.1v4.71Z'],
+                        ['Instagram','M12 2c2.72 0 3.06.01 4.12.06 1.06.05 1.79.22 2.43.47.66.25 1.22.6 1.77 1.15.5.5.86 1.03 1.15 1.71.25.6.42 1.29.47 2.42.05 1.06.06 1.4.06 4.12s-.01 3.06-.06 4.12c-.05 1.06-.22 1.79-.47 2.43a4.7 4.7 0 0 1-1.15 1.77c-.5.5-1.03.86-1.71 1.15-.6.25-1.29.42-2.42.47-1.06.05-1.4.06-4.12.06s-3.06-.01-4.12-.06c-1.06-.05-1.79-.22-2.43-.47a4.7 4.7 0 0 1-1.77-1.15 4.7 4.7 0 0 1-1.15-1.71c-.25-.6-.42-1.29-.47-2.42C2.01 15.06 2 14.72 2 12s.01-3.06.06-4.12c.05-1.06.22-1.79.47-2.43.25-.66.6-1.22 1.15-1.77A4.7 4.7 0 0 1 5.39 2.53c.6-.25 1.29-.42 2.42-.47C8.87 2.01 9.21 2 11.93 2H12Zm0 1.8c-2.66 0-2.98.01-4.03.06-.97.05-1.5.2-1.85.34a3 3 0 0 0-1.12.73 3 3 0 0 0-.73 1.12c-.14.36-.29.88-.34 1.85-.05 1.05-.06 1.37-.06 4.03s.01 2.98.06 4.03c.05.97.2 1.5.34 1.85.16.42.37.78.73 1.12.34.36.7.57 1.12.73.36.14.88.29 1.85.34 1.05.05 1.37.06 4.03.06s2.98-.01 4.03-.06c.97-.05 1.5-.2 1.85-.34a3 3 0 0 0 1.12-.73 3 3 0 0 0 .73-1.12c.14-.36.29-.88.34-1.85.05-1.05.06-1.37.06-4.03s-.01-2.98-.06-4.03c-.05-.97-.2-1.5-.34-1.85a3 3 0 0 0-.73-1.12 3 3 0 0 0-1.12-.73c-.36-.14-.88-.29-1.85-.34-1.05-.05-1.37-.06-4.03-.06ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Zm5.2-2a1.17 1.17 0 1 1-2.34 0 1.17 1.17 0 0 1 2.34 0Z'],
+                    ] as $s)
+                    <a href="#" class="w-9 h-9 rounded-xl flex items-center justify-center hover:opacity-80 transition" style="background:rgba(255,255,255,.07);" aria-label="{{ $s[0] }}">
+                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="{{ $s[1] }}"/></svg>
                     </a>
                     @endforeach
                 </div>
             </div>
 
-            {{-- Liens plateforme{{ route($link['route']) }} {{ $link['label'] }} {{ route($link['route']) }}--}}
             <div>
-                <h3 class="text-xs font-semibold tracking-widest uppercase mb-5" style="color: rgba(255,255,255,.35);">Plateforme</h3>
-                <ul class="space-y-3">
-                    @foreach([
-                        ['label' => 'Tous les événements', 'route' => 'user.events.index'],
-                        ['label' => 'Exposants',           'route' => 'user.exposants.index'],
-                        ['label' => 'Catégories',          'route' => 'user.categories.index'],
-                        ['label' => 'Organiser un événement', 'route' => 'user.organisateurs.create'],
-                    ] as $link)
-                    <li>
-                        <a href=""
-                           class="text-sm transition-colors" style="color: rgba(255,255,255,.45);"
-                           onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.45)'">
-                            
-                        </a>
-                    </li>
+                <h3 class="text-xs font-semibold tracking-widest uppercase mb-4" style="color:rgba(255,255,255,.35);">Plateforme</h3>
+                <ul class="space-y-2.5">
+                    @foreach([['Événements',route('user.events.index')],['Catégories',route('user.categories.index')],['Tarifs',route('tarifs')]] as $l)
+                    <li><a href="{{ $l[1] }}" class="text-sm transition-colors" style="color:rgba(255,255,255,.45);" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.45)'">{{ $l[0] }}</a></li>
                     @endforeach
                 </ul>
             </div>
 
-            {{-- Liens légaux --}}
             <div>
-                <h3 class="text-xs font-semibold tracking-widest uppercase mb-5" style="color: rgba(255,255,255,.35);">Informations</h3>
-                <ul class="space-y-3">
-                    @foreach([
-                        ['label' => 'À propos',          'route' => 'about'],
-                        ['label' => 'Contact',           'route' => 'contact'],
-                        ['label' => 'Conditions d\'utilisation', 'route' => 'terms'],
-                        ['label' => 'Politique de confidentialité', 'route' => 'privacy'],
-                    ] as $link)
-                    <li>
-                        <a href=""
-                           class="text-sm transition-colors" style="color: rgba(255,255,255,.45);"
-                           onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.45)'">
-                            
-                        </a>
-                    </li>
+                <h3 class="text-xs font-semibold tracking-widest uppercase mb-4" style="color:rgba(255,255,255,.35);">Infos</h3>
+                <ul class="space-y-2.5">
+                    @foreach([['À propos','#'],['Contact',route('contact')],['CGU','#'],['Confidentialité','#']] as $l)
+                    <li><a href="{{ $l[1] }}" class="text-sm transition-colors" style="color:rgba(255,255,255,.45);" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.45)'">{{ $l[0] }}</a></li>
                     @endforeach
                 </ul>
             </div>
 
-            {{-- Contact --}}
             <div>
-                <h3 class="text-xs font-semibold tracking-widest uppercase mb-5" style="color: rgba(255,255,255,.35);">Contact</h3>
-                <ul class="space-y-4">
-                    <li class="flex gap-3">
-                        <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color: var(--gold);" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
-                        </svg>
-                        <span class="text-sm" style="color: rgba(255,255,255,.45);">Dakar, Plateau — Sénégal</span>
+                <h3 class="text-xs font-semibold tracking-widest uppercase mb-4" style="color:rgba(255,255,255,.35);">Contact</h3>
+                <ul class="space-y-3">
+                    <li class="flex items-center gap-2 text-sm" style="color:rgba(255,255,255,.45);">
+                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+                        Dakar, Plateau
                     </li>
-                    <li class="flex gap-3">
-                        <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color: var(--gold);" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/>
-                        </svg>
-                        <a href="mailto:contact@expodakar.sn"
-                           class="text-sm transition-colors" style="color: rgba(255,255,255,.45);"
-                           onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.45)'">
-                            contact@expodakar.sn
-                        </a>
-                    </li>
-                    <li class="flex gap-3">
-                        <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color: var(--gold);" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 6z"/>
-                        </svg>
-                        <a href="tel:+221338001234"
-                           class="text-sm transition-colors" style="color: rgba(255,255,255,.45);"
-                           onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,.45)'">
-                            +221 33 800 12 34
-                        </a>
-                    </li>
+                    <li><a href="mailto:contact@expodakar.sn" class="text-sm" style="color:rgba(255,255,255,.45);">contact@expodakar.sn</a></li>
+                    <li><a href="tel:+221338001234" class="text-sm" style="color:rgba(255,255,255,.45);">+221 33 800 12 34</a></li>
                 </ul>
+            </div>
+
+      {{-- ══════════════════════════════════════════════════════════════
+     CORRECTIF — Localisation footer : CICES / Foire de Dakar
+     Deux blocs à remplacer dans le footer de index.blade.php
+     ══════════════════════════════════════════════════════════════ --}}
+
+
+{{-- 2) Bloc "Nous trouver" — remplacer l'iframe --}}
+<div class="col-span-2 sm:col-span-2 lg:col-span-1">
+    <h3 class="text-xs font-semibold tracking-widest uppercase mb-4" style="color:rgba(255,255,255,.35);">Nous trouver</h3>
+    <div class="rounded-xl overflow-hidden border" style="border-color:rgba(255,255,255,.08); height:9rem;">
+        <iframe
+            src="https://www.google.com/maps?q=CICES+Foire+de+Dakar+S%C3%A9n%C3%A9gal&output=embed"
+            class="w-full h-full grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition"
+            style="border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+            title="Localisation ExpoDakar — CICES, Foire de Dakar"></iframe>
+    </div>
+</div>
             </div>
         </div>
 
-        {{-- Bottom bar --}}
-        <div class="py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p class="text-xs" style="color: rgba(255,255,255,.25);">
-                © {{ date('Y') }} ExpoDakar. Tous droits réservés.
-            </p>
-            <p class="text-xs" style="color: rgba(255,255,255,.2);">
-                Conçu  au Sénégal
-            </p>
+        <div class="py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p class="text-xs" style="color:rgba(255,255,255,.25);">© {{ date('Y') }} ExpoDakar. Tous droits réservés.</p>
+            <p class="text-xs" style="color:rgba(255,255,255,.2);">Conçu au Sénégal</p>
         </div>
     </div>
 </footer>
 
-{{-- ══════════════════════════════════════════════════════════════
-     SCRIPTS : Intersection Observer pour les révélations
-     ══════════════════════════════════════════════════════════════ --}}
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Reveal on scroll via IntersectionObserver
-    const revealEls = document.querySelectorAll('.reveal');
-    if ('IntersectionObserver' in window) {
-        const io = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    io.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.12 });
-        revealEls.forEach(el => io.observe(el));
-    } else {
-        // Fallback pour les navigateurs sans support
-        revealEls.forEach(el => el.classList.add('visible'));
-    }
-});
-</script>
-<div x-data="{
-        show: false,
-        init() {
-            if (!localStorage.getItem('welcomed')) {
-                setTimeout(() => this.show = true, 1500);
-            }
-        },
-        close() {
-            this.show = false;
-            localStorage.setItem('welcomed', '1');
-        }
-     }"
-     x-show="show"
-     x-cloak
-     x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="opacity-0 scale-95"
-     x-transition:enter-end="opacity-100 scale-100"
-     class="fixed inset-0 z-50 flex items-center justify-center p-4"
-     style="background:rgba(10,22,40,.6); backdrop-filter:blur(6px);">
+</div>
+{{-- /2xl:mx-[160px] --}}
 
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
 
-        {{-- Header image --}}
-        <div class="relative h-40 flex items-center justify-center"
-             style="background:linear-gradient(135deg,#0A1628,#1E5FD8);">
-            <div class="absolute inset-0 opacity-20"
-                 style="background-image:linear-gradient(rgba(196,168,76,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(196,168,76,.4) 1px,transparent 1px); background-size:40px 40px;">
-            </div>
+{{-- ══ POPUP BIENVENUE ══ --}}
+<div x-data="{ show:false, init(){ if(!localStorage.getItem('welcomed')){ setTimeout(()=>this.show=true,1500); } }, close(){ this.show=false; localStorage.setItem('welcomed','1'); } }"
+     x-show="show" x-cloak x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(10,22,40,.6); backdrop-filter:blur(6px);">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm sm:max-w-md overflow-hidden">
+        <div class="relative h-32 sm:h-40 flex items-center justify-center" style="background:linear-gradient(135deg,#0A1628,#1E5FD8);">
+            <div class="absolute inset-0 opacity-20" style="background-image:linear-gradient(rgba(196,168,76,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(196,168,76,.4) 1px,transparent 1px); background-size:40px 40px;"></div>
             <div class="relative text-center">
-                <p class="font-display text-3xl text-white font-bold">Expo<span style="color:#E8C96A;">DKR</span></p>
+                <p class="font-display text-2xl sm:text-3xl text-white font-bold">Expo<span style="color:#E8C96A;">DKR</span></p>
                 <p class="text-xs text-white/60 mt-1">Plateforme événementielle du Sénégal</p>
             </div>
         </div>
-
-        {{-- Corps --}}
-        <div class="p-6 text-center">
-            <h3 class="text-lg font-bold text-slate-800 mb-2">Bienvenue sur ExpoDKR ! 🎉</h3>
-            <p class="text-sm text-slate-500 mb-6 leading-relaxed">
-                Découvrez les meilleurs événements professionnels au Sénégal.
-                Réservez votre place en quelques clics.
-            </p>
+        <div class="p-5 sm:p-6 text-center">
+            <h3 class="flex items-center justify-center gap-2 text-base sm:text-lg font-bold mb-2" style="color:var(--blue-night);">
+                Bienvenue sur ExpoDKR !
+                <svg class="w-4 h-4" fill="var(--gold)" viewBox="0 0 20 20" aria-hidden="true"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.958a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.368 2.447a1 1 0 00-.363 1.118l1.286 3.957c.3.922-.755 1.688-1.539 1.118l-3.367-2.447a1 1 0 00-1.175 0l-3.367 2.447c-.784.57-1.838-.196-1.539-1.118l1.286-3.957a1 1 0 00-.363-1.118L2.063 9.385c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.285-3.958z"/></svg>
+            </h3>
+            <p class="text-sm mb-5 leading-relaxed" style="color:var(--gray-mid);">Découvrez les meilleurs événements professionnels au Sénégal.</p>
             <div class="flex gap-3">
-                <button @click="close()"
-                        class="flex-1 py-2.5 rounded-xl text-sm font-semibold border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors">
-                    Ignorer
-                </button>
-                <a href=""
-                   @click="close()"
-                   class="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:brightness-110"
-                   style="background:linear-gradient(135deg,#1E5FD8,#1248b0);">
-                    Explorer les événements
-                </a>
+                <button @click="close()" class="flex-1 py-2.5 rounded-xl text-sm font-semibold border border-gray-200 text-gray-500 hover:bg-gray-50 transition">Ignorer</button>
+                <a href="{{ route('user.events.index') }}" @click="close()" class="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white hover:brightness-110 transition" style="background:linear-gradient(135deg,#1E5FD8,#1248b0);">Explorer</a>
             </div>
         </div>
     </div>
 </div>
-<div x-data="{
-        show: false,
-        init() {
-            if (!localStorage.getItem('nl_closed')) {
-                setTimeout(() => this.show = true, 8000);
-            }
-        },
-        close() {
-            this.show = false;
-            localStorage.setItem('nl_closed', '1');
-        }
-     }"
-     x-show="show"
-     x-cloak
-     x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="opacity-0 translate-y-4"
-     x-transition:enter-end="opacity-100 translate-y-0"
-     class="fixed bottom-6 right-6 z-50 w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden">
 
-    {{-- Header --}}
-    <div class="px-5 py-4 flex items-start justify-between gap-3"
-         style="background:linear-gradient(135deg,#0A1628,#0D2145);">
-        <div>
-            <p class="text-sm font-bold text-white">📩 Restez informé</p>
-            <p class="text-xs text-white/55 mt-0.5">Recevez les événements chaque semaine</p>
+
+{{-- ══ POPUP NEWSLETTER ══ --}}
+<div x-data="{ show:false, init(){ if(!localStorage.getItem('nl_closed')){ setTimeout(()=>this.show=true,8000); } }, close(){ this.show=false; localStorage.setItem('nl_closed','1'); } }"
+     x-show="show" x-cloak x-transition class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-72 sm:w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+    <div class="px-4 sm:px-5 py-3 sm:py-4 flex items-start justify-between gap-3" style="background:linear-gradient(135deg,#0A1628,#0D2145);">
+        <div class="flex items-start gap-2.5">
+            <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="var(--gold-light)" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
+            <div>
+                <p class="text-sm font-bold text-white">Restez informé</p>
+                <p class="text-xs text-white/55 mt-0.5">Recevez les événements chaque semaine</p>
+            </div>
         </div>
-        <button @click="close()"
-                class="text-white/40 hover:text-white transition-colors flex-shrink-0"
-                aria-label="Fermer">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
-            </svg>
+        <button @click="close()" class="text-white/40 hover:text-white transition shrink-0" aria-label="Fermer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
         </button>
     </div>
-
-    {{-- Formulaire --}}
-    <form action="" method="POST" class="p-4 flex flex-col gap-3">
+    <form action="{{ route('user.newsletter.subscribe') }}" method="POST" class="p-4 flex flex-col gap-2.5">
         @csrf
-        <input type="email"
-               name="email"
-               placeholder="votre@email.com"
-               required
-               class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        <button type="submit"
-                @click="close()"
-                class="w-full py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:brightness-110"
-                style="background:linear-gradient(135deg,#C9A84C,#E8C96A); color:#0A1628;">
-            S'abonner gratuitement
-        </button>
-        <button type="button" @click="close()"
-                class="text-xs text-slate-400 hover:text-slate-600 text-center transition-colors">
-            Non merci
-        </button>
+        <input type="email" name="email" placeholder="votre@email.com" required class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button type="submit" @click="close()" class="w-full py-2.5 rounded-xl text-sm font-semibold text-white hover:brightness-110 transition" style="background:linear-gradient(135deg,#C9A84C,#E8C96A);color:#0A1628;">S'abonner</button>
+        <button type="button" @click="close()" class="text-xs text-gray-400 hover:text-gray-600 text-center transition">Non merci</button>
     </form>
 </div>
+
+
+{{-- ══ TOAST SUCCESS ══ --}}
 @if(session('success'))
-<div x-data="{ show: true }"
-     x-show="show"
-     x-cloak
-     x-init="setTimeout(() => show = false, 4000)"
-     x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="opacity-0 translate-y-2"
-     x-transition:enter-end="opacity-100 translate-y-0"
-     x-transition:leave="transition ease-in duration-200"
-     x-transition:leave-start="opacity-100 translate-y-0"
-     x-transition:leave-end="opacity-0 translate-y-2"
-     class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-xl text-sm font-semibold text-white"
+<div x-data="{ show:true }" x-show="show" x-cloak x-init="setTimeout(()=>show=false,4000)"
+     x-transition class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 sm:px-5 py-3 sm:py-3.5 rounded-2xl shadow-xl text-sm font-semibold text-white max-w-xs sm:max-w-none text-center"
      style="background:linear-gradient(135deg,#059669,#047857);">
-    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-    </svg>
+    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
     {{ session('success') }}
-    <button @click="show = false" class="text-white/60 hover:text-white ml-2 transition-colors">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
-        </svg>
-    </button>
 </div>
 @endif
-{{-- ═══════════════════════════════════════════════
-     POPUP "ÉVÉNEMENT SPONSORISÉ" (exposant spécial)
-     ═══════════════════════════════════════════════ --}}
-@php
-    // Test : on va chercher l'événement 1 directement en BDD, peu importe $events
-    $featuredEvent = \App\Models\Evenement::with('exposant')->find(10);
-@endphp
 
+
+{{-- ══ POPUP ÉVÉNEMENT SPONSORISÉ ══ --}}
+@php $featuredEvent = \App\Models\Evenement::with('exposant')->find(10); @endphp
 @if($featuredEvent)
-<div
-    x-data="{
-        show: false,
-        closed: false,
-        init() {
-            if (localStorage.getItem('featured_closed_{{ $featuredEvent->id }}')) return;
-            setTimeout(() => this.show = true, 2000);
-        },
-        close() {
-            this.show = false;
-            this.closed = true;
-            localStorage.setItem('featured_closed_{{ $featuredEvent->id }}', '1');
-        }
-    }"
-    x-show="show"
-    x-cloak
-    x-transition:enter="transition ease-out duration-400"
-    x-transition:enter-start="opacity-0 translate-y-6 scale-95"
-    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-    x-transition:leave="transition ease-in duration-300"
-    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-    x-transition:leave-end="opacity-0 translate-y-6 scale-95"
-    class="fixed bottom-6 right-6 z-50 w-80"
->
-    <div class="relative rounded-2xl overflow-hidden shadow-2xl"
-         style="background: white; border: 1px solid var(--gray-soft);">
-
-        {{-- Halo pulsant répété toutes les 5s pour attirer l'attention --}}
-        <div class="absolute -inset-1 rounded-2xl pointer-events-none"
-             style="background: linear-gradient(135deg, var(--gold), var(--blue-electric));
-                    opacity: .35;
-                    filter: blur(10px);
-                    animation: featured-pulse 5s ease-in-out infinite;"
-             aria-hidden="true"></div>
-
+<div x-data="{
+        show:false,
+        init(){ if(!localStorage.getItem('featured_closed_{{ $featuredEvent->id }}')){setTimeout(()=>this.show=true,2000);} },
+        close(){ this.show=false; localStorage.setItem('featured_closed_{{ $featuredEvent->id }}','1'); }
+     }"
+     x-show="show" x-cloak x-transition class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-72 sm:w-80">
+    <div class="relative rounded-2xl overflow-hidden shadow-2xl" style="background:white; border:1px solid var(--gray-soft);">
+        <div class="absolute -inset-0.5 rounded-2xl pointer-events-none" style="background:linear-gradient(135deg,var(--gold),var(--blue-electric)); opacity:.3; filter:blur(8px); animation:featured-pulse 5s ease-in-out infinite;" aria-hidden="true"></div>
         <div class="relative bg-white rounded-2xl overflow-hidden">
-
-            {{-- Bandeau "Sponsorisé" --}}
-            <div class="flex items-center justify-between px-4 py-2"
-                 style="background: linear-gradient(135deg, var(--gold), var(--gold-light));">
-                <span class="text-[11px] font-bold uppercase tracking-wider" style="color: var(--blue-night);">
-                    ⭐ Événement sponsorisé
+            <div class="flex items-center justify-between px-4 py-2" style="background:linear-gradient(135deg,var(--gold),var(--gold-light));">
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide" style="color:var(--blue-night);">
+                    <svg class="w-3.5 h-3.5" fill="var(--blue-night)" viewBox="0 0 20 20" aria-hidden="true"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.958a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.368 2.447a1 1 0 00-.363 1.118l1.286 3.957c.3.922-.755 1.688-1.539 1.118l-3.367-2.447a1 1 0 00-1.175 0l-3.367 2.447c-.784.57-1.838-.196-1.539-1.118l1.286-3.957a1 1 0 00-.363-1.118L2.063 9.385c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.285-3.958z"/></svg>
+                    Événement sponsorisé
                 </span>
-                <button @click="close()" class="text-[--blue-night]/60 hover:text-[--blue-night] transition-colors" aria-label="Fermer">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
-                    </svg>
+                <button @click="close()" class="text-black/40 hover:text-black transition" aria-label="Fermer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
                 </button>
             </div>
-
-            {{-- Image --}}
-            <div class="relative h-32">
+            <div class="relative h-28 sm:h-32">
                 @if($featuredEvent->image)
-                    <img src="{{ Storage::url($featuredEvent->image) }}"
-                         alt="{{ $featuredEvent->titre }}"
-                         class="w-full h-full object-cover">
+                <img src="{{ $featuredEvent->image }}" alt="{{ $featuredEvent->titre }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                 @else
-                    <div class="w-full h-full flex items-center justify-center"
-                         style="background: linear-gradient(135deg, var(--blue-night), var(--blue-electric));">
-                        <span class="text-white/40 text-3xl">📅</span>
-                    </div>
-                @endif
-
-                {{-- Logo exposant en médaillon --}}
-                @if($featuredEvent->exposant && $featuredEvent->exposant->logo)
-                <div class="absolute -bottom-5 left-4 w-12 h-12 rounded-xl bg-white shadow-lg flex items-center justify-center overflow-hidden border-2 border-white">
-                    <img src="{{ Storage::url($featuredEvent->exposant->logo) }}"
-                         alt="Logo {{ $featuredEvent->exposant->nom }}"
-                         class="w-full h-full object-contain p-1">
+                <div class="w-full h-full flex items-center justify-center" style="background:linear-gradient(135deg,var(--blue-night),var(--blue-electric));">
+                    <svg class="w-9 h-9 text-white/40" fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
                 </div>
                 @endif
             </div>
-
-            {{-- Contenu --}}
-            <div class="p-4 pt-7">
+            <div class="p-4">
                 @if($featuredEvent->exposant)
-                <p class="text-xs font-semibold mb-1" style="color: var(--blue-electric);">
-                    Proposé par {{ $featuredEvent->exposant->nom }}
-                </p>
+                <p class="text-xs font-semibold mb-1" style="color:var(--blue-electric);">Proposé par {{ $featuredEvent->exposant->nom }}</p>
                 @endif
-                <h3 class="font-semibold text-sm leading-snug mb-2" style="color: var(--blue-night);">
-                    {{ $featuredEvent->titre }}
-                </h3>
-                <div class="flex items-center gap-3 text-xs mb-4" style="color: var(--gray-mid);">
-                    <span>📍 {{ $featuredEvent->lieu }}</span>
-                    <span>🗓 {{ \Carbon\Carbon::parse($featuredEvent->date_debut)->translatedFormat('d M') }}</span>
+                <h3 class="font-semibold text-sm leading-snug mb-2" style="color:var(--blue-night);">{{ $featuredEvent->titre }}</h3>
+                <div class="flex items-center gap-3 text-xs mb-3" style="color:var(--gray-mid);">
+                    <span class="inline-flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+                        {{ $featuredEvent->lieu }}
+                    </span>
+                    <span class="inline-flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
+                        {{ \Carbon\Carbon::parse($featuredEvent->date_debut)->translatedFormat('d M') }}
+                    </span>
                 </div>
-                <a href="{{ route('user.events.show', $featuredEvent->id) }}"
-                   class="block w-full text-center py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:brightness-110 active:scale-95"
-                   style="background: linear-gradient(135deg, var(--blue-electric), #1248b0);">
-                    Découvrir l'événement
-                </a>
+                <a href="{{ route('user.events.show', $featuredEvent->id) }}" class="block w-full text-center py-2.5 rounded-xl text-sm font-semibold text-white hover:brightness-110 transition" style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">Découvrir l'événement</a>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-@keyframes featured-pulse {
-    0%, 100% { opacity: .25; transform: scale(1); }
-    50%      { opacity: .5;  transform: scale(1.03); }
-}
-</style>
+<style>@keyframes featured-pulse { 0%,100%{opacity:.2;transform:scale(1);} 50%{opacity:.4;transform:scale(1.02);} }</style>
 @endif
+
+
+{{-- ══════════════════════════════════════════════════════════════
+     SCRIPTS — Lenis (smooth scroll) + GSAP ScrollTrigger (reveals)
+     ══════════════════════════════════════════════════════════════ --}}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ---- Lenis smooth scroll ---- */
+    let lenis;
+    if (!reduceMotion && window.Lenis) {
+        lenis = new Lenis({ duration: 1.1, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true });
+        function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+        if (window.gsap && window.ScrollTrigger) {
+            lenis.on('scroll', ScrollTrigger.update);
+            gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+            gsap.ticker.lagSmoothing(0);
+        }
+    }
+
+    /* ---- Reveals : GSAP ScrollTrigger si dispo, sinon IntersectionObserver ---- */
+    const els = document.querySelectorAll('.reveal');
+    if (window.gsap && window.ScrollTrigger) {
+        gsap.registerPlugin(ScrollTrigger);
+        els.forEach((el) => {
+            ScrollTrigger.create({
+                trigger: el, start: 'top 88%', once: true,
+                onEnter: () => el.classList.add('visible')
+            });
+        });
+    } else if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+        }, { threshold: 0.1 });
+        els.forEach(el => io.observe(el));
+    } else {
+        els.forEach(el => el.classList.add('visible'));
+    }
+});
+
+/* ---- CountUp Hero ---- */
+(function(){
+    "use strict";
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var counters = document.querySelectorAll("#hero .hero-counter[data-count]");
+    if (counters.length){
+        var cio = new IntersectionObserver(function(entries){
+            entries.forEach(function(entry){
+                if (!entry.isIntersecting) return;
+                cio.unobserve(entry.target);
+                var el = entry.target;
+                var raw = el.getAttribute("data-count") || "0";
+                var m = raw.match(/^([^\d]*)(\d+)([^\d]*)$/);
+                if (!m){ el.textContent = raw; return; }
+                var prefix = m[1], target = parseInt(m[2], 10), suffix = m[3];
+                if (reduceMotion){ el.textContent = prefix + target + suffix; return; }
+                var dur = 1400, start = null;
+                function step(ts){
+                    if (!start) start = ts;
+                    var p = Math.min((ts - start) / dur, 1);
+                    var eased = 1 - Math.pow(1 - p, 3);
+                    el.textContent = prefix + Math.round(target * eased) + suffix;
+                    if (p < 1) requestAnimationFrame(step);
+                }
+                requestAnimationFrame(step);
+            });
+        }, { threshold:.4 });
+        counters.forEach(function(el){ cio.observe(el); });
+    }
+
+    if (!reduceMotion && window.matchMedia("(pointer:fine)").matches){
+        var scene = document.querySelector("#hero .hero-scene");
+        var heroEl = document.getElementById("hero");
+        if (scene && heroEl){
+            var tx = 0, ty = 0, cx = 0, cy = 0;
+            heroEl.addEventListener("mousemove", function(e){
+                var r = heroEl.getBoundingClientRect();
+                tx = ((e.clientX - r.left) / r.width - .5) * 2;
+                ty = ((e.clientY - r.top) / r.height - .5) * 2;
+            }, { passive:true });
+            (function raf(){
+                cx += (tx - cx) * .05; cy += (ty - cy) * .05;
+                scene.style.transform = "rotateY(" + (cx * 4) + "deg) rotateX(" + (cy * -4) + "deg) translate3d(" + (cx * -10) + "px," + (cy * -10) + "px,0)";
+                requestAnimationFrame(raf);
+            })();
+        }
+    }
+})();
+</script>
+
 </body>
 </html>
