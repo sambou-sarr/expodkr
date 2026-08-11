@@ -186,78 +186,340 @@
 
 <div class="2xl:mx-[160px]">
 
+{{-- ═══════════════════════════════════════════════════════
+     NAVBAR — ExpoDakar
+     Transparent au départ → Blanc au scroll
+════════════════════════════════════════════════════════ --}}
 
-{{-- ══ 1. NAVBAR ══ ExpoDakar en images--}}
 <header
-    x-data="{ open:false, scrolled:false, init(){ window.addEventListener('scroll',()=>{this.scrolled=window.scrollY>60;}); } }"
-    :class="scrolled ? 'navbar-solid' : 'navbar-transparent'"
-    class="fixed inset-x-0 top-0 z-50 transition-all duration-300"
-    x-init="init()">
+    x-data="{
+        open: false,
+        scrolled: false,
+        init() {
+            this.scrolled = window.scrollY > 60;
+
+            window.addEventListener('scroll', () => {
+                this.scrolled = window.scrollY > 60;
+            });
+        }
+    }"
+    x-init="init()"
+    :class="scrolled
+        ? 'bg-white shadow-md'
+        : 'bg-transparent'"
+    class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
+
+    {{-- CONTENEUR --}}
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+
         <div class="flex items-center justify-between h-16 sm:h-20">
-          <a href="{{ route('home') }}" class="flex items-center gap-2 sm:gap-3 shrink-0" aria-label="ExpoDakar">
-    <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1786364683/ChatGPT_Image_10_ao%C3%BBt_2026__02_24_21-removebg-preview_spadbb.png"
-         alt="Logo ExpoDakar"
-         class="h-14 sm:h-16 w-auto object-contain"
-         width="80"
-         height="80"
-         fetchpriority="high">
 
-    <span class="font-display text-xl sm:text-2xl text-white">
-        Expo<span class="text-gold-gradient">Dakar</span>
-    </span>
-</a>
+            {{-- ═══════════════════════════════════════
+                 LOGO
+            ═══════════════════════════════════════ --}}
+            <a
+                href="{{ route('home') }}"
+                class="flex items-center gap-2 sm:gap-3 shrink-0"
+                aria-label="ExpoDakar">
 
-            <nav class="hidden lg:flex items-center gap-8">
-                <a href="#evenements" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Événements</a>
-                <a href="{{ route('user.categories.index') }}" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Catégories</a>
-                <a href="#calendrier" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Calendrier</a>
-                <a href="#exposants" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Exposants</a>
-                <a href="#faq" class="text-sm font-medium text-white/80 hover:text-white transition-colors">FAQ</a>
+                <img
+                    src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782085416/ChatGPT_Image_Jun_21__2026__07_24_51_PM-removebg-preview_zi77k0.png"
+                    alt="Logo ExpoDakar"
+                    class="h-14 sm:h-16 w-auto object-contain"
+                    width="80"
+                    height="80"
+                    fetchpriority="high">
+
+                {{-- NOM EXPO DAKAR --}}
+                <span
+                    class="font-display text-xl sm:text-2xl font-semibold transition-colors duration-300"
+                    :class="scrolled ? 'text-black' : 'text-white'">
+
+                    Expo<span class="text-gold-gradient">Dakar</span>
+
+                </span>
+
+            </a>
+
+
+            {{-- ═══════════════════════════════════════
+                 MENU DESKTOP
+            ═══════════════════════════════════════ --}}
+            <nav
+                class="hidden lg:flex items-center gap-8">
+
+                <a
+                    href="#evenements"
+                    class="text-sm font-medium transition-colors duration-300"
+                    :class="scrolled
+                        ? 'text-black hover:text-blue-700'
+                        : 'text-white/90 hover:text-white'">
+                    Événements
+                </a>
+
+                <a
+                    href="{{ route('user.categories.index') }}"
+                    class="text-sm font-medium transition-colors duration-300"
+                    :class="scrolled
+                        ? 'text-black hover:text-blue-700'
+                        : 'text-white/90 hover:text-white'">
+                    Catégories
+                </a>
+
+                <a
+                    href="#calendrier"
+                    class="text-sm font-medium transition-colors duration-300"
+                    :class="scrolled
+                        ? 'text-black hover:text-blue-700'
+                        : 'text-white/90 hover:text-white'">
+                    Calendrier
+                </a>
+
+                <a
+                    href="#exposants"
+                    class="text-sm font-medium transition-colors duration-300"
+                    :class="scrolled
+                        ? 'text-black hover:text-blue-700'
+                        : 'text-white/90 hover:text-white'">
+                    Exposants
+                </a>
+
+                <a
+                    href="#faq"
+                    class="text-sm font-medium transition-colors duration-300"
+                    :class="scrolled
+                        ? 'text-black hover:text-blue-700'
+                        : 'text-white/90 hover:text-white'">
+                    FAQ
+                </a>
+
             </nav>
 
+
+            {{-- ═══════════════════════════════════════
+                 ACTIONS DESKTOP
+            ═══════════════════════════════════════ --}}
             <div class="hidden lg:flex items-center gap-3">
+
                 @guest
-                <a href="{{ route('login') }}" class="text-sm font-medium text-white/80 hover:text-white px-4 py-2 rounded-lg hover:bg-white/10 transition-colors">Connexion</a>
-                <a href="{{ route('register') }}" class="text-sm font-semibold text-white px-5 py-2.5 rounded-xl" style="background:linear-gradient(135deg,var(--gold),var(--gold-light));">S'inscrire</a>
+
+                    {{-- CONNEXION --}}
+                    <a
+                        href="{{ route('login') }}"
+                        class="text-sm font-medium px-4 py-2 rounded-lg
+                               transition-all duration-300"
+                        :class="scrolled
+                            ? 'text-black hover:bg-gray-100'
+                            : 'text-white/90 hover:text-white hover:bg-white'">
+                        Connexion
+                    </a>
+
+
+                    {{-- INSCRIPTION --}}
+                    <a
+                        href="{{ route('register') }}"
+                        class="text-sm font-semibold text-white
+                               px-5 py-2.5 rounded-xl shadow-sm
+                               hover:shadow-md hover:-translate-y-0.5
+                               transition-all duration-200"
+                        style="background:linear-gradient(135deg,var(--gold),var(--gold-light));">
+                        S'inscrire
+                    </a>
+
                 @endguest
+
+
                 @auth
-                <a href="{{ route('account') }}" class="text-sm font-semibold text-white px-5 py-2.5 rounded-xl" style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">Mon espace</a>
+
+                    {{-- MON ESPACE --}}
+                    <a
+                        href="{{ route('account') }}"
+                        class="text-sm font-semibold text-white
+                               px-5 py-2.5 rounded-xl shadow-sm
+                               hover:shadow-md hover:-translate-y-0.5
+                               transition-all duration-200"
+                        style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">
+                        Mon espace
+                    </a>
+
                 @endauth
+
             </div>
 
+
+            {{-- ═══════════════════════════════════════
+                 MOBILE
+            ═══════════════════════════════════════ --}}
             <div class="flex items-center gap-2 lg:hidden">
+
                 @auth
-                <a href="{{ route('account') }}" class="text-xs font-semibold text-white px-3 py-1.5 rounded-lg" style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">Mon espace</a>
+
+                    <a
+                        href="{{ route('account') }}"
+                        class="text-xs font-semibold text-white
+                               px-3 py-1.5 rounded-lg shadow-sm"
+                        style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">
+                        Mon espace
+                    </a>
+
                 @endauth
-                <button @click="open=!open" class="flex items-center justify-center w-10 h-10 rounded-lg text-white hover:bg-white/10 transition" aria-label="Menu">
-                    <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                    <svg x-show="open" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+
+
+                {{-- BOUTON MENU --}}
+                <button
+                    @click="open = !open"
+                    type="button"
+                    class="flex items-center justify-center
+                           w-10 h-10 rounded-lg
+                           border transition-all duration-300"
+                    :class="scrolled
+                        ? 'text-black bg-white border-gray-200 hover:bg-gray-100'
+                        : 'text-white bg-white/10 border-white/20 hover:bg-white/20'"
+                    aria-label="Menu"
+                    :aria-expanded="open">
+
+                    {{-- HAMBURGER --}}
+                    <svg
+                        x-show="!open"
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24">
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M4 6h16M4 12h16M4 18h16"/>
+
+                    </svg>
+
+
+                    {{-- FERMER --}}
+                    <svg
+                        x-show="open"
+                        x-cloak
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24">
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6 18L18 6M6 6l12 12"/>
+
+                    </svg>
+
                 </button>
+
             </div>
+
         </div>
     </div>
 
-    <div x-show="open" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
-         class="lg:hidden border-t border-white/10" style="background:var(--blue-night);">
+
+    {{-- ═══════════════════════════════════════
+         MENU MOBILE
+    ═══════════════════════════════════════ --}}
+    <div
+        x-show="open"
+        x-cloak
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 -translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 -translate-y-2"
+        class="lg:hidden bg-white border-t border-gray-200 shadow-lg">
+
         <nav class="flex flex-col gap-1 px-4 py-4">
-            <a href="#evenements" @click="open=false" class="px-4 py-3 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">Événements</a>
-            <a href="{{ route('user.categories.index') }}" @click="open=false" class="px-4 py-3 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">Catégories</a>
-            <a href="#calendrier" @click="open=false" class="px-4 py-3 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">Calendrier</a>
-            <a href="#exposants" @click="open=false" class="px-4 py-3 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">Exposants</a>
-            <a href="#faq" @click="open=false" class="px-4 py-3 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">FAQ</a>
-            <hr class="border-white/10 my-2">
+
+            <a
+                href="#evenements"
+                @click="open = false"
+                class="px-4 py-3 text-sm font-medium text-black
+                       hover:text-blue-700 hover:bg-gray-50
+                       rounded-lg transition">
+                Événements
+            </a>
+
+            <a
+                href="{{ route('user.categories.index') }}"
+                @click="open = false"
+                class="px-4 py-3 text-sm font-medium text-black
+                       hover:text-blue-700 hover:bg-gray-50
+                       rounded-lg transition">
+                Catégories
+            </a>
+
+            <a
+                href="#calendrier"
+                @click="open = false"
+                class="px-4 py-3 text-sm font-medium text-black
+                       hover:text-blue-700 hover:bg-gray-50
+                       rounded-lg transition">
+                Calendrier
+            </a>
+
+            <a
+                href="#exposants"
+                @click="open = false"
+                class="px-4 py-3 text-sm font-medium text-black
+                       hover:text-blue-700 hover:bg-gray-50
+                       rounded-lg transition">
+                Exposants
+            </a>
+
+            <a
+                href="#faq"
+                @click="open = false"
+                class="px-4 py-3 text-sm font-medium text-black
+                       hover:text-blue-700 hover:bg-gray-50
+                       rounded-lg transition">
+                FAQ
+            </a>
+
+            <hr class="border-gray-200 my-2">
+
             @guest
-            <a href="{{ route('login') }}" class="px-4 py-3 text-sm text-white/80 hover:text-white rounded-lg hover:bg-white/10 transition">Connexion</a>
-            <a href="{{ route('register') }}" class="mt-1 px-4 py-3 text-sm font-semibold text-center rounded-xl" style="background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--blue-night);">S'inscrire gratuitement</a>
+
+                <a
+                    href="{{ route('login') }}"
+                    class="px-4 py-3 text-sm font-medium text-black
+                           hover:text-blue-700 hover:bg-gray-50
+                           rounded-lg transition">
+                    Connexion
+                </a>
+
+                <a
+                    href="{{ route('register') }}"
+                    class="mt-1 px-4 py-3 text-sm font-semibold
+                           text-center rounded-xl"
+                    style="background:linear-gradient(135deg,var(--gold),var(--gold-light));
+                           color:var(--blue-night);">
+                    S'inscrire gratuitement
+                </a>
+
             @endguest
+
             @auth
-            <a href="{{ route('account') }}" class="px-4 py-3 text-sm font-semibold text-center text-white rounded-xl" style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">Mon espace</a>
+
+                <a
+                    href="{{ route('account') }}"
+                    class="px-4 py-3 text-sm font-semibold
+                           text-center text-white rounded-xl"
+                    style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">
+                    Mon espace
+                </a>
+
             @endauth
+
         </nav>
     </div>
-</header>
 
+</header>
 
 {{-- ══════════════════════════════════════════════════════════════
      HERO img
@@ -414,27 +676,81 @@
     </div>
 </div>
 
-
 {{-- ══════════════════════════════════════════════════════════════
-     SECTION 1 — PARTENAIRES (marquee infini)
-     ══════════════════════════════════════════════════════════════ --}}
-<section class="py-12 border-y" style="border-color:var(--gray-soft);" aria-label="Partenaires">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
-        <p class="text-center text-xs font-semibold tracking-widest uppercase mb-8" style="color:var(--gray-mid);">Ils nous font confiance</p>
-    </div>
-    <div class="marquee-mask overflow-hidden">
-        <div class="marquee-track">
-            @for($i = 0; $i < 2; $i++)
-            <div class="flex items-center gap-10 sm:gap-16 pr-10 sm:pr-16">
-                @foreach(['CCIAD','ANSD','APIX','DER/FJ','ADEPME','CTIC Dakar','ONFP','FONGIP'] as $p)
-                <div class="partner-logo text-base sm:text-xl font-display font-medium whitespace-nowrap" style="color:var(--blue-night);">{{ $p }}</div>
-                @endforeach
-            </div>
-            @endfor
-        </div>
-    </div>
-</section>
+     SECTION 1 — PARTENAIRES (marquee infini avec logos) 
+══════════════════════════════════════════════════════════════ --}}
+<section
+    class="py-12 border-y bg-white"
+    style="border-color:var(--gray-soft);"
+    aria-label="Partenaires">
 
+    {{-- TITRE --}}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+
+        <p
+            class="text-center text-xs font-semibold tracking-widest uppercase mb-8"
+            style="color:var(--gray-mid);">
+            Ils nous font confiance
+        </p>
+
+    </div>
+
+
+    {{-- MARQUEE --}}
+    <div class="marquee-mask overflow-hidden">
+
+        <div class="marquee-track">
+
+            {{-- Première série CCIAD--}}
+            <div class="flex items-center gap-12 sm:gap-20 pr-12 sm:pr-20">
+
+                @foreach([
+                    ['nom' => 'Max it',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461747/maxit_jn3vx2.webp'],
+                    ['nom' => 'cese',       'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461748/cese_mdir0z.webp'],
+                    ['nom' => 'lywa',       'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461753/lywa_h0vg2q.webp'],
+                    ['nom' => 'samsung',     'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461752/samsung_yabejo.webp'],
+                    ['nom' => 'tooshare',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461753/tooshare_znn12k.webp'],
+                    ['nom' => 'bourse', 'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461747/cgfbourse_m1zhvb.webp'],
+                    ['nom' => 'francophonie',       'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461751/francophonie_kqcgcx.webp'],
+                    ['nom' => 'fazah',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461750/fazah_fqy6lw.webp'],
+                    ['nom' => 'destination senegal',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461750/aspt_t7dg0x.webp'],
+                    ['nom' => 'Orange money',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461751/OM_cjpf6u.webp'],
+                    ['nom' => 'Patisen',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461751/patisen_j1ftiv.webp'],
+                    ['nom' => 'IAM',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461751/iam_uegvzz.webp'],
+                    ['nom' => 'senelec',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461753/senelec_qmfw6m.webp'],
+                    ['nom' => 'ministere',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461749/ministere_education_ptbq04.webp'],
+                    ['nom' => 'Ctic',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461748/ctic_mo5sbu.webp'],
+                    ['nom' => 'ujes',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461752/ujes_psnh7o.webp'],
+                    ['nom' => 'ville',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461754/villededakar_nskciq.webp'],
+                ] as $partenaire)
+
+                    <div
+                        class="flex items-center justify-center
+                               w-32 sm:w-40 h-20 sm:h-24
+                               shrink-0">
+
+                        <img
+                            src="{{ $partenaire['logo'] }}"
+                            alt="Logo {{ $partenaire['nom'] }}"
+                            class="max-w-full max-h-16 sm:max-h-20
+                                   object-contain
+                                   hover:-0 hover:opacity-100
+                                   transition-all duration-300"
+                            loading="lazy">
+
+                    </div>
+
+                @endforeach
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+</section>
 
 {{-- ══════════════════════════════════════════════════════════════
      SECTION 2 — POURQUOI EXPODAKAR
@@ -1274,17 +1590,69 @@ $temoignages = [
                     <span class="font-display text-xl text-white">Expo<span class="text-gold-gradient">Dakar</span></span>
                 </a>
                 <p class="text-sm leading-relaxed mb-5" style="color:rgba(255,255,255,.4);">La plateforme de référence pour les événements professionnels au Sénégal.</p>
-                <div class="flex gap-3">
-                    @foreach([
-                        ['Facebook','M22 12.06C22 6.505 17.523 2 12 2S2 6.505 2 12.06c0 5.022 3.657 9.184 8.438 9.94v-7.03H7.898v-2.91h2.54V9.845c0-2.522 1.492-3.915 3.777-3.915 1.094 0 2.238.197 2.238.197v2.475h-1.26c-1.243 0-1.63.775-1.63 1.57v1.888h2.773l-.443 2.91h-2.33V22c4.78-.756 8.437-4.918 8.437-9.94Z'],
-                        ['LinkedIn','M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2ZM8.34 18.34H5.67V9.75h2.67v8.59ZM7 8.6a1.55 1.55 0 1 1 0-3.1 1.55 1.55 0 0 1 0 3.1Zm11.34 9.74h-2.67v-4.18c0-1-.02-2.28-1.39-2.28-1.39 0-1.6 1.08-1.6 2.2v4.26H10V9.75h2.56v1.17h.04c.36-.67 1.23-1.39 2.53-1.39 2.7 0 3.2 1.78 3.2 4.1v4.71Z'],
-                        ['Instagram','M12 2c2.72 0 3.06.01 4.12.06 1.06.05 1.79.22 2.43.47.66.25 1.22.6 1.77 1.15.5.5.86 1.03 1.15 1.71.25.6.42 1.29.47 2.42.05 1.06.06 1.4.06 4.12s-.01 3.06-.06 4.12c-.05 1.06-.22 1.79-.47 2.43a4.7 4.7 0 0 1-1.15 1.77c-.5.5-1.03.86-1.71 1.15-.6.25-1.29.42-2.42.47-1.06.05-1.4.06-4.12.06s-3.06-.01-4.12-.06c-1.06-.05-1.79-.22-2.43-.47a4.7 4.7 0 0 1-1.77-1.15 4.7 4.7 0 0 1-1.15-1.71c-.25-.6-.42-1.29-.47-2.42C2.01 15.06 2 14.72 2 12s.01-3.06.06-4.12c.05-1.06.22-1.79.47-2.43.25-.66.6-1.22 1.15-1.77A4.7 4.7 0 0 1 5.39 2.53c.6-.25 1.29-.42 2.42-.47C8.87 2.01 9.21 2 11.93 2H12Zm0 1.8c-2.66 0-2.98.01-4.03.06-.97.05-1.5.2-1.85.34a3 3 0 0 0-1.12.73 3 3 0 0 0-.73 1.12c-.14.36-.29.88-.34 1.85-.05 1.05-.06 1.37-.06 4.03s.01 2.98.06 4.03c.05.97.2 1.5.34 1.85.16.42.37.78.73 1.12.34.36.7.57 1.12.73.36.14.88.29 1.85.34 1.05.05 1.37.06 4.03.06s2.98-.01 4.03-.06c.97-.05 1.5-.2 1.85-.34a3 3 0 0 0 1.12-.73 3 3 0 0 0 .73-1.12c.14-.36.29-.88.34-1.85.05-1.05.06-1.37.06-4.03s-.01-2.98-.06-4.03c-.05-.97-.2-1.5-.34-1.85a3 3 0 0 0-.73-1.12 3 3 0 0 0-1.12-.73c-.36-.14-.88-.29-1.85-.34-1.05-.05-1.37-.06-4.03-.06ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Zm5.2-2a1.17 1.17 0 1 1-2.34 0 1.17 1.17 0 0 1 2.34 0Z'],
-                    ] as $s)
-                    <a href="#" class="w-9 h-9 rounded-xl flex items-center justify-center hover:opacity-80 transition" style="background:rgba(255,255,255,.07);" aria-label="{{ $s[0] }}">
-                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="{{ $s[1] }}"/></svg>
+            <div class="flex items-center gap-3">
+
+                @foreach([
+
+                    {{-- FACEBOOK --}}
+                    [
+                        'name' => 'Facebook',
+                        'url' => '#',
+                        'icon' => 'M22 12.06C22 6.505 17.523 2 12 2S2 6.505 2 12.06c0 5.022 3.657 9.184 8.438 9.94v-7.03H7.898v-2.91h2.54V9.845c0-2.522 1.492-3.915 3.777-3.915 1.094 0 2.238.197 2.238.197v2.475h-1.26c-1.243 0-1.63.775-1.63 1.57v1.888h2.773l-.443 2.91h-2.33V22c4.78-.756 8.437-4.918 8.437-9.94Z'
+                    ],
+
+                    {{-- LINKEDIN --}}
+                    [
+                        'name' => 'LinkedIn',
+                        'url' => '#',
+                        'icon' => 'M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2ZM8.34 18.34H5.67V9.75h2.67v8.59ZM7 8.6a1.55 1.55 0 1 1 0-3.1 1.55 1.55 0 0 1 0 3.1Zm11.34 9.74h-2.67v-4.18c0-1-.02-2.28-1.39-2.28-1.39 0-1.6 1.08-1.6 2.2v4.26H10V9.75h2.56v1.17h.04c.36-.67 1.23-1.39 2.53-1.39 2.7 0 3.2 1.78 3.2 4.1v4.71Z'
+                    ],
+
+                    {{-- INSTAGRAM --}}
+                    [
+                        'name' => 'Instagram',
+                        'url' => '#',
+                        'icon' => 'M12 2c2.72 0 3.06.01 4.12.06 1.06.05 1.79.22 2.43.47.66.25 1.22.6 1.77 1.15.5.5.86 1.03 1.15 1.71.25.6.42 1.29.47 2.42.05 1.06.06 1.4.06 4.12s-.01 3.06-.06 4.12c-.05 1.06-.22 1.79-.47 2.43a4.7 4.7 0 0 1-1.15 1.77c-.5.5-1.03.86-1.71 1.15-.6.25-1.29.42-2.42.47-1.06.05-1.4.06-4.12.06s-3.06-.01-4.12-.06c-1.06-.05-1.79-.22-2.43-.47a4.7 4.7 0 0 1-1.77-1.15 4.7 4.7 0 0 1-1.15-1.71c-.25-.6-.42-1.29-.47-2.42C2.01 15.06 2 14.72 2 12s.01-3.06.06-4.12c.05-1.06.22-1.79.47-2.43.25-.66.6-1.22 1.15-1.77A4.7 4.7 0 0 1 5.39 2.53c.6-.25 1.29-.42 2.42-.47C8.87 2.01 9.21 2 11.93 2H12Zm0 1.8c-2.66 0-2.98.01-4.03.06-.97.05-1.5.2-1.85.34a3 3 0 0 0-1.12.73 3 3 0 0 0-.73 1.12c-.14.36-.29.88-.34 1.85-.05 1.05-.06 1.37-.06 4.03s.01 2.98.06 4.03c.05.97.2 1.5.34 1.85.16.42.37.78.73 1.12.34.36.7.57 1.12.73.36.14.88.29 1.85.34 1.05.05 1.37.06 4.03.06s2.98-.01 4.03-.06c.97-.05 1.5-.2 1.85-.34a3 3 0 0 0 1.12-.73 3 3 0 0 0 .73-1.12c.14-.36.29-.88.34-1.85.05-1.05.06-1.37.06-4.03s-.01-2.98-.06-4.03c-.05-.97-.2-1.5-.34-1.85a3 3 0 0 0-.73-1.12 3 3 0 0 0-1.12-.73c-.36-.14-.88-.29-1.85-.34-1.05-.05-1.37-.06-4.03-.06ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Zm5.2-2a1.17 1.17 0 1 1-2.34 0 1.17 1.17 0 0 1 2.34 0Z'
+                    ],
+
+                    {{-- TIKTOK --}}
+                    [
+                        'name' => 'TikTok',
+                        'url' => '#',
+                        'icon' => 'M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 1 1-2-2.75V9.43a6.32 6.32 0 1 0 5.45 6.27V8.26a8.16 8.16 0 0 0 4.79 1.52V6.69h-1.02Z'
+                    ]
+
+                ] as $s)
+
+                    <a
+                        href="{{ $s['url'] }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="group w-10 h-10 rounded-xl
+                            flex items-center justify-center
+                            bg-white/10
+                            border border-white/10
+                            hover:bg-white
+                            hover:-translate-y-1
+                            transition-all duration-300"
+                        aria-label="{{ $s['name'] }}">
+
+                        <svg
+                            class="w-5 h-5 text-white group-hover:text-[var(--blue-night)]
+                                transition-colors duration-300"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true">
+
+                            <path d="{{ $s['icon'] }}"/>
+
+                        </svg>
+
                     </a>
-                    @endforeach
-                </div>
+
+                @endforeach
+
+            </div>
             </div>
 
             <div>
@@ -1312,8 +1680,8 @@ $temoignages = [
                         <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
                         Dakar, Plateau
                     </li>
-                    <li><a href="mailto:contact@expodakar.sn" class="text-sm" style="color:rgba(255,255,255,.45);">contact@expodakar.sn</a></li>
-                    <li><a href="tel:+221338001234" class="text-sm" style="color:rgba(255,255,255,.45);">+221 33 800 12 34</a></li>
+                    <li><a href="mailto:contact@expodakar.sn" class="text-sm" style="color:rgba(255,255,255,.45);">contact@first-media-group.com</a></li>
+                    <li><a href="tel:+221338001234" class="text-sm" style="color:rgba(255,255,255,.45);"></a></li>
                 </ul>
             </div>
 
@@ -1323,17 +1691,17 @@ $temoignages = [
      ══════════════════════════════════════════════════════════════ --}}
 
 
-{{-- 2) Bloc "Nous trouver" — remplacer l'iframe --}}
-<div class="col-span-2 sm:col-span-2 lg:col-span-1">
-    <h3 class="text-xs font-semibold tracking-widest uppercase mb-4" style="color:rgba(255,255,255,.35);">Nous trouver</h3>
-    <div class="rounded-xl overflow-hidden border" style="border-color:rgba(255,255,255,.08); height:9rem;">
-        <iframe
-            src="https://www.google.com/maps?q=CICES+Foire+de+Dakar+S%C3%A9n%C3%A9gal&output=embed"
-            class="w-full h-full grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition"
-            style="border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-            title="Localisation ExpoDakar — CICES, Foire de Dakar"></iframe>
-    </div>
-</div>
+        {{-- 2) Bloc "Nous trouver" — remplacer l'iframe --}}
+        <div class="col-span-2 sm:col-span-2 lg:col-span-1">
+            <h3 class="text-xs font-semibold tracking-widest uppercase mb-4" style="color:rgba(255,255,255,.35);">Nous trouver</h3>
+            <div class="rounded-xl overflow-hidden border" style="border-color:rgba(255,255,255,.08); height:9rem;">
+                <iframe
+                    src="https://www.google.com/maps?q=CICES+Foire+de+Dakar+S%C3%A9n%C3%A9gal&output=embed"
+                    class="w-full h-full  hover:opacity-100 hover:grayscale-0 transition"
+                    style="border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                    title="Localisation ExpoDakar — CICES, Foire de Dakar"></iframe>
+            </div>
+        </div>
             </div>
         </div>
 

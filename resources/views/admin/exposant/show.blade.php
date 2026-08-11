@@ -16,7 +16,7 @@
 <div x-data="{ confirmDelete: false, activeTab: 'infos' }">
 
     {{-- ══════════════════════════════════════════════════════════════
-         BREADCRUMB + ACTIONS TOP
+         BREADCRUMB + ACTIONS TOP img
          ══════════════════════════════════════════════════════════════ --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-6 lg:px-8 pt-6 pb-4">
 
@@ -124,7 +124,7 @@
                 <div class="w-24 h-24 rounded-2xl overflow-hidden flex items-center justify-center flex-shrink-0 border-4 border-white/15 shadow-2xl"
                      style="background:white;">
                     @if($exposant->logo)
-                        <img src="{{ Storage::url($exposant->logo) }}"
+                        <img src="{{ $exposant->logo }}"
                              alt="Logo {{ $exposant->nom_entreprise }}"
                              class="w-full h-full object-contain p-2">
                     @else
@@ -365,7 +365,7 @@
                                 <div class="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0"
                                      style="background:linear-gradient(135deg,#0A1628,#2563EB);">
                                     @if($evenement->image)
-                                    <img src="{{ storage::url($evenement->image) }}" alt="{{ $evenement->titre }}" class="w-full h-full object-cover">
+                                    <img src="{{ $evenement->image }}" alt="{{ $evenement->titre }}" class="w-full h-full object-cover">
                                     @endif
                                 </div>
 

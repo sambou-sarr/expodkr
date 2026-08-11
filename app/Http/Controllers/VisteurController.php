@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CategorieStand;
 use App\Models\Exposant;
 use App\Models\Article;
+use App\Models\Visibilite;
 use App\Models\Pub;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,10 +15,19 @@ class VisteurController extends Controller
     /**
      * Display a listing of the resource.
      */
-
-
 public function index()
 {
+       $nombre = Visibilite::find(1);
+    if($nombre == null ){
+       $nmbre1 = new Visibilite();
+       $nmbre1 -> nmbre = 1;
+       $nmbre1->save(); 
+    }else{
+
+     $nombre->nmbre = $nombre->nmbre + 1;
+     $nombre->update();
+
+    }
     $events = Evenement::with('categorie')->limit(4)->get();
     $categories = CategorieStand::take(3)->get();
     $exposants = Exposant::take(3)->get();
@@ -52,13 +62,13 @@ public function index()
     /**
      * Display the specified resource.
      */
-public function show($id)
-{
-    $event = Evenement::with(['categorie', 'exposant'])->findOrFail($id);
+    public function show($id)
+    {
+        $event = Evenement::with(['categorie', 'exposant'])->findOrFail($id);
 
-    return view('visiteur.voir_plus', compact('event'));
-}
-public function showex($id)
+        return view('visiteur.voir_plus', compact('event'));
+    }
+    public function showex($id)
     {
         $exposant = Exposant::findOrFail($id);
 

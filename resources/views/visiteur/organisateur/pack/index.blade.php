@@ -152,40 +152,136 @@
 
         <div class="packs-grid" style="display:grid; grid-template-columns:1fr; gap:1.25rem;">
 
+         
             {{-- PACK ESSENTIEL --}}
             <div class="card reveal reveal-delay-1" x-data x-intersect.once="$el.classList.add('visible')">
                 <div style="padding:1.75rem; display:flex; flex-direction:column; flex:1;">
-                    <p class="section-label" style="margin-bottom:.4rem;">Essentiel</p>
-                    <p style="font-size:.82rem; color:var(--gray-mid); line-height:1.6; margin-bottom:1.5rem; min-height:2.6rem;">Être présent sur la plateforme et présenter son activité.</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.4rem;">
+                        <p class="section-label" style="margin:0;">Essentiel</p>
+                        <span style="
+                            background:#dc2626;
+                            color:white;
+                            padding:.3rem .65rem;
+                            border-radius:999px;
+                            font-size:.7rem;
+                            font-weight:700;
+                            letter-spacing:.03em;
+                        ">
+                            -25%
+                        </span>
+                    </div>
+
+                    <p style="font-size:.82rem; color:var(--gray-mid); line-height:1.6; margin-bottom:1.5rem; min-height:2.6rem;">
+                        Être présent sur la plateforme et présenter son activité.
+                    </p>
 
                     <div style="margin-bottom:1.75rem; padding-bottom:1.5rem; border-bottom:1px solid var(--gray-soft);">
-                        <span class="font-display" style="font-size:1.9rem;">75 000</span>
-                        <span style="font-size:.8rem; color:var(--gray-mid);"> FCFA / événement</span>
+
+                        {{-- Ancien prix --}}
+                        <div style="margin-bottom:.15rem;">
+                            <span style="
+                                font-size:.9rem;
+                                color:var(--gray-mid);
+                                text-decoration:line-through;
+                            ">
+                                100 000 FCFA
+                            </span>
+                        </div>
+
+                        {{-- Nouveau prix --}}
+                        <span class="font-display" style="font-size:1.9rem;">
+                            75 000
+                        </span>
+
+                        <span style="font-size:.8rem; color:var(--gray-mid);">
+                            FCFA / événement
+                        </span>
+
                     </div>
 
                     <ul style="display:flex; flex-direction:column; gap:.7rem; margin-bottom:1.5rem;">
-                        <li class="feat-li"><svg class="check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>Fiche entreprise</li>
-                        <li class="feat-li"><svg class="check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>Logo et description</li>
-                        <li class="feat-li"><svg class="check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>Formulaire de contact</li>
-                        <li class="feat-li-off"><svg class="cross" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>Bannière publicitaire</li>
+                        <li class="feat-li">
+                            <svg class="check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
+                            </svg>
+                            Fiche entreprise
+                        </li>
+
+                        <li class="feat-li">
+                            <svg class="check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
+                            </svg>
+                            Logo et description
+                        </li>
+
+                        <li class="feat-li">
+                            <svg class="check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
+                            </svg>
+                            Formulaire de contact
+                        </li>
+
+                        <li class="feat-li-off">
+                            <svg class="cross" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+                            </svg>
+                            Bannière publicitaire
+                        </li>
                     </ul>
 
                     <a href="#" class="cta">Choisir ce pack</a>
                 </div>
             </div>
 
+
+
             {{-- PACK PROFESSIONNEL --}}
             <div class="reveal reveal-delay-2" x-data x-intersect.once="$el.classList.add('visible')">
                 <div class="card card-pop" style="height:100%;">
                     <div class="badge-pop" style="position:absolute; top:0; right:1.5rem;">Recommandé</div>
                     <div style="padding:1.75rem; padding-top:2.2rem; display:flex; flex-direction:column; flex:1;">
-                        <p class="section-label" style="margin-bottom:.4rem; color:var(--blue-electric);">Professionnel</p>
-                        <p style="font-size:.82rem; color:var(--gray-mid); line-height:1.6; margin-bottom:1.5rem; min-height:2.6rem;">Développer sa visibilité et générer des contacts qualifiés.</p>
-
-                        <div style="margin-bottom:1.75rem; padding-bottom:1.5rem; border-bottom:1px solid var(--gray-soft);">
-                            <span class="font-display" style="font-size:1.9rem;">150 000</span>
-                            <span style="font-size:.8rem; color:var(--gray-mid);"> FCFA / événement</span>
+                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.4rem;">
+                            <p class="section-label" style="margin:0;">Professionnel</p>
+                            <span style="
+                                background:#dc2626;
+                                color:white;
+                                padding:.3rem .65rem;
+                                border-radius:999px;
+                                font-size:.7rem;
+                                font-weight:700;
+                                letter-spacing:.03em;
+                            ">
+                                -25%
+                            </span>
                         </div>
+
+                    <p style="font-size:.82rem; color:var(--gray-mid); line-height:1.6; margin-bottom:1.5rem; min-height:2.6rem;">
+                        Développer sa visibilité et générer des contacts qualifiés.
+                    </p>
+
+                    <div style="margin-bottom:1.75rem; padding-bottom:1.5rem; border-bottom:1px solid var(--gray-soft);">
+
+                        {{-- Ancien prix --}}
+                        <div style="margin-bottom:.15rem;">
+                            <span style="
+                                font-size:.9rem;
+                                color:var(--gray-mid);
+                                text-decoration:line-through;
+                            ">
+                                200 000 FCFA
+                            </span>
+                        </div>
+
+                        {{-- Nouveau prix --}}
+                        <span class="font-display" style="font-size:1.9rem;">
+                            150 000
+                        </span>
+
+                        <span style="font-size:.8rem; color:var(--gray-mid);">
+                            FCFA / événement
+                        </span>
+
+                    </div>
 
                         <p style="font-size:.75rem; font-weight:600; color:var(--gray-mid); margin-bottom:.7rem;">Tout l'Essentiel, plus :</p>
                         <ul style="display:flex; flex-direction:column; gap:.7rem; margin-bottom:1.5rem;">
@@ -204,13 +300,48 @@
             {{-- PACK PREMIUM --}}
             <div class="card reveal reveal-delay-3" x-data x-intersect.once="$el.classList.add('visible')">
                 <div style="padding:1.75rem; display:flex; flex-direction:column; flex:1;">
-                    <p class="section-label" style="margin-bottom:.4rem;">Premium</p>
-                    <p style="font-size:.82rem; color:var(--gray-mid); line-height:1.6; margin-bottom:1.5rem; min-height:2.6rem;">Maximiser sa visibilité et attirer des prospects qualifiés.</p>
+                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.4rem;">
+                            <p class="section-label" style="margin:0;">Premium</p>
+                            <span style="
+                                background:#dc2626;
+                                color:white;
+                                padding:.3rem .65rem;
+                                border-radius:999px;
+                                font-size:.7rem;
+                                font-weight:700;
+                                letter-spacing:.03em;
+                            ">
+                                -25%
+                            </span>
+                        </div>
 
+                    <p style="font-size:.82rem; color:var(--gray-mid); line-height:1.6; margin-bottom:1.5rem; min-height:2.6rem;">
+                        Maximiser sa visibilité et attirer des prospects qualifiés.
+                    </p>
                     <div style="margin-bottom:1.75rem; padding-bottom:1.5rem; border-bottom:1px solid var(--gray-soft);">
-                        <span class="font-display" style="font-size:1.9rem;">300 000</span>
-                        <span style="font-size:.8rem; color:var(--gray-mid);"> FCFA / événement</span>
-                    </div>
+
+                                {{-- Ancien prix --}}
+                                <div style="margin-bottom:.15rem;">
+                                    <span style="
+                                        font-size:.9rem;
+                                        color:var(--gray-mid);
+                                        text-decoration:line-through;
+                                    ">
+                                        500 000 FCFA
+                                    </span>
+                                </div>
+
+                                {{-- Nouveau prix --}}
+                                <span class="font-display" style="font-size:1.9rem;">
+                                    275 000
+                                </span>
+
+                                <span style="font-size:.8rem; color:var(--gray-mid);">
+                                    FCFA / événement
+                                </span>
+                                <br>
+
+                        </div>
 
                     <p style="font-size:.75rem; font-weight:600; color:var(--gray-mid); margin-bottom:.7rem;">Tout le Professionnel, plus :</p>
                     <ul style="display:flex; flex-direction:column; gap:.7rem; margin-bottom:1.5rem;">
@@ -228,13 +359,47 @@
             {{-- PACK PARTENAIRE VIP --}}
             <div class="card reveal reveal-delay-4" x-data x-intersect.once="$el.classList.add('visible')">
                 <div style="padding:1.75rem; display:flex; flex-direction:column; flex:1;">
-                    <p class="section-label" style="margin-bottom:.4rem;">Partenaire VIP</p>
-                    <p style="font-size:.82rem; color:var(--gray-mid); line-height:1.6; margin-bottom:1.5rem; min-height:2.6rem;">Devenir un acteur majeur avec une visibilité premium.</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.4rem;">
+                            <p class="section-label" style="margin:0;">Partenaire VIP</p>
+                            <span style="
+                                background:#dc2626;
+                                color:white;
+                                padding:.3rem .65rem;
+                                border-radius:999px;
+                                font-size:.7rem;
+                                font-weight:700;
+                                letter-spacing:.03em;
+                            ">
+                                -25%
+                            </span>
+                        </div>
 
+                    <p style="font-size:.82rem; color:var(--gray-mid); line-height:1.6; margin-bottom:1.5rem; min-height:2.6rem;">
+                        Devenir un acteur majeur avec une visibilité premium.
+                    </p>
                     <div style="margin-bottom:1.75rem; padding-bottom:1.5rem; border-bottom:1px solid var(--gray-soft);">
-                        <span class="font-display" style="font-size:1.9rem;">600 000</span>
-                        <span style="font-size:.8rem; color:var(--gray-mid);"> FCFA / événement</span>
-                    </div>
+
+                                {{-- Ancien prix --}}
+                                <div style="margin-bottom:.15rem;">
+                                    <span style="
+                                        font-size:.9rem;
+                                        color:var(--gray-mid);
+                                        text-decoration:line-through;
+                                    ">
+                                         2 000 000 FCFA
+                                    </span>
+                                </div>
+
+                                {{-- Nouveau prix --}}
+                                <span class="font-display" style="font-size:1.9rem;">
+                                     1 500 000
+                                </span>
+
+                                <span style="font-size:.8rem; color:var(--gray-mid);">
+                                    FCFA / événement
+                                </span>
+
+                        </div>
 
                     <p style="font-size:.75rem; font-weight:600; color:var(--gray-mid); margin-bottom:.7rem;">Tout le Premium, plus :</p>
                     <ul style="display:flex; flex-direction:column; gap:.7rem; margin-bottom:1.5rem;">
@@ -243,6 +408,7 @@
                         <li class="feat-li"><svg class="check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>Bannière Premium en page d'accueil</li>
                         <li class="feat-li"><svg class="check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>Article sponsorisé</li>
                         <li class="feat-li"><svg class="check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>Rapport complet de performance</li>
+                        <li class="feat-li"><svg class="check" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>Comminucation avant  pendant aprés  </li>
                     </ul>
 
                     <a href="#" class="cta">Choisir ce pack</a>

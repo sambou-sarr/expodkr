@@ -14,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrganisateurController;
 use App\Http\Controllers\Organisateur\EvenementPackController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\NewsletterController;
 
 // Controllers - Admin
 use App\Http\Controllers\Admin\DashboardController;
@@ -65,7 +66,6 @@ Route::get('/user/events', [VisteurController::class, 'listevents'])->name('user
 Route::get('/user/events/search', [VisteurController::class, 'search'])->name('user.events.search');
 Route::get('/user/events/{id}', [VisteurController::class, 'show'])->name('user.events.show');
 Route::get('/user/exposants/{id}', [VisteurController::class, 'showex'])->name('user.exposants.show');
-Route::post('/user/newsletter', [VisteurController::class, 'subscribe'])->name('user.newsletter.subscribe');
 
 Route::get('/blog', [BlogController::class, 'index'])
     ->name('blog.index');
@@ -100,7 +100,6 @@ Route::get('/evenements/reserver/{event}', [ReservationController::class, 'creat
 Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
 Route::get('/reservations/{reservation}/succes', [ReservationController::class, 'success'])->name('reservations.success');
 
-use App\Http\Controllers\NewsletterController;
 
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
     ->middleware('throttle:5,1') // 5 tentatives / minute / IP

@@ -156,7 +156,7 @@
                                 <div class="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center"
                                      >
                                     @if($exposant->logo)
-                                        <img src="{{ Storage::url($exposant->logo) }}"
+                                        <img src="{{ $exposant->logo }}"
                                              alt="Logo {{ $exposant->nom_entreprise }}"
                                              class="w-full h-full object-contain p-1.5">
                                     @else
@@ -240,7 +240,7 @@
                             @endif
                         </td>
 
-                        {{-- Actions --}}
+                        {{-- Actions img--}}
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-end gap-1.5">
 

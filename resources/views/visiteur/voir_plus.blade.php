@@ -63,7 +63,9 @@
             overflow-x: hidden;
             margin: 0;
             -webkit-font-smoothing: antialiased;
+            max-width: 100vw;
         }
+        img, svg { max-width: 100%; }
         .font-display { font-family: 'Instrument Serif', serif; }
         .font-mono     { font-family: 'JetBrains Mono', monospace; }
 
@@ -77,6 +79,8 @@
         /* ── Navbar ──────────────────────────────────────────── */
         .navbar { position: fixed; inset: 0 0 auto 0; z-index: 50; transition: background .3s, box-shadow .3s, backdrop-filter .3s; }
         .navbar.scrolled { background: rgba(10,22,40,.86); backdrop-filter: blur(14px); box-shadow: 0 2px 24px rgba(10,22,40,.2); }
+        .navbar-inner { max-width:80rem;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:4.5rem; }
+        .nav-cta-text { display:inline; }
 
         /* ── Hero atmosphere ─────────────────────────────────── */
         .hero-overlay { background: linear-gradient(to bottom, rgba(10,22,40,.30) 0%, rgba(10,22,40,.55) 45%, rgba(10,22,40,.94) 100%); }
@@ -86,6 +90,8 @@
             background-size: 200px; opacity: .04; mix-blend-mode: overlay;
         }
         .particle { position: absolute; border-radius: 50%; pointer-events: none; }
+        .hero-section { position:relative;min-height:94vh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden; }
+        .hero-inner { position:relative;z-index:1;max-width:80rem;margin:0 auto;padding:2rem 1.5rem 5rem;width:100%; }
 
         /* ── Glassmorphism ───────────────────────────────────── */
         .glass { background: rgba(255,255,255,.08); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,.16); }
@@ -103,6 +109,14 @@
         .d1 { transition-delay: .08s; } .d2 { transition-delay: .16s; } .d3 { transition-delay: .24s; } .d4 { transition-delay: .32s; }
 
         .sidebar-sticky { position: sticky; top: 6rem; }
+
+        /* ── Hero fade-in helper (replaces duplicated inline style attrs) ── */
+        .fade-block { transition: opacity .7s ease, transform .7s ease; }
+        .fade-block.d-title { transition-delay: .1s; }
+        .fade-block.d-sub { transition: opacity .8s ease .15s; }
+        .fade-block.d-meta { transition: opacity .8s ease .2s, transform .8s ease .2s; }
+        .fade-block.d-stats { transition: opacity .8s ease .3s, transform .8s ease .3s; }
+        .fade-block.d-mockup { transition: opacity 1s ease .3s, transform 1s ease .3s; }
 
         /* ── Buttons : magnetic + glow + ripple ──────────────── */
         .btn-premium {
@@ -158,7 +172,7 @@
         @media (min-width: 1024px) { .masonry { column-count: 2; } }
         .masonry-item { break-inside: avoid; margin-bottom: 1rem; }
         .gallery-overlay { opacity: 0; transition: opacity .35s ease; background: linear-gradient(to top, rgba(10,22,40,.78), transparent 60%); }
-        .gallery-tile:hover .gallery-overlay { opacity: 1; }
+        .gallery-tile:hover .gallery-overlay, .gallery-tile:focus-visible .gallery-overlay { opacity: 1; }
         .gallery-tile img { transition: transform .55s cubic-bezier(.16,1,.3,1); }
         .gallery-tile:hover img { transform: scale(1.07); }
 
@@ -177,17 +191,53 @@
         .partner-logo { filter: grayscale(1) opacity(.5); transition: filter .4s ease, transform .4s ease; }
         .partner-logo:hover { filter: grayscale(0) opacity(1); transform: scale(1.06); }
 
+        /* ── Layout containers (extracted so mobile rules can target them) ── */
+        .page-container { max-width:80rem;margin:0 auto;padding:5rem 1.5rem 6rem; }
+        .two-col { display:grid;grid-template-columns:1fr 380px;gap:3rem;align-items:start; }
+        .left-col { display:flex;flex-direction:column;gap:4rem; }
+        .section-block { padding:2.5rem;border-radius:var(--radius);background:var(--pearl);position:relative;overflow:hidden; }
+        .practical-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem; }
+        .practical-card { padding:1.5rem;border-radius:20px;background:var(--pearl);border:1px solid var(--gray-soft); }
+        .stats-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem; }
+        .org-card { padding:2rem;border:1px solid var(--gray-soft);background:var(--pearl);box-shadow:var(--shadow-sm); }
+        .share-card { padding:1.75rem;border-radius:20px;border:1px solid var(--gray-soft);background:var(--pearl); }
+        .share-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem; }
+        .autres-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem; }
+        .sidebar-card { padding:1.5rem;border:1px solid var(--gray-soft);background:white;box-shadow:var(--shadow-sm); }
+        .footer-inner { max-width:80rem;margin:0 auto;padding:4.5rem 1.5rem 3rem; }
+        .footer-grid { display:grid;grid-template-columns:1.6fr 1fr 1fr 1.3fr;gap:3rem;margin-bottom:3.5rem; }
+        .partners-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;align-items:center; }
+        .cta-section { position:relative;padding:6rem 1.5rem;overflow:hidden;background:linear-gradient(135deg,var(--blue-night),var(--blue-dark)); }
+
         @media (max-width: 1023px) {
             .two-col { grid-template-columns: 1fr !important; }
             .sidebar-sticky { position: static !important; }
             .hide-mobile { display: none !important; }
             .hero-cols { grid-template-columns: 1fr !important; }
             .mockup-wrap { max-width: 280px; margin-top: 2.5rem; }
+            .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 2.5rem !important; }
+            .partners-grid { grid-template-columns: repeat(3,1fr) !important; }
+        }
+        @media (max-width: 767px) {
+            .page-container { padding: 3rem 1.25rem 3.5rem !important; }
+            .left-col { gap: 2.75rem !important; }
+            .section-block, .org-card { padding: 1.5rem !important; }
+            .share-card { padding: 1.25rem !important; }
+            .cta-section { padding: 3.5rem 1.25rem !important; }
+            .footer-inner { padding: 3rem 1.25rem 2rem !important; }
+            .partners-grid { grid-template-columns: repeat(2,1fr) !important; }
+            h2.font-display { font-size: 1.5rem !important; }
+            .nav-cta-text { display: none; }
         }
         @media (max-width: 640px) {
             .hero-title { font-size: clamp(2rem, 8vw, 3rem) !important; }
+            .hero-section { min-height: auto !important; padding-top: 5.5rem; }
+            .hero-inner { padding: 1.5rem 1.25rem 3rem !important; }
             .share-grid { grid-template-columns: 1fr 1fr !important; }
-            .footer-grid { grid-template-columns: 1fr 1fr !important; }
+            .footer-grid { grid-template-columns: 1fr !important; }
+            .partners-grid { grid-template-columns: repeat(2,1fr) !important; }
+            .practical-card { padding: 1.25rem !important; }
+            .navbar-inner { padding: 0 1.25rem !important; height: 4rem !important; }
         }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
@@ -200,12 +250,12 @@
 <body x-data="{ lightboxOpen: false, lightboxSrc: '', lightboxAlt: '' }">
 
 {{-- ══════════════════════════════════════════════════════════════
-     NAVBAR
+     NAVBAR img
      ══════════════════════════════════════════════════════════════ --}}
 <header class="navbar"
     x-data="{ scrolled: false, init() { window.addEventListener('scroll', () => { this.scrolled = window.scrollY > 80; }, { passive: true }); } }"
     :class="scrolled ? 'scrolled' : ''" role="banner">
-    <div style="max-width:80rem;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:4.5rem;">
+    <div class="navbar-inner">
         <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:.65rem;text-decoration:none;" aria-label="ExpoDakar – Accueil">
             <img src=https://res.cloudinary.com/dstbqtuxm/image/upload/v1786364683/ChatGPT_Image_10_ao%C3%BBt_2026__02_24_21-removebg-preview_spadbb.png alt="Logo ExpoDakar" style="height:2.75rem;width:auto;object-fit:contain;">
             <span class="font-display" style="font-size:1.35rem;color:white;">Expo<span class="text-gold">Dakar</span></span>
@@ -213,7 +263,7 @@
         <a href="/" class="btn-premium" style="gap:.5rem;font-size:.8rem;font-weight:600;color:white;padding:.5rem 1rem;border-radius:12px;background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);transition:background .2s;"
            onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">
             <svg style="width:.9rem;height:.9rem;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
-            Tous les événements
+            <span class="nav-cta-text">Tous les événements</span>
         </a>
     </div>
 </header>
@@ -222,8 +272,7 @@
 {{-- ══════════════════════════════════════════════════════════════
      1. HERO IMMERSIF — image + illustration flottante à droite
      ══════════════════════════════════════════════════════════════ --}}
-<section id="hero" style="position:relative;min-height:94vh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;"
-    x-data="{ visible: false }" x-init="setTimeout(() => visible = true, 100)" aria-label="Bannière de l'événement">
+<section id="hero" class="hero-section" x-data="{ visible: false }" x-init="setTimeout(() => visible = true, 100)" aria-label="Bannière de l'événement">
 
     <div style="position:absolute;inset:0;z-index:0;">
         @if($event->image)
@@ -238,9 +287,9 @@
         <div id="glowGold" class="mockup-glow" style="width:360px;height:360px;top:60px;left:-100px;background:var(--gold);opacity:.14;"></div>
     </div>
 
-    <div style="position:relative;z-index:1;max-width:80rem;margin:0 auto;padding:2rem 1.5rem 5rem;width:100%;">
+    <div class="hero-inner">
 
-        <nav style="display:flex;gap:.5rem;align-items:center;margin-bottom:1.5rem;opacity:.5;font-size:.75rem;color:white;" aria-label="Fil d'Ariane">
+        <nav style="display:flex;gap:.5rem;align-items:center;margin-bottom:1.5rem;opacity:.5;font-size:.75rem;color:white;flex-wrap:wrap;" aria-label="Fil d'Ariane">
             <a href="{{ route('home') }}" style="color:inherit;text-decoration:none;">Accueil</a>
             <span>/</span>
             <a href="{{ route('events.index') }}" style="color:inherit;text-decoration:none;">Événements</a>
@@ -252,9 +301,7 @@
 
             {{-- Colonne texte --}}
             <div>
-                <div style="display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1.75rem;"
-                     :style="visible ? 'opacity:1;transform:translateY(0)' : 'opacity:0;transform:translateY(16px)'"
-                     style="transition:opacity .7s ease, transform .7s ease;">
+                <div class="fade-block" :style="visible ? 'opacity:1;transform:translateY(0)' : 'opacity:0;transform:translateY(16px)'" style="display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1.75rem;">
                     @if($event->exposant)
                     <span style="display:inline-flex;align-items:center;gap:.5rem;padding:.3rem .8rem .3rem .3rem;border-radius:99px;background:rgba(255,255,255,.1);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);">
                         @if($event->exposant->logo)
@@ -287,23 +334,20 @@
                     </span>
                 </div>
 
-                <h1 class="font-display hero-title"
+                <h1 class="font-display hero-title d-title fade-block"
                     style="font-size:clamp(2.5rem,5.2vw,4.25rem);color:white;line-height:1.06;margin:0 0 1.25rem;"
-                    :style="visible ? 'opacity:1;transform:translateY(0)' : 'opacity:0;transform:translateY(24px)'"
-                    style="transition:opacity .8s ease .1s, transform .8s ease .1s;">
+                    :style="visible ? 'opacity:1;transform:translateY(0)' : 'opacity:0;transform:translateY(24px)'">
                     {{ $event->titre }}
                 </h1>
 
                 @if($event->sous_titre ?? null)
-                <p style="font-size:1.05rem;color:rgba(255,255,255,.65);max-width:38rem;margin:0 0 1.75rem;line-height:1.6;"
-                   :style="visible ? 'opacity:1' : 'opacity:0'" style="transition:opacity .8s ease .15s;">
+                <p class="fade-block d-sub" style="font-size:1.05rem;color:rgba(255,255,255,.65);max-width:38rem;margin:0 0 1.75rem;line-height:1.6;"
+                   :style="visible ? 'opacity:1' : 'opacity:0'">
                     {{ $event->sous_titre }}
                 </p>
                 @endif
 
-                <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:center;margin-bottom:2rem;"
-                     :style="visible ? 'opacity:1;transform:translateY(0)' : 'opacity:0;transform:translateY(20px)'"
-                     style="transition:opacity .8s ease .2s, transform .8s ease .2s;">
+                <div class="fade-block d-meta" :style="visible ? 'opacity:1;transform:translateY(0)' : 'opacity:0;transform:translateY(20px)'" style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:center;margin-bottom:2rem;">
                     <div style="display:flex;align-items:center;gap:.6rem;color:rgba(255,255,255,.85);font-size:.925rem;">
                         <svg style="width:1.1rem;height:1.1rem;flex-shrink:0;" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
                         <span>
@@ -326,9 +370,7 @@
                 </div>
 
                 {{-- Mini stat row (statistiques rapides) --}}
-                <div style="display:flex;flex-wrap:wrap;gap:2rem;"
-                     :style="visible ? 'opacity:1;transform:translateY(0)' : 'opacity:0;transform:translateY(16px)'"
-                     style="transition:opacity .8s ease .3s, transform .8s ease .3s;">
+                <div class="fade-block d-stats" :style="visible ? 'opacity:1;transform:translateY(0)' : 'opacity:0;transform:translateY(16px)'" style="display:flex;flex-wrap:wrap;gap:2rem;">
                     <div>
                         <p class="font-display" style="font-size:2rem;color:white;line-height:1;margin:0;">248</p>
                         <p style="font-size:.72rem;color:rgba(255,255,255,.55);margin:.35rem 0 0;text-transform:uppercase;letter-spacing:.08em;">Inscrits</p>
@@ -347,9 +389,8 @@
             </div>
 
             {{-- Colonne illustration mockup flottant (signature) --}}
-            <div class="hide-mobile" id="mockupWrap" class="mockup-wrap"
-                 :style="visible ? 'opacity:1;transform:scale(1)' : 'opacity:0;transform:scale(.9)'"
-                 style="transition:opacity 1s ease .3s, transform 1s ease .3s;">
+            <div class="hide-mobile mockup-wrap fade-block d-mockup" id="mockupWrap"
+                 :style="visible ? 'opacity:1;transform:scale(1)' : 'opacity:0;transform:scale(.9)'">
                 <div class="mockup-wrap">
                     <div class="mockup-ring" style="animation: floatY 7s ease-in-out infinite;"></div>
                     <div class="mockup-ring" style="inset:14%; animation: floatY 9s ease-in-out infinite reverse;"></div>
@@ -392,16 +433,16 @@
 {{-- ══════════════════════════════════════════════════════════════
      2. LAYOUT PRINCIPAL
      ══════════════════════════════════════════════════════════════ --}}
-<div style="max-width:80rem;margin:0 auto;padding:5rem 1.5rem 6rem;">
-    <div class="two-col" style="display:grid;grid-template-columns:1fr 380px;gap:3rem;align-items:start;">
+<div class="page-container">
+    <div class="two-col">
 
-        <div style="display:flex;flex-direction:column;gap:4rem;">
+        <div class="left-col">
 
             {{-- ══════════════ 3. À propos — storytelling ══════════════ --}}
             <section class="reveal" x-intersect.once="$el.classList.add('on')" aria-label="Description de l'événement">
-                <div style="padding:2.5rem;border-radius:var(--radius);background:var(--pearl);position:relative;overflow:hidden;">
+                <div class="section-block">
                     <div style="position:absolute;top:-30px;right:-20px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.18),transparent 70%);" aria-hidden="true"></div>
-                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.75rem;position:relative;">
+                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.75rem;position:relative;flex-wrap:wrap;">
                         <div style="width:3.25rem;height:3.25rem;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:var(--shadow-sm);">
                             <svg style="width:1.5rem;height:1.5rem;color:white;" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
                         </div>
@@ -447,7 +488,7 @@
                     <div style="width:3px;height:2rem;border-radius:2px;background:linear-gradient(to bottom,var(--gold),var(--gold-light));flex-shrink:0;" aria-hidden="true"></div>
                     <h2 class="font-display" style="font-size:1.85rem;color:var(--blue-night);margin:0;">En chiffres</h2>
                 </div>
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;">
+                <div class="stats-grid">
                     @foreach($stats as $stat)
                     <div class="stat-card" style="border-radius:18px;padding:1.4rem 1rem;text-align:center;">
                         <div style="width:2.5rem;height:2.5rem;border-radius:12px;background:var(--blue-soft);display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;">
@@ -467,9 +508,9 @@
                     <div style="width:3px;height:2rem;border-radius:2px;background:linear-gradient(to bottom,var(--blue),var(--blue-dark));flex-shrink:0;" aria-hidden="true"></div>
                     <h2 class="font-display" style="font-size:1.85rem;color:var(--blue-night);margin:0;">Informations pratiques</h2>
                 </div>
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;">
+                <div class="practical-grid">
 
-                    <div class="card-lift" style="padding:1.5rem;border-radius:20px;background:var(--pearl);border:1px solid var(--gray-soft);">
+                    <div class="card-lift practical-card">
                         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;">
                             <div style="width:2.75rem;height:2.75rem;border-radius:12px;background:var(--blue-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                                 <svg style="width:1.25rem;height:1.25rem;color:var(--blue);" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75M8.25 12h.008v.008H8.25V12Zm3 0h.008v.008H11.25V12Zm3 0h.008v.008H14.25V12Z"/></svg>
@@ -480,7 +521,7 @@
                         <div style="font-size:.825rem;color:var(--gray-mid);">{{ \Carbon\Carbon::parse($event->date_debut)->translatedFormat('Y') }}</div>
                     </div>
 
-                    <div class="card-lift" style="padding:1.5rem;border-radius:20px;background:var(--pearl);border:1px solid var(--gray-soft);">
+                    <div class="card-lift practical-card">
                         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;">
                             <div style="width:2.75rem;height:2.75rem;border-radius:12px;background:var(--blue-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                                 <svg style="width:1.25rem;height:1.25rem;color:var(--blue);" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
@@ -491,7 +532,7 @@
                         <div style="font-size:.825rem;color:var(--gray-mid);">{{ \Carbon\Carbon::parse($event->date_fin)->translatedFormat('Y') }}</div>
                     </div>
 
-                    <div class="card-lift" style="padding:1.5rem;border-radius:20px;background:var(--pearl);border:1px solid var(--gray-soft);">
+                    <div class="card-lift practical-card">
                         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;">
                             <div style="width:2.75rem;height:2.75rem;border-radius:12px;background:var(--blue-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                                 <svg style="width:1.25rem;height:1.25rem;color:var(--blue);" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
@@ -507,7 +548,7 @@
                         </a>
                     </div>
 
-                    <div class="card-lift" style="padding:1.5rem;border-radius:20px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));border:none;">
+                    <div class="card-lift practical-card" style="background:linear-gradient(135deg,var(--blue),var(--blue-dark));border:none;">
                         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;">
                             <div style="width:2.75rem;height:2.75rem;border-radius:12px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                                 <svg style="width:1.25rem;height:1.25rem;color:white;" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
@@ -557,7 +598,7 @@
                 </div>
 
                 @if($event->exposant)
-                <div class="card-premium" style="padding:2rem;border:1px solid var(--gray-soft);background:var(--pearl);box-shadow:var(--shadow-sm);">
+                <div class="card-premium org-card">
                     <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-start;">
                         <div style="flex-shrink:0;">
                             @if($event->exposant->logo)
@@ -593,7 +634,7 @@
                                 <a href="mailto:{{ $event->exposant->email }}" style="display:inline-flex;align-items:center;gap:.5rem;font-size:.825rem;font-weight:500;color:var(--gray-dark);text-decoration:none;padding:.5rem .9rem;border-radius:10px;background:white;border:1px solid var(--gray-soft);transition:border-color .2s,color .2s;"
                                    onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'" onmouseout="this.style.borderColor='var(--gray-soft)';this.style.color='var(--gray-dark)'">
                                     <svg style="width:.9rem;height:.9rem;flex-shrink:0;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
-                                    {{ $event->exposant->email }}
+                                    {{--{{ $event->exposant->email }} --}}
                                 </a>
                                 @endif
                                 @if($event->exposant->site_web)
@@ -608,7 +649,7 @@
                     </div>
                 </div>
                 @else
-                <div class="card-premium" style="padding:2rem;border:1px solid var(--gray-soft);background:var(--pearl);box-shadow:var(--shadow-sm);">
+                <div class="card-premium org-card">
                     <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:center;">
                         <div style="width:5rem;height:5rem;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-dark));display:flex;align-items:center;justify-content:center;border:3px solid white;box-shadow:var(--shadow-sm);flex-shrink:0;">
                             <svg style="width:2rem;height:2rem;color:white;" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
@@ -646,7 +687,7 @@
                             <div class="timeline-dot">
                                 <span class="font-mono" style="font-size:.6rem;font-weight:700;color:var(--gold);">{{ $loop->iteration }}</span>
                             </div>
-                            <div style="padding-top:.15rem;">
+                            <div style="padding-top:.15rem;min-width:0;">
                                 <p class="font-mono" style="font-size:.7rem;letter-spacing:.1em;color:var(--gold);margin:0 0 .25rem;text-transform:uppercase;">{{ $step['annee'] }}</p>
                                 <h3 style="font-size:1.1rem;font-weight:700;color:var(--blue-night);margin:0 0 .4rem;">{{ $step['titre'] }}</h3>
                                 <p style="font-size:.9rem;color:var(--gray-mid);line-height:1.6;margin:0;max-width:48ch;">{{ $step['texte'] }}</p>
@@ -670,7 +711,7 @@
                     <div style="width:3px;height:2rem;border-radius:2px;background:linear-gradient(to bottom,var(--blue),var(--blue-dark));flex-shrink:0;" aria-hidden="true"></div>
                     <h2 class="font-display" style="font-size:1.85rem;color:var(--blue-night);margin:0;">Autres événements de {{ $event->exposant->nom_entreprise }}</h2>
                 </div>
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;">
+                <div class="autres-grid">
                     @foreach($autresEvenements->take(4) as $autre)
                     <a href="{{ route('events.show', $autre->id) }}" class="card-premium" style="display:block;text-decoration:none;overflow:hidden;border:1px solid var(--gray-soft);background:white;box-shadow:var(--shadow-sm);">
                         <div style="height:140px;overflow:hidden;position:relative;">
@@ -699,9 +740,9 @@
                     <h2 class="font-display" style="font-size:1.85rem;color:var(--blue-night);margin:0;">Partager l'événement</h2>
                 </div>
 
-                <div style="padding:1.75rem;border-radius:20px;border:1px solid var(--gray-soft);background:var(--pearl);">
+                <div class="share-card">
                     <p style="font-size:.9rem;color:var(--gray-mid);margin:0 0 1.5rem;">Partagez cet événement avec vos contacts et votre réseau professionnel.</p>
-                    <div class="share-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;">
+                    <div class="share-grid">
                         <a :href="`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`" target="_blank" rel="noopener noreferrer" class="share-btn" style="background:#1877F2;flex-direction:column;gap:.4rem;padding:.9rem .5rem;" aria-label="Partager sur Facebook">
                             <svg style="width:1.2rem;height:1.2rem;" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                             <span style="font-size:.7rem;">Facebook</span>
@@ -719,8 +760,8 @@
                             <span style="font-size:.7rem;">LinkedIn</span>
                         </a>
                     </div>
-                    <div style="margin-top:1rem;display:flex;gap:.75rem;align-items:center;">
-                        <div style="flex:1;padding:.7rem 1rem;border-radius:12px;background:white;border:1px solid var(--gray-soft);font-size:.8rem;color:var(--gray-mid);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"><span x-text="pageUrl"></span></div>
+                    <div style="margin-top:1rem;display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
+                        <div style="flex:1;min-width:0;padding:.7rem 1rem;border-radius:12px;background:white;border:1px solid var(--gray-soft);font-size:.8rem;color:var(--gray-mid);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"><span x-text="pageUrl"></span></div>
                         <button @click="copyLink()" class="btn-premium" style="flex-shrink:0;padding:.7rem 1.1rem;border-radius:12px;font-size:.8rem;font-weight:600;" :style="copied ? 'background:var(--success);color:white;' : 'background:var(--blue-soft);color:var(--blue);'" aria-label="Copier le lien">
                             <span x-show="!copied">Copier</span>
                             <span x-show="copied" x-cloak style="display:flex;align-items:center;gap:.35rem;"><svg style="width:.85rem;height:.85rem;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Copié !</span>
@@ -740,7 +781,7 @@
                 $noteMoyenne = round(collect($temoignages)->avg('note'), 1);
             @endphp
             <section aria-label="Témoignages" x-data="{ active: 0, count: {{ count($temoignages) }} }">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.75rem;">
                     <div style="display:flex;align-items:center;gap:1rem;">
                         <div style="width:3px;height:2rem;border-radius:2px;background:linear-gradient(to bottom,var(--gold),var(--gold-light));flex-shrink:0;" aria-hidden="true"></div>
                         <h2 class="font-display" style="font-size:1.85rem;color:var(--blue-night);margin:0;">Témoignages</h2>
@@ -790,7 +831,7 @@
                 {{-- Card réservation --}}
                 <div class="card-premium" style="overflow:hidden;box-shadow:var(--shadow-md);border:1px solid var(--gray-soft);">
                     <div style="padding:1.5rem 1.75rem;background:linear-gradient(135deg,var(--blue),var(--blue-dark));">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem;">
                             <span class="badge-status {{ $statusClass }}" style="font-size:.68rem;">
                                 <span style="width:.4rem;height:.4rem;border-radius:50%;background:{{ $statusDot }};display:inline-block;" aria-hidden="true"></span>{{ $statusLabel }}
                             </span>
@@ -835,12 +876,12 @@
                 </div>
 
                 {{-- Card : accès rapide + QR --}}
-                <div class="card-premium" style="padding:1.5rem;border:1px solid var(--gray-soft);background:white;box-shadow:var(--shadow-sm);">
-                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.1rem;">
+                <div class="card-premium sidebar-card">
+                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.1rem;flex-wrap:wrap;">
                         <div style="padding:.4rem;border-radius:10px;border:1.5px dashed rgba(201,168,76,.55);background:var(--pearl);flex-shrink:0;">
                             <img src="https://api.qrserver.com/v1/create-qr-code/?size=76x76&margin=0&color=0A1628&data={{ urlencode(request()->fullUrl()) }}" alt="QR code de la page événement" width="64" height="64" loading="lazy">
                         </div>
-                        <div>
+                        <div style="min-width:0;">
                             <p class="font-mono" style="font-size:.68rem;font-weight:700;letter-spacing:.08em;color:var(--blue-night);margin:0 0 .2rem;text-transform:uppercase;">Accès rapide</p>
                             <p style="font-size:.75rem;color:var(--gray-mid);margin:0;line-height:1.4;">Scannez pour ouvrir cette page sur mobile</p>
                         </div>
@@ -874,7 +915,7 @@
                 </div>
 
                 {{-- Card : partage rapide + réseaux --}}
-                <div class="card-premium" style="padding:1.25rem 1.5rem;border:1px solid var(--gray-soft);background:white;box-shadow:var(--shadow-sm);" x-data="{ pageUrl: window.location.href }">
+                <div class="card-premium sidebar-card" style="padding:1.25rem 1.5rem;" x-data="{ pageUrl: window.location.href }">
                     <p style="font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-mid);margin:0 0 .9rem;">Suivre &amp; partager</p>
                     <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
                         <a :href="`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`" target="_blank" rel="noopener noreferrer" style="flex:1;min-width:2.4rem;display:flex;align-items:center;justify-content:center;height:2.5rem;border-radius:10px;background:#1877F2;color:white;" aria-label="Facebook"><svg style="width:1rem;height:1rem;" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
@@ -919,7 +960,7 @@
             <p class="font-mono" style="font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 .5rem;">Ils leur font confiance</p>
             <h2 class="font-display" style="font-size:1.85rem;color:var(--blue-night);margin:0;">Partenaires</h2>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;align-items:center;">
+        <div class="partners-grid">
             @foreach($partenaires as $p)
             <div style="display:flex;align-items:center;justify-content:center;height:4rem;">
                 @if($p->logo ?? null)
@@ -939,7 +980,7 @@
 {{-- ══════════════════════════════════════════════════════════════
      CTA FINAL img
      ══════════════════════════════════════════════════════════════ --}}
-<section style="position:relative;padding:6rem 1.5rem;overflow:hidden;background:linear-gradient(135deg,var(--blue-night),var(--blue-dark));" aria-label="Appel à l'action">
+<section class="cta-section" aria-label="Appel à l'action">
     <div class="hero-noise" style="position:absolute;inset:0;" aria-hidden="true"></div>
     <div class="mockup-glow" style="width:420px;height:420px;top:-120px;left:-120px;background:var(--gold);opacity:.12;" aria-hidden="true"></div>
     <div class="mockup-glow" style="width:420px;height:420px;bottom:-120px;right:-120px;background:var(--blue);opacity:.2;" aria-hidden="true"></div>
@@ -961,8 +1002,8 @@
      FOOTER PREMIUM — 4 colonnes
      ══════════════════════════════════════════════════════════════ --}}
 <footer style="background:var(--blue-night);" role="contentinfo">
-    <div style="max-width:80rem;margin:0 auto;padding:4.5rem 1.5rem 3rem;">
-        <div class="footer-grid" style="display:grid;grid-template-columns:1.6fr 1fr 1fr 1.3fr;gap:3rem;margin-bottom:3.5rem;">
+    <div class="footer-inner">
+        <div class="footer-grid">
 
             <div>
                 <a href="{{ route('home') }}" style="display:inline-flex;align-items:center;gap:.65rem;text-decoration:none;margin-bottom:1rem;" aria-label="ExpoDakar">
@@ -992,9 +1033,9 @@
 
             <div>
                 <p class="font-mono" style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.4);margin:0 0 1rem;">Restez informé</p>
-                <form onsubmit="return false;" style="display:flex;gap:.5rem;">
+                <form onsubmit="return false;" style="display:flex;gap:.5rem;flex-wrap:wrap;">
                     <label for="footer-newsletter" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Adresse email</label>
-                    <input id="footer-newsletter" type="email" required placeholder="votre@email.com" style="flex:1;min-width:0;padding:.65rem 1rem;border-radius:12px;font-size:.85rem;color:white;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);">
+                    <input id="footer-newsletter" type="email" required placeholder="votre@email.com" style="flex:1;min-width:9rem;padding:.65rem 1rem;border-radius:12px;font-size:.85rem;color:white;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);">
                     <button type="submit" class="btn-premium btn-glow" style="flex-shrink:0;padding:.65rem 1rem;border-radius:12px;font-size:.85rem;font-weight:600;color:var(--blue-night);background:linear-gradient(135deg,var(--gold),var(--gold-light));">S'abonner</button>
                 </form>
                 <p style="font-size:.72rem;color:rgba(255,255,255,.35);margin:.7rem 0 0;">Un email par mois, zéro spam.</p>
@@ -1084,12 +1125,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.gsap) {
         gsap.registerPlugin(ScrollTrigger);
 
-        // Parallax glows + mockup cards
-        gsap.to('#glowBlue', { y: -50, scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 } });
-        gsap.to('#glowGold', { y: 35,  scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 } });
-        gsap.to('#mockCard1', { y: -18, scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.2 } });
-        gsap.to('#mockCard2', { y: 22,  scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.2 } });
-        gsap.to('#mockCard3', { y: -12, scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.2 } });
+        // Parallax glows + mockup cards (desktop only, avoids layout jank on mobile)
+        if (window.innerWidth > 1023) {
+            gsap.to('#glowBlue', { y: -50, scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 } });
+            gsap.to('#glowGold', { y: 35,  scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 } });
+            gsap.to('#mockCard1', { y: -18, scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.2 } });
+            gsap.to('#mockCard2', { y: 22,  scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.2 } });
+            gsap.to('#mockCard3', { y: -12, scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.2 } });
+        }
 
         // Stat counters
         document.querySelectorAll('.stat-counter').forEach((el) => {
@@ -1113,18 +1156,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Magnetic buttons
-    document.querySelectorAll('.btn-premium').forEach((btn) => {
-        btn.addEventListener('mousemove', (e) => {
-            const r = btn.getBoundingClientRect();
-            const x = (e.clientX - r.left - r.width / 2) * 0.2;
-            const y = (e.clientY - r.top - r.height / 2) * 0.2;
-            btn.style.transform = `translate(${x}px, ${y}px)`;
+    // Magnetic buttons (desktop only — avoids sticky-hover / mis-tap issues on touch)
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        document.querySelectorAll('.btn-premium').forEach((btn) => {
+            btn.addEventListener('mousemove', (e) => {
+                const r = btn.getBoundingClientRect();
+                const x = (e.clientX - r.left - r.width / 2) * 0.2;
+                const y = (e.clientY - r.top - r.height / 2) * 0.2;
+                btn.style.transform = `translate(${x}px, ${y}px)`;
+            });
+            btn.addEventListener('mouseleave', () => { btn.style.transform = 'translate(0, 0)'; });
         });
-        btn.addEventListener('mouseleave', () => { btn.style.transform = 'translate(0, 0)'; });
-    });
+    }
 
-    // Parallax mockup on mousemove (desktop only)
+    // Parallax mockup on mousemove (desktop only) organisateur
     const mockupWrap = document.getElementById('mockupWrap');
     if (mockupWrap && window.innerWidth > 1023) {
         document.getElementById('hero').addEventListener('mousemove', (e) => {

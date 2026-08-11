@@ -72,7 +72,7 @@
                 </div>
                 <span class="text-xs font-semibold px-2 py-1 rounded-lg" style="background:#ECFDF5; color:#059669;">+12%</span>
             </div>
-            <p class="text-3xl font-bold text-slate-800 mb-1">{{ number_format($totalEvents ?? 24, 0, ',', ' ') }}</p>
+            <p class="text-3xl font-bold text-slate-800 mb-1">{{ $eventsCount }}</p>
             <p class="text-sm font-medium text-slate-400">Événements</p>
             <div class="mt-4 h-1 rounded-full bg-slate-100"><div class="h-full rounded-full w-3/4" style="background:#2563EB; opacity:.4;"></div></div>
         </a>
@@ -91,7 +91,7 @@
                 </div>
                 <span class="text-xs font-semibold px-2 py-1 rounded-lg" style="background:#ECFDF5; color:#059669;">+8%</span>
             </div>
-            <p class="text-3xl font-bold text-slate-800 mb-1">{{ number_format($totalUsers ?? 1240, 0, ',', ' ') }}</p>
+            <p class="text-3xl font-bold text-slate-800 mb-1">{{$usersCount}}</p>
             <p class="text-sm font-medium text-slate-400">Participants</p>
             <div class="mt-4 h-1 rounded-full bg-slate-100"><div class="h-full rounded-full w-2/3" style="background:#7C3AED; opacity:.4;"></div></div>
         </a>
