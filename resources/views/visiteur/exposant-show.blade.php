@@ -455,66 +455,6 @@
             </section>
             @endif
 
-            {{-- ══════════════ Témoignages ══════════════ --}}
-            @php
-                $temoignages = $exposant->temoignages ?? collect([
-                    (object)['nom' => 'Awa Diallo',   'role' => 'Responsable achats, SenCom',      'note' => 5, 'texte' => "Un accompagnement rigoureux du premier échange jusqu'au montage du stand. La qualité de présentation était irréprochable.", 'photo' => null],
-                    (object)['nom' => 'Moussa Fall',  'role' => 'Directeur, Fall Industries',       'note' => 5, 'texte' => "Une équipe réactive et un réel sens du détail. Nos objectifs de visibilité ont été largement atteints.", 'photo' => null],
-                    (object)['nom' => 'Fatou Sarr',   'role' => 'Chargée de partenariats, ODK Group','note' => 4, 'texte' => "Professionnalisme et clarté dans les échanges. Nous reconduirons la collaboration sans hésiter.", 'photo' => null],
-                ]);
-                $noteMoyenne = round(collect($temoignages)->avg('note'), 1);
-            @endphp
-            <section aria-label="Témoignages" x-data="{ active: 0, count: {{ count($temoignages) }} }">
-                <div class="flex items-center justify-between mb-8" data-aos="fade-up">
-                    <div class="flex items-center gap-3">
-                        <div class="w-1 h-8 rounded-full" style="background: linear-gradient(to bottom, var(--gold), var(--gold-light));" aria-hidden="true"></div>
-                        <h2 class="font-display text-2xl lg:text-3xl" style="color: var(--blue-night);">Témoignages</h2>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="font-display text-2xl" style="color: var(--blue-night);">{{ $noteMoyenne }}</span>
-                        <div class="flex gap-0.5" aria-hidden="true">
-                            @for($s = 1; $s <= 5; $s++)
-                                <svg class="w-4 h-4" fill="{{ $s <= round($noteMoyenne) ? 'var(--gold)' : '#E5E7EB' }}" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.958a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.368 2.447a1 1 0 00-.363 1.118l1.286 3.957c.3.922-.755 1.688-1.539 1.118l-3.367-2.447a1 1 0 00-1.175 0l-3.367 2.447c-.784.57-1.838-.196-1.539-1.118l1.286-3.957a1 1 0 00-.363-1.118L2.063 9.385c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.285-3.958z"/></svg>
-                            @endfor
-                        </div>
-                    </div>
-                </div>
-
-                <div class="relative overflow-hidden" data-aos="fade-up">
-                    <div class="flex transition-transform duration-500 ease-out" :style="`transform: translateX(-${active * 100}%)`">
-                        @foreach($temoignages as $t)
-                        <div class="w-full flex-shrink-0 px-1">
-                            <div class="rounded-2xl p-8 border" style="border-color: var(--gray-soft); background: var(--pearl);">
-                                <div class="flex gap-0.5 mb-4" aria-hidden="true">
-                                    @for($s = 1; $s <= 5; $s++)
-                                        <svg class="w-4 h-4" fill="{{ $s <= $t->note ? 'var(--gold)' : '#E5E7EB' }}" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.958a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.368 2.447a1 1 0 00-.363 1.118l1.286 3.957c.3.922-.755 1.688-1.539 1.118l-3.367-2.447a1 1 0 00-1.175 0l-3.367 2.447c-.784.57-1.838-.196-1.539-1.118l1.286-3.957a1 1 0 00-.363-1.118L2.063 9.385c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.285-3.958z"/></svg>
-                                    @endfor
-                                </div>
-                                <p class="text-base leading-relaxed mb-6" style="color: var(--ink);">« {{ $t->texte }} »</p>
-                                <div class="flex items-center gap-3">
-                                    @if($t->photo)
-                                        <img src="{{ $t->photo }}" alt="{{ $t->nom }}" class="w-11 h-11 rounded-full object-cover">
-                                    @else
-                                        <div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-semibold text-sm" style="background: linear-gradient(135deg, var(--blue-electric), var(--blue-night));">{{ strtoupper(substr($t->nom, 0, 1)) }}</div>
-                                    @endif
-                                    <div>
-                                        <p class="text-sm font-semibold" style="color: var(--blue-night);">{{ $t->nom }}</p>
-                                        <p class="text-xs" style="color: var(--gray-mid);">{{ $t->role }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-
-                    <div class="flex items-center justify-center gap-2 mt-6">
-                        <template x-for="i in count" :key="i">
-                            <button @click="active = i - 1" class="h-1.5 rounded-full transition-all" :class="active === i - 1 ? 'w-6' : 'w-1.5'" :style="active === i - 1 ? 'background: var(--gold)' : 'background: var(--gray-soft)'" :aria-label="`Témoignage ${i}`"></button>
-                        </template>
-                    </div>
-                </div>
-            </section>
-
         </div>
         {{-- /COLONNE PRINCIPALE --}}
 
@@ -584,6 +524,7 @@
                     </div>
 
                     {{-- QR code accréditation --}}
+
                     <div class="badge-perf px-6 py-5 flex items-center gap-4">
                         <div class="stamp-ring p-1.5 rounded-lg flex-shrink-0" style="background: white;">
                             <img src="https://api.qrserver.com/v1/create-qr-code/?size=88x88&margin=0&color=0A1628&data={{ urlencode(request()->fullUrl()) }}"
@@ -628,15 +569,6 @@
                         </a>
                         @endif
                     </div>
-                </div>
-
-                {{-- Card : Retour liste --}}
-                <div class="rounded-2xl p-5 border" style="border-color: var(--gray-soft); background: var(--pearl);">
-                    <p class="text-xs font-medium mb-3" style="color: var(--gray-mid);">Explorer d'autres exposants</p>
-                    <a href="{{ route('exposants.index') }}" class="flex items-center gap-2 text-sm font-semibold transition-colors group" style="color: var(--blue-electric);" onmouseover="this.style.color='var(--blue-night)'" onmouseout="this.style.color='var(--blue-electric)'">
-                        <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
-                        Voir tous les exposants
-                    </a>
                 </div>
 
             </div>
@@ -730,7 +662,7 @@
             @if($exposant->email)
             <a href="mailto:{{ $exposant->email }}" class="magnetic glow-hover inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold transition-all" style="background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--blue-night);">Contacter</a>
             @endif
-            <a href="{{ route('exposants.index') }}" class="magnetic inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold border border-white/20 text-white transition-all hover:bg-white/10">Découvrir les autres exposants</a>
+            <a href="#" class="magnetic inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold border border-white/20 text-white transition-all hover:bg-white/10">Découvrir les autres exposants</a>
         </div>
     </div>
 </section>
@@ -743,10 +675,27 @@
     <div class="max-w-7xl mx-auto px-6 lg:px-16 py-16">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-12">
             <div class="lg:col-span-4">
-                <a href="{{ route('home') }}" class="flex items-center gap-3 mb-4" aria-label="ExpoDakar">
-                    <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782085416/ChatGPT_Image_Jun_21__2026__07_24_51_PM-removebg-preview_zi77k0.png" alt="Logo ExpoDakar" class="h-9 w-auto object-contain">
-                    <span class="font-display text-xl text-white">Expo<span class="text-gold-gradient">Dakar</span></span>
-                </a>
+     <a
+                href="{{ route('home') }}"
+                class="flex items-center gap-2 sm:gap-3 shrink-0"
+                aria-label="ExpoDakar">
+
+                <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1786364683/ChatGPT_Image_10_ao%C3%BBt_2026__02_24_21-removebg-preview_spadbb.png" alt="Logo ExpoDakar"
+                    class="h-14 sm:h-16 w-auto object-contain"
+                    width="80"
+                    height="80"
+                    fetchpriority="high">
+
+                {{-- NOM EXPO DAKAR --}}
+                <span
+                    class="font-display text-xl sm:text-2xl font-semibold transition-colors duration-300"
+                    : class="text-white">
+
+                  <span class="font-display text-2xl text-white">Expo<span class="text-gold-gradient">Dakar</span></span>
+
+                </span>
+
+            </a>
                 <p class="text-sm leading-relaxed text-white/50 max-w-xs">La plateforme de référence pour les foires, salons et forums professionnels au Sénégal.</p>
             </div>
 

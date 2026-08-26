@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exposants — ExpoDakar</title>
+    <meta name="description" content="Découvrez les entreprises, marques et professionnels qui exposent à ExpoDakar. Recherchez par catégorie, secteur et localisation.">
+
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --blue-night:    #0A1628;
+            --blue-deep:     #0D2145;
+            --blue-electric: #1E5FD8;
+            --gold:          #C9A84C;
+            --gold-light:    #E8C96A;
+            --pearl:         #F7F8FC;
+            --gray-soft:     #EEF0F6;
+            --gray-mid:      #8892A4;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { overflow-x: hidden; max-width: 100%; }
+        body { font-family:'Inter', sans-serif; color: var(--blue-night); background:#fff; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+        .font-display { font-family:'Instrument Serif', serif; }
+        [x-cloak] { display:none !important; }
+
+        .text-gold-gradient { background:linear-gradient(135deg,var(--gold),var(--gold-light),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .section-eyebrow { font-size:.7rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); }
+
+        .reveal { opacity:0; transform:translateY(24px); }
+        .reveal.visible { opacity:1; transform:translateY(0); transition:opacity .6s cubic-bezier(.22,.8,.24,1), transform .6s cubic-bezier(.22,.8,.24,1); }
+        .reveal-delay-1 { transition-delay:.05s; } .reveal-delay-2 { transition-delay:.1s; }
+        .reveal-delay-3 { transition-delay:.15s; } .reveal-delay-4 { transition-delay:.2s; }
+
+        /* ── Hero compact ── */
+        .exp-hero-grid { background-image: linear-gradient(rgba(201,168,76,.14) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,.14) 1px, transparent 1px); background-size:52px 52px; mask-image: radial-gradient(ellipse 65% 70% at 75% 40%, #000 35%, transparent 88%); }
+        @keyframes exp-glow-drift { 0%,100% { transform:translate(0,0) scale(1); } 50% { transform:translate(-4%,3%) scale(1.07); } }
+        .exp-glow { animation: exp-glow-drift 15s ease-in-out infinite; }
+
+        /* ── Carte exposant ── */
+        .exhibitor-card { transition: transform .25s cubic-bezier(.22,.8,.24,1), box-shadow .25s ease, border-color .25s ease; will-change: transform; }
+        .exhibitor-card:hover { transform: translateY(-6px); box-shadow: 0 22px 44px rgba(10,22,40,.12); border-color: var(--blue-electric); }
+        .exhibitor-logo-wrap { transition: transform .25s ease; }
+        .exhibitor-card:hover .exhibitor-logo-wrap { transform: scale(1.06); }
+        .exhibitor-cta { transition: gap .25s ease, color .25s ease; }
+        .exhibitor-card:hover .exhibitor-cta { gap:.6rem; color: var(--blue-electric); }
+
+        /* ── Filtres ── */
+        .filter-select { appearance:none; -webkit-appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238892A4' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right .85rem center; background-size:1rem; }
+        .search-shell { transition: border-color .25s, box-shadow .25s; }
+        .search-shell:focus-within { border-color: var(--blue-electric); box-shadow: 0 0 0 4px rgba(30,95,216,.12); }
+        .cat-pill { transition: background .2s, color .2s, border-color .2s; white-space:nowrap; }
+        .cat-pill.active, .cat-pill:hover { background: var(--blue-night); color:#fff; border-color:var(--blue-night); }
+
+        /* ── Skeleton loader ── */
+        @keyframes skeleton-pulse { 0%,100% { opacity:.55; } 50% { opacity:1; } }
+        .skeleton-block { background: var(--gray-soft); border-radius:.5rem; animation: skeleton-pulse 1.4s ease-in-out infinite; }
+
+        /* ── Pagination ── */
+        .page-btn { transition: background .2s, color .2s, border-color .2s; }
+        .page-btn.active { background: var(--blue-night); color:#fff; border-color:var(--blue-night); }
+        .page-btn:not(.active):not(:disabled):hover { border-color: var(--blue-electric); color: var(--blue-electric); }
+
+        ::-webkit-scrollbar { width:4px; }
+        ::-webkit-scrollbar-thumb { background: var(--blue-electric); border-radius:99px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal, .exp-glow, .exhibitor-card, .skeleton-block { animation:none !important; transition:none !important; opacity:1 !important; transform:none !important; }
+        }
+    </style>
+</head>
+
+<body
+    x-data="{
+        loading: true,
+        search: '',
+        categorie: '',
+        secteur: '',
+        localisation: '',
+        init() {
+            setTimeout(() => { this.loading = false }, 550);
+        },
+        reset() {
+            this.search = ''; this.categorie = ''; this.secteur = ''; this.localisation = '';
+        },
+        matches(el) {
+            const name = (el.dataset.name || '').toLowerCase();
+            const cat = el.dataset.categorie || '';
+            const sec = el.dataset.secteur || '';
+            const loc = el.dataset.localisation || '';
+            if (this.search && !name.includes(this.search.toLowerCase())) return false;
+            if (this.categorie && cat !== this.categorie) return false;
+            if (this.secteur && sec !== this.secteur) return false;
+            if (this.localisation && loc !== this.localisation) return false;
+            return true;
+        }
+    }">
+
+{{-- ══════════════════════════════════════════════════════════════
+     HEADER — identique à l'identité ExpoDakar (sticky + blur au scroll)
+════════════════════════════════════════════════════════════════ --}}
+<header
+    x-data="{ open:false, scrolled:false, init(){ this.scrolled = window.scrollY > 40; window.addEventListener('scroll', () => { this.scrolled = window.scrollY > 40; }); } }"
+    x-init="init()"
+    :class="scrolled ? 'bg-white/90 backdrop-blur-md shadow-md' : 'bg-white'"
+    class="sticky top-0 z-50 transition-all duration-300 border-b" style="border-color:var(--gray-soft);">
+
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="flex items-center justify-between h-16 sm:h-20">
+
+            <a href="{{ route('home') }}" class="flex items-center gap-2 sm:gap-3 shrink-0" aria-label="ExpoDakar">
+                <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782085416/ChatGPT_Image_Jun_21__2026__07_24_51_PM-removebg-preview_zi77k0.png"
+                     alt="Logo ExpoDakar" class="h-12 sm:h-14 w-auto object-contain">
+                <span class="font-display text-xl sm:text-2xl font-semibold text-black">
+                    Expo<span class="text-gold-gradient">Dakar</span>
+                </span>
+            </a>
+
+            <nav class="hidden lg:flex items-center gap-8">
+                <a href="{{ route('home') }}" class="text-sm font-medium text-black/70 hover:text-black transition-colors">Accueil</a>
+                <a href="{{ route('user.events.index') }}" class="text-sm font-medium text-black/70 hover:text-black transition-colors">Événements</a>
+                <a href="{{ route('user.exposants.index') }}" class="text-sm font-semibold" style="color:var(--blue-electric);">Exposants</a>
+                <a href="{{ route('user.categories.index') }}" class="text-sm font-medium text-black/70 hover:text-black transition-colors">Catégories</a>
+                <a href="#" class="text-sm font-medium text-black/70 hover:text-black transition-colors">À propos</a>
+            </nav>
+
+            <div class="hidden lg:flex items-center gap-3">
+                <a href="{{ route('tarifs') }}"
+                   class="text-sm font-semibold text-white px-5 py-2.5 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                   style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">
+                    Devenir exposant
+                </a>
+            </div>
+
+            <button @click="open = !open" type="button"
+                    class="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 text-black lg:hidden"
+                    aria-label="Menu" :aria-expanded="open">
+                <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+                <svg x-show="open" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div x-show="open" x-cloak x-transition class="lg:hidden bg-white border-t border-gray-200 shadow-lg">
+        <nav class="flex flex-col gap-1 px-4 py-4">
+            <a href="{{ route('home') }}" @click="open=false" class="px-4 py-3 text-sm font-medium text-black hover:bg-gray-50 rounded-lg transition">Accueil</a>
+            <a href="{{ route('user.events.index') }}" @click="open=false" class="px-4 py-3 text-sm font-medium text-black hover:bg-gray-50 rounded-lg transition">Événements</a>
+            <a href="{{ route('user.exposants.index') }}" @click="open=false" class="px-4 py-3 text-sm font-semibold rounded-lg" style="color:var(--blue-electric); background:#EFF6FF;">Exposants</a>
+            <a href="{{ route('user.categories.index') }}" @click="open=false" class="px-4 py-3 text-sm font-medium text-black hover:bg-gray-50 rounded-lg transition">Catégories</a>
+            <a href="#" @click="open=false" class="px-4 py-3 text-sm font-medium text-black hover:bg-gray-50 rounded-lg transition">À propos</a>
+            <hr class="border-gray-200 my-2">
+            <a href="{{ route('tarifs') }}" @click="open=false" class="px-4 py-3 text-sm font-semibold text-center text-white rounded-xl" style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">Devenir exposant</a>
+        </nav>
+    </div>
+</header>
+
+
+{{-- ══════════════════════════════════════════════════════════════
+     HERO COMPACT
+════════════════════════════════════════════════════════════════ --}}
+<section class="relative overflow-hidden py-14 sm:py-20" style="background:var(--blue-night);" aria-label="Exposants ExpoDakar">
+    <div class="absolute inset-0 exp-hero-grid opacity-40" aria-hidden="true"></div>
+    <div class="absolute top-[-20%] right-[6%] w-[24rem] h-[24rem] rounded-full blur-[110px] opacity-25 exp-glow" style="background:var(--blue-electric);" aria-hidden="true"></div>
+    <div class="absolute bottom-[-25%] left-[4%] w-[20rem] h-[20rem] rounded-full blur-[100px] opacity-20 exp-glow" style="background:var(--gold); animation-delay:-6s;" aria-hidden="true"></div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="max-w-2xl">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-white/15 bg-white/5 backdrop-blur-md mb-5 sm:mb-6">
+                <span class="w-2 h-2 rounded-full animate-pulse shrink-0" style="background:var(--gold);"></span>
+                <span class="section-eyebrow text-xs" style="color:var(--gold-light);">ExpoDakar 2026</span>
+            </div>
+
+            <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl text-white mb-4 sm:mb-5 leading-[1.08]">
+                Découvrez nos <span class="text-gold-gradient">exposants</span>
+            </h1>
+
+            <p class="text-sm sm:text-base text-white/60 leading-relaxed mb-8 max-w-lg">
+                Explorez les entreprises, marques et professionnels qui participent à ExpoDakar.
+            </p>
+
+            <div class="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5">
+                <svg class="w-4 h-4" fill="none" stroke="var(--gold-light)" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/>
+                </svg>
+                <span class="text-sm font-semibold text-white">+{{ $exposants->total() ?? 120 }} exposants présents</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{{-- ══════════════════════════════════════════════════════════════
+     RECHERCHE & FILTRES
+════════════════════════════════════════════════════════════════ --}}
+<section class="relative z-10 -mt-6 sm:-mt-8 pb-4" aria-label="Recherche et filtres">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="bg-white rounded-2xl p-4 sm:p-6 border" style="border-color:var(--gray-soft); box-shadow:0 12px 40px rgba(10,22,40,.1);">
+
+            {{-- Barre de recherche --}}
+            <label for="exposant-search" class="sr-only">Rechercher un exposant</label>
+            <div class="search-shell flex items-center gap-3 px-4 py-3 rounded-xl border mb-4" style="border-color:var(--gray-soft); background:var(--pearl);">
+                <svg class="w-4.5 h-4.5 shrink-0" style="width:1.1rem;height:1.1rem;" fill="none" stroke="var(--gray-mid)" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+                </svg>
+                <input
+                    id="exposant-search"
+                    type="text"
+                    x-model="search"
+                    placeholder="Rechercher un exposant..."
+                    class="flex-1 bg-transparent text-sm outline-none placeholder-gray-400"
+                    style="color:var(--blue-night);">
+                <button x-show="search" x-cloak @click="search=''" class="shrink-0 text-gray-400 hover:text-gray-600" aria-label="Effacer la recherche">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            {{-- Filtres --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <select x-model="categorie" class="filter-select text-sm px-4 py-3 rounded-xl border outline-none" style="border-color:var(--gray-soft); color:var(--blue-night);">
+                    <option value="">Toutes les catégories</option>
+                    @foreach($categories as $cat)
+                    <option value="{{ $cat->id }}">{{ $cat->nom }}</option>
+                    @endforeach
+                </select>
+
+                <select x-model="secteur" class="filter-select text-sm px-4 py-3 rounded-xl border outline-none" style="border-color:var(--gray-soft); color:var(--blue-night);">
+                    <option value="">Tous les secteurs</option>
+                    @foreach($secteurs ?? [] as $sec)
+                    <option value="{{ $sec }}">{{ $sec }}</option>
+                    @endforeach
+                </select>
+
+                <select x-model="localisation" class="filter-select text-sm px-4 py-3 rounded-xl border outline-none" style="border-color:var(--gray-soft); color:var(--blue-night);">
+                    <option value="">Toutes les localisations</option>
+                    @foreach($localisations ?? [] as $loc)
+                    <option value="{{ $loc }}">{{ $loc }}</option>
+                    @endforeach
+                </select>
+
+                <button @click="reset()" type="button"
+                        class="flex items-center justify-center gap-2 text-sm font-semibold px-4 py-3 rounded-xl border transition hover:bg-gray-50"
+                        style="border-color:var(--gray-soft); color:var(--gray-mid);">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>
+                    </svg>
+                    Réinitialiser
+                </button>
+            </div>
+
+            {{-- Catégories rapides --}}
+            <div class="flex gap-2 overflow-x-auto mt-4 pb-1" style="scrollbar-width:none;">
+                @foreach(['Technologie','Finance','Agriculture','Commerce','Industrie','Mode & Lifestyle','Éducation','Santé','Services','Startups'] as $tag)
+                <button type="button" @click="search = (search === '{{ $tag }}') ? '' : '{{ $tag }}'"
+                        :class="search === '{{ $tag }}' ? 'active' : ''"
+                        class="cat-pill shrink-0 px-3.5 py-1.5 text-xs font-medium rounded-full border" style="border-color:var(--gray-soft); color:var(--blue-night);">
+                    {{ $tag }}
+                </button>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between mt-5 sm:mt-6 px-1">
+            <p class="text-sm font-medium" style="color:var(--gray-mid);">
+                <span class="font-semibold" style="color:var(--blue-night);">{{ $exposants->total() ?? count($exposants) }}</span> exposants
+            </p>
+        </div>
+    </div>
+</section>
+
+
+{{-- ══════════════════════════════════════════════════════════════
+     GRILLE DES EXPOSANTS
+════════════════════════════════════════════════════════════════ --}}
+<section class="py-10 sm:py-16 bg-white" aria-label="Liste des exposants">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+
+        {{-- Skeleton loader --}}
+        <div x-show="loading" x-cloak class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6" aria-hidden="true">
+            @for($i = 0; $i < 8; $i++)
+            <div class="rounded-2xl border p-5 sm:p-6" style="border-color:var(--gray-soft);">
+                <div class="skeleton-block w-14 h-14 rounded-xl mb-4 mx-auto"></div>
+                <div class="skeleton-block h-4 w-3/4 mx-auto mb-2"></div>
+                <div class="skeleton-block h-3 w-1/2 mx-auto mb-4"></div>
+                <div class="skeleton-block h-3 w-full mb-1.5"></div>
+                <div class="skeleton-block h-3 w-5/6 mb-4"></div>
+                <div class="skeleton-block h-9 w-full rounded-xl"></div>
+            </div>
+            @endfor
+        </div>
+
+        {{-- Grille réelle --}}
+        <div x-show="!loading" x-cloak x-transition.opacity.duration.400ms
+             class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+
+            @forelse($exposants as $idx => $exposant)
+            <article
+                x-show="matches($el)"
+                x-transition
+                data-name="{{ strtolower($exposant->nom_entreprise ?? $exposant->nom) }}"
+                data-categorie="{{ $exposant->categorie->id ?? '' }}"
+                data-secteur="{{ $exposant->secteur_activite ?? $exposant->secteur ?? '' }}"
+                data-localisation="{{ $exposant->localisation ?? $exposant->ville ?? '' }}"
+                class="exhibitor-card group relative flex flex-col bg-white rounded-2xl border p-5 sm:p-6 reveal reveal-delay-{{ ($idx % 4) + 1 }}"
+                style="border-color:var(--gray-soft); box-shadow:0 4px 20px rgba(10,22,40,.05);"
+                x-intersect.once="$el.classList.add('visible')">
+
+                @if($exposant->verifie ?? true)
+                <span class="absolute top-4 right-4 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold" style="background:#ECFDF5; color:#059669;">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                    Vérifié
+                </span>
+                @endif
+
+                <div class="exhibitor-logo-wrap w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 overflow-hidden" style="background:var(--pearl);">
+                    @if($exposant->logo)
+                    <img src="{{ $exposant->logo }}" alt="Logo {{ $exposant->nom_entreprise ?? $exposant->nom }}" class="w-full h-full object-contain p-2" loading="lazy" decoding="async">
+                    @else
+                    <span class="font-display text-2xl font-bold" style="color:var(--blue-electric);">{{ strtoupper(substr($exposant->nom_entreprise ?? $exposant->nom, 0, 1)) }}</span>
+                    @endif
+                </div>
+
+                <h3 class="font-semibold text-sm sm:text-base text-center mb-1" style="color:var(--blue-night);">{{ $exposant->nom_entreprise ?? $exposant->nom }}</h3>
+
+                @if($exposant->categorie->nom ?? $exposant->secteur_activite ?? null)
+                <p class="text-xs text-center font-medium mb-3" style="color:var(--blue-electric);">{{ $exposant->categorie->nom ?? $exposant->secteur_activite }}</p>
+                @endif
+
+                @if($exposant->description ?? null)
+                <p class="text-xs sm:text-sm text-center leading-relaxed line-clamp-2 mb-4 flex-1" style="color:var(--gray-mid);">{{ $exposant->description }}</p>
+                @endif
+
+                <div class="flex items-center justify-center gap-4 text-xs mb-4" style="color:var(--gray-mid);">
+                    @if($exposant->localisation ?? $exposant->ville ?? null)
+                    <span class="inline-flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+                        {{ $exposant->localisation ?? $exposant->ville }}
+                    </span>
+                    @endif
+                    @if($exposant->stand ?? null)
+                    <span class="inline-flex items-center gap-1 font-semibold" style="color:var(--blue-night);">
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5M3 21V9.75m18 11.25V9.75M4.5 9.75l7.5-6 7.5 6M9 21v-6.75h6V21"/></svg>
+                        Stand {{ $exposant->stand }}
+                    </span>
+                    @endif
+                </div>
+
+                <a href="{{ route('user.exposants.show', $exposant->id) }}"
+                   class="exhibitor-cta mt-auto flex items-center justify-center gap-1.5 text-sm font-semibold py-2.5 rounded-xl border transition"
+                   style="border-color:var(--gray-soft); color:var(--blue-night);">
+                    Voir le profil
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"/></svg>
+                </a>
+            </article>
+            @empty
+            {{-- État vide côté serveur (aucun exposant en base) --}}
+            <div class="col-span-full flex flex-col items-center justify-center text-center py-16 sm:py-20">
+                <svg class="w-14 h-14 mb-4" fill="none" stroke="var(--gray-mid)" stroke-width="1.3" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+                <p class="font-semibold text-base sm:text-lg mb-1" style="color:var(--blue-night);">Aucun exposant trouvé</p>
+                <p class="text-sm" style="color:var(--gray-mid);">Revenez bientôt, la liste des exposants sera bientôt disponible.</p>
+            </div>
+            @endforelse
+        </div>
+
+        {{-- État vide côté client (filtres actifs sans résultat) --}}
+        <div
+            x-show="!loading && !Array.from($el.parentElement.querySelectorAll('[data-name]')).some(el => matches(el))"
+            x-cloak
+            class="flex flex-col items-center justify-center text-center py-16 sm:py-20">
+            <svg class="w-14 h-14 mb-4" fill="none" stroke="var(--gray-mid)" stroke-width="1.3" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+            </svg>
+            <p class="font-semibold text-base sm:text-lg mb-1" style="color:var(--blue-night);">Aucun exposant trouvé</p>
+            <p class="text-sm mb-5 max-w-xs" style="color:var(--gray-mid);">Essayez d'autres mots-clés ou modifiez vos filtres.</p>
+            <button @click="reset()" type="button" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition hover:brightness-110" style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">
+                Réinitialiser les filtres
+            </button>
+        </div>
+    </div>
+</section>
+
+
+{{-- ══════════════════════════════════════════════════════════════
+     PAGINATION
+════════════════════════════════════════════════════════════════ --}}
+@if(isset($exposants) && method_exists($exposants, 'hasPages') && $exposants->hasPages())
+<section class="pb-14 sm:pb-20" aria-label="Pagination">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-sm" style="color:var(--gray-mid);">
+                {{ $exposants->firstItem() }}–{{ $exposants->lastItem() }} sur {{ $exposants->total() }} exposants
+            </p>
+            <nav class="flex items-center gap-1.5" aria-label="Pages">
+                <a href="{{ $exposants->previousPageUrl() }}"
+                   @if($exposants->onFirstPage()) aria-disabled="true" tabindex="-1" @endif
+                   class="page-btn w-9 h-9 flex items-center justify-center rounded-lg border text-sm {{ $exposants->onFirstPage() ? 'opacity-40 pointer-events-none' : '' }}"
+                   style="border-color:var(--gray-soft); color:var(--blue-night);" aria-label="Page précédente">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+                </a>
+
+                @foreach ($exposants->getUrlRange(max(1, $exposants->currentPage() - 2), min($exposants->lastPage(), $exposants->currentPage() + 2)) as $page => $url)
+                <a href="{{ $url }}"
+                   class="page-btn w-9 h-9 flex items-center justify-center rounded-lg border text-sm font-medium {{ $page == $exposants->currentPage() ? 'active' : '' }}"
+                   style="border-color:var(--gray-soft); color:var(--blue-night);">
+                    {{ $page }}
+                </a>
+                @endforeach
+
+                <a href="{{ $exposants->nextPageUrl() }}"
+                   @if(!$exposants->hasMorePages()) aria-disabled="true" tabindex="-1" @endif
+                   class="page-btn w-9 h-9 flex items-center justify-center rounded-lg border text-sm {{ !$exposants->hasMorePages() ? 'opacity-40 pointer-events-none' : '' }}"
+                   style="border-color:var(--gray-soft); color:var(--blue-night);" aria-label="Page suivante">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+                </a>
+            </nav>
+        </div>
+    </div>
+</section>
+@endif
+
+
+{{-- ══════════════════════════════════════════════════════════════
+     CTA — DEVENIR EXPOSANT
+════════════════════════════════════════════════════════════════ --}}
+<section class="py-16 sm:py-24" style="background:var(--pearl);" aria-label="Devenir exposant">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl p-8 sm:p-14 text-center reveal" x-intersect.once="$el.classList.add('visible')" style="background:var(--blue-night);">
+            <div class="absolute top-[-30%] right-[-10%] w-72 h-72 rounded-full blur-[100px] opacity-25 exp-glow" style="background:var(--blue-electric);" aria-hidden="true"></div>
+            <div class="absolute bottom-[-30%] left-[-10%] w-72 h-72 rounded-full blur-[100px] opacity-20 exp-glow" style="background:var(--gold); animation-delay:-6s;" aria-hidden="true"></div>
+
+            <div class="relative z-10">
+                <p class="section-eyebrow mb-3" style="color:var(--gold-light);">Pour les entreprises</p>
+                <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl text-white mb-4">Vous souhaitez devenir exposant ?</h2>
+                <p class="text-sm sm:text-base text-white/60 max-w-lg mx-auto mb-8 leading-relaxed">
+                    Présentez votre entreprise à des milliers de visiteurs et développez votre visibilité à ExpoDakar.
+                </p>
+                <a href="{{ route('tarifs') }}"
+                   class="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-sm transition-all hover:brightness-110 active:scale-95"
+                   style="background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--blue-night); box-shadow:0 12px 32px rgba(201,168,76,.3);">
+                    Devenir exposant
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{{-- ══════════════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════════════ --}}
+<footer style="background:#070f1d;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div class="py-10 sm:py-14 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 border-b" style="border-color:rgba(255,255,255,.06);">
+
+            <div class="col-span-2 sm:col-span-2 lg:col-span-1">
+                <a href="{{ route('home') }}" class="flex items-center gap-2 mb-4" aria-label="ExpoDakar">
+                    <span class="font-display text-2xl text-white">Expo<span class="text-gold-gradient">Dakar</span></span>
+                </a>
+                <p class="text-sm leading-relaxed mb-5" style="color:rgba(255,255,255,.4);">La plateforme de référence pour les événements professionnels au Sénégal.</p>
+                <div class="flex items-center gap-3">
+                    @foreach([
+                        ['name'=>'Facebook','icon'=>'M22 12.06C22 6.505 17.523 2 12 2S2 6.505 2 12.06c0 5.022 3.657 9.184 8.438 9.94v-7.03H7.898v-2.91h2.54V9.845c0-2.522 1.492-3.915 3.777-3.915 1.094 0 2.238.197 2.238.197v2.475h-1.26c-1.243 0-1.63.775-1.63 1.57v1.888h2.773l-.443 2.91h-2.33V22c4.78-.756 8.437-4.918 8.437-9.94Z'],
+                        ['name'=>'LinkedIn','icon'=>'M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2ZM8.34 18.34H5.67V9.75h2.67v8.59ZM7 8.6a1.55 1.55 0 1 1 0-3.1 1.55 1.55 0 0 1 0 3.1Zm11.34 9.74h-2.67v-4.18c0-1-.02-2.28-1.39-2.28-1.39 0-1.6 1.08-1.6 2.2v4.26H10V9.75h2.56v1.17h.04c.36-.67 1.23-1.39 2.53-1.39 2.7 0 3.2 1.78 3.2 4.1v4.71Z'],
+                        ['name'=>'Instagram','icon'=>'M12 2c2.72 0 3.06.01 4.12.06 1.06.05 1.79.22 2.43.47.66.25 1.22.6 1.77 1.15.5.5.86 1.03 1.15 1.71.25.6.42 1.29.47 2.42.05 1.06.06 1.4.06 4.12s-.01 3.06-.06 4.12c-.05 1.06-.22 1.79-.47 2.43a4.7 4.7 0 0 1-1.15 1.77c-.5.5-1.03.86-1.71 1.15-.6.25-1.29.42-2.42.47-1.06.05-1.4.06-4.12.06s-3.06-.01-4.12-.06c-1.06-.05-1.79-.22-2.43-.47a4.7 4.7 0 0 1-1.77-1.15 4.7 4.7 0 0 1-1.15-1.71c-.25-.6-.42-1.29-.47-2.42C2.01 15.06 2 14.72 2 12s.01-3.06.06-4.12c.05-1.06.22-1.79.47-2.43.25-.66.6-1.22 1.15-1.77A4.7 4.7 0 0 1 5.39 2.53c.6-.25 1.29-.42 2.42-.47C8.87 2.01 9.21 2 11.93 2H12Zm0 1.8c-2.66 0-2.98.01-4.03.06-.97.05-1.5.2-1.85.34a3 3 0 0 0-1.12.73 3 3 0 0 0-.73 1.12c-.14.36-.29.88-.34 1.85-.05 1.05-.06 1.37-.06 4.03s.01 2.98.06 4.03c.05.97.2 1.5.34 1.85.16.42.37.78.73 1.12.34.36.7.57 1.12.73.36.14.88.29 1.85.34 1.05.05 1.37.06 4.03.06s2.98-.01 4.03-.06c.97-.05 1.5-.2 1.85-.34a3 3 0 0 0 1.12-.73 3 3 0 0 0 .73-1.12c.14-.36.29-.88.34-1.85.05-1.05.06-1.37.06-4.03s-.01-2.98-.06-4.03c-.05-.97-.2-1.5-.34-1.85a3 3 0 0 0-.73-1.12 3 3 0 0 0-1.12-.73c-.36-.14-.88-.29-1.85-.34-1.05-.05-1.37-.06-4.03-.06ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Zm5.2-2a1.17 1.17 0 1 1-2.34 0 1.17 1.17 0 0 1 2.34 0Z'],
+                    ] as $s)
+                    <a href="#" target="_blank" rel="noopener noreferrer"
+                       class="group w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 border border-white/10 hover:bg-white hover:-translate-y-1 transition-all duration-300" aria-label="{{ $s['name'] }}">
+                        <svg class="w-5 h-5 text-white group-hover:text-[var(--blue-night)] transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="{{ $s['icon'] }}"/></svg>
+                    </a>
+                    @endforeach
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xs font-semibold tracking-widest uppercase mb-4" style="color:rgba(255,255,255,.35);">Plateforme</h3>
+                <ul class="space-y-2.5">
+                    <li><a href="{{ route('user.events.index') }}" class="text-sm hover:text-white transition-colors" style="color:rgba(255,255,255,.45);">Événements</a></li>
+                    <li><a href="{{ route('user.exposants.index') }}" class="text-sm hover:text-white transition-colors" style="color:rgba(255,255,255,.45);">Exposants</a></li>
+                    <li><a href="{{ route('user.categories.index') }}" class="text-sm hover:text-white transition-colors" style="color:rgba(255,255,255,.45);">Catégories</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-xs font-semibold tracking-widest uppercase mb-4" style="color:rgba(255,255,255,.35);">Infos</h3>
+                <ul class="space-y-2.5">
+                    <li><a href="{{ route('contact') }}" class="text-sm hover:text-white transition-colors" style="color:rgba(255,255,255,.45);">Contact</a></li>
+                    <li><a href="#" class="text-sm hover:text-white transition-colors" style="color:rgba(255,255,255,.45);">CGU</a></li>
+                    <li><a href="#" class="text-sm hover:text-white transition-colors" style="color:rgba(255,255,255,.45);">Confidentialité</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-xs font-semibold tracking-widest uppercase mb-4" style="color:rgba(255,255,255,.35);">Contact</h3>
+                <ul class="space-y-3">
+                    <li class="flex items-center gap-2 text-sm" style="color:rgba(255,255,255,.45);">
+                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+                        Dakar, Plateau
+                    </li>
+                    <li><a href="mailto:contact@expodakar.sn" class="text-sm" style="color:rgba(255,255,255,.45);">contact@expodakar.sn</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="py-5 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <p class="text-xs" style="color:rgba(255,255,255,.25);">© {{ date('Y') }} ExpoDakar. Tous droits réservés.</p>
+            <p class="text-xs" style="color:rgba(255,255,255,.2);">Conçu au Sénégal</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const els = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+        }, { threshold: 0.1 });
+        els.forEach(el => io.observe(el));
+    } else {
+        els.forEach(el => el.classList.add('visible'));
+    }
+});
+</script>
+
+</body>
+</html>

@@ -585,7 +585,7 @@
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[26rem] h-[26rem] rounded-full blur-[90px] opacity-25" style="background:radial-gradient(circle, var(--blue-electric), transparent 70%);" aria-hidden="true"></div>
 
                 <div class="hero-card hero-float" style="--x:4%; --y:6%; --w:15.5rem; --delay:0s;">
-                    <div class="hero-card-media" style="background-image:url('https://res.cloudinary.com/dstbqtuxm/image/upload/v1782659620/ChatGPT_Image_Jun_28_2026_03_00_42_PM_qkpjbj.png'); background-position:20% 30%;"></div>
+                    <div class="hero-card-media" style="background-image:url('https://res.cloudinary.com/dstbqtuxm/image/upload/v1786465750/events/yb3vyjn2fhuhvtdopjns.jpg'); background-position:20% 30%;"></div>
                     <div class="hero-card-body">
                         <span class="hero-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M4.5 21V7.5l7.5-4.5 7.5 4.5V21M9 21v-6h6v6"/></svg></span>
                         <div><p class="hero-card-title">Salon professionnel</p><p class="hero-card-sub">Stands & networking B2B</p></div>
@@ -607,7 +607,7 @@
                 </div>
 
                 <div class="hero-card hero-float" style="--x:6%; --y:52%; --w:16rem; --delay:1.8s;">
-                    <div class="hero-card-media" style="background-image:url('https://res.cloudinary.com/dstbqtuxm/image/upload/v1782659620/ChatGPT_Image_Jun_28_2026_03_00_42_PM_qkpjbj.png'); background-position:70% 60%;"></div>
+                    <div class="hero-card-media" style="background-image:url('https://res.cloudinary.com/dstbqtuxm/image/upload/v1786363396/ChatGPT_Image_10_ao%C3%BBt_2026_02_20_43_vifa4p.png'); background-position:70% 60%;"></div>
                     <div class="hero-card-body">
                         <span class="hero-card-icon" style="background:rgba(201,168,76,.15); color:var(--gold-light);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75 8.25 9l4.5 4.5 3-3 6 6M3.75 3.75h16.5A1.5 1.5 0 0 1 21.75 5.25v13.5a1.5 1.5 0 0 1-1.5 1.5H3.75a1.5 1.5 0 0 1-1.5-1.5V5.25a1.5 1.5 0 0 1 1.5-1.5Z"/></svg></span>
                         <div><p class="hero-card-title">Exposition</p><p class="hero-card-sub">Vitrine produits & services</p></div>
@@ -695,7 +695,6 @@
 
     </div>
 
-
     {{-- MARQUEE --}}
     <div class="marquee-mask overflow-hidden">
 
@@ -707,10 +706,10 @@
                 @foreach([
                     ['nom' => 'Max it',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461747/maxit_jn3vx2.webp'],
                     ['nom' => 'cese',       'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461748/cese_mdir0z.webp'],
-                    ['nom' => 'lywa',       'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461753/lywa_h0vg2q.webp'],
-                    ['nom' => 'samsung',     'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461752/samsung_yabejo.webp'],
-                    ['nom' => 'tooshare',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461753/tooshare_znn12k.webp'],
-                    ['nom' => 'bourse', 'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461747/cgfbourse_m1zhvb.webp'],
+                    ['nom' => 'lywa',             'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461753/lywa_h0vg2q.webp'],
+                    ['nom' => 'samsung',         'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461752/samsung_yabejo.webp'],
+                    ['nom' => 'tooshare',        'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461753/tooshare_znn12k.webp'],
+                    ['nom' => 'bourse',          'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461747/cgfbourse_m1zhvb.webp'],
                     ['nom' => 'francophonie',       'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461751/francophonie_kqcgcx.webp'],
                     ['nom' => 'fazah',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461750/fazah_fqy6lw.webp'],
                     ['nom' => 'destination senegal',      'logo' => 'https://res.cloudinary.com/dstbqtuxm/image/upload/v1786461750/aspt_t7dg0x.webp'],
@@ -1254,189 +1253,9 @@ $temoignages = [
 
 
 {{-- ══════════════════════════════════════════════════════════════
-     SECTION 11 — ACTUALITÉS
+     SECTION 11 — ACTUALITÉS 
      ══════════════════════════════════════════════════════════════ --}}
-<section style="background:var(--pearl);" class="py-16 sm:py-24" aria-label="Actualités">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
 
-        {{-- En-tête --}}
-        <div class="text-center mb-10 sm:mb-16">
-            <p class="section-eyebrow mb-3">Le blog ExpoDakar</p>
-
-            <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl"
-                style="color:var(--blue-night);">
-                Actualités
-            </h2>
-
-            <p class="mt-3 max-w-2xl mx-auto text-sm sm:text-base"
-               style="color:var(--gray-mid);">
-                Conseils, tendances et actualités pour mieux comprendre
-                l'écosystème événementiel et professionnel au Sénégal.
-            </p>
-        </div>
-
-        {{-- Articles --}}
-        @if(isset($articles) && $articles->count())
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
-
-                @foreach($articles->take(3) as $article)
-
-                    <article
-                        class="card-lift bg-white rounded-2xl overflow-hidden group"
-                        style="box-shadow:0 4px 24px rgba(10,22,40,.06);">
-
-                        {{-- Image --}}
-                        <a href="{{ route('blog.show', $article) }}"
-                           class="block h-52 sm:h-56 overflow-hidden">
-
-                            @if($article->image)
-
-                                <img
-                                    src="{{ $article->image }}"
-                                    alt="{{ $article->titre }}"
-                                    class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                                    loading="lazy"
-                                    decoding="async">
-
-                            @else
-
-                                <div
-                                    class="w-full h-full flex items-center justify-center"
-                                    style="background:linear-gradient(135deg,var(--blue-night),var(--blue-deep));">
-
-                                    <span class="font-display text-3xl text-white/80">
-                                        Expo<span style="color:var(--gold-light);">Dakar</span>
-                                    </span>
-
-                                </div>
-
-                            @endif
-
-                        </a>
-
-                        {{-- Contenu --}}
-                        <div class="p-5 sm:p-6">
-
-                            {{-- Catégorie + date --}}
-                            <div class="flex items-center justify-between gap-3 mb-3">
-
-                                @if($article->categorie)
-                                    <span
-                                        class="font-mono text-[.62rem] uppercase tracking-[.12em]"
-                                        style="color:var(--gold);">
-                                        {{ $article->categorie }}
-                                    </span>
-                                @endif
-
-                                @if($article->date_publication)
-                                    <span
-                                        class="text-[.68rem]"
-                                        style="color:var(--gray-mid);">
-                                        {{ \Carbon\Carbon::parse($article->date_publication)->format('d/m/Y') }}
-                                    </span>
-                                @endif
-
-                            </div>
-
-                            {{-- Titre --}}
-                            <h3
-                                class="font-semibold text-base sm:text-lg leading-snug mb-2"
-                                style="color:var(--blue-night);">
-
-                                <a href="{{ route('blog.show', $article) }}"
-                                   class="hover:opacity-70 transition-opacity">
-
-                                    {{ $article->titre }}
-
-                                </a>
-
-                            </h3>
-
-                            {{-- Extrait --}}
-                            <p
-                                class="text-xs sm:text-sm leading-relaxed mb-5"
-                                style="color:var(--gray-mid);">
-
-                                {{ \Illuminate\Support\Str::limit(strip_tags($article->extrait), 120) }}
-
-                            </p>
-
-                            {{-- Lire --}}
-                            <a
-                                href="{{ route('blog.show', $article) }}"
-                                class="text-xs sm:text-sm font-semibold group/link inline-flex items-center gap-2"
-                                style="color:var(--blue-electric);">
-
-                                Lire l'article
-
-                                <span
-                                    class="inline-block transition-transform duration-300 group-hover/link:translate-x-1">
-                                    →
-                                </span>
-
-                            </a>
-
-                        </div>
-                    </article>
-
-                @endforeach
-
-            </div>
-
-            {{-- Voir tout {{ route('blog.index') }} --}}
-            <div class="mt-10 sm:mt-12 text-center">
-
-                <a
-                    href="#"
-                    class="inline-flex items-center gap-2 px-6 py-3 rounded-full border font-semibold text-sm transition-all hover:bg-white hover:-translate-y-0.5"
-                    style="border-color:rgba(10,22,40,.15);color:var(--blue-night);">
-
-                    Voir tous les articles
-
-                    <span>→</span>
-
-                </a>
-
-            </div>
-
-        @else
-
-            {{-- Aucun article --}}
-            <div class="text-center py-12">
-
-                <div
-                    class="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center"
-                    style="background:var(--blue-soft);">
-
-                    <svg
-                        class="w-6 h-6"
-                        fill="none"
-                        stroke="var(--blue-electric)"
-                        stroke-width="1.8"
-                        viewBox="0 0 24 24">
-
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M19.5 14.25v-8.5A2.25 2.25 0 0 0 17.25 3.5h-10.5A2.25 2.25 0 0 0 4.5 5.75v12.5a2.25 2.25 0 0 0 2.25 2.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-2.5m0-1.5h-6.75m6.75 0-2.25-2.25m2.25 2.25-2.25 2.25" />
-
-                    </svg>
-
-                </div>
-
-                <p
-                    class="text-sm"
-                    style="color:var(--gray-mid);">
-                    Aucun article publié pour le moment.
-                </p>
-
-            </div>
-
-        @endif
-
-    </div>
-</section>
 
 {{-- ══════════════════════════════════════════════════════════════
      SECTION 12 — FAQ
@@ -1585,10 +1404,23 @@ $temoignages = [
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
         <div class="py-10 sm:py-16 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-12 border-b" style="border-color:rgba(255,255,255,.06);">
             <div class="col-span-2 sm:col-span-2 lg:col-span-1">
-                <a href="{{ route('home') }}" class="flex items-center gap-2 mb-4">
-                    <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782085416/ChatGPT_Image_Jun_21__2026__07_24_51_PM-removebg-preview_zi77k0.png" alt="Logo" class="h-10 w-auto" loading="lazy" decoding="async">
-                    <span class="font-display text-xl text-white">Expo<span class="text-gold-gradient">Dakar</span></span>
-                </a>
+        <a href="{{ route('home') }}"
+                class="flex items-center gap-2 sm:gap-3 shrink-0"
+                aria-label="ExpoDakar">
+                <img
+                    src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1786364683/ChatGPT_Image_10_ao%C3%BBt_2026__02_24_21-removebg-preview_spadbb.png"
+                    alt="Logo ExpoDakar"
+                    class="h-14 sm:h-16 w-auto object-contain"
+                    width="80"
+                    height="80"
+                    fetchpriority="high">
+                {{-- NOM EXPO DAKAR --}}
+                <span
+                    class="font-display text-xl sm:text-2xl font-semibold transition-colors duration-300"
+                    : class="text-white">
+                  <span class="font-display text-2xl text-white">Expo<span class="text-gold-gradient">Dakar</span></span>
+                </span>
+            </a>
                 <p class="text-sm leading-relaxed mb-5" style="color:rgba(255,255,255,.4);">La plateforme de référence pour les événements professionnels au Sénégal.</p>
             <div class="flex items-center gap-3">
 
@@ -1705,10 +1537,15 @@ $temoignages = [
             </div>
         </div>
 
-        <div class="py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p class="text-xs" style="color:rgba(255,255,255,.25);">© {{ date('Y') }} ExpoDakar. Tous droits réservés.</p>
-            <p class="text-xs" style="color:rgba(255,255,255,.2);">Conçu au Sénégal</p>
-        </div>
+<div class="py-5 flex flex-col sm:flex-row items-center justify-center gap-4">
+    <p class="text-xs" style="color:rgba(255,255,255,.25);">
+        © {{ date('Y') }} ExpoDakar. Tous droits réservés.
+    </p>
+
+    <p class="text-xs" style="color:rgba(255,255,255,.2);">
+        Conçu au Sénégal
+    </p>
+</div>
     </div>
 </footer>
 

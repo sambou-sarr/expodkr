@@ -138,37 +138,336 @@
 {{-- ══════════════════════════════════════════════════════════════
      NAVBAR img
      ══════════════════════════════════════════════════════════════ --}}
-<header class="navbar-solid sticky top-0 z-50" role="banner">
-    <div class="max-w-7xl mx-auto px-6 lg:px-16">
-        <div class="flex items-center justify-between h-18 py-3">
+<header
+    x-data="{
+        open: false,
+        scrolled: false,
+        init() {
+            this.scrolled = window.scrollY > 60;
 
-            {{-- Logo --}}
-            <a href="{{ route('home') }}" class="flex items-center gap-3" aria-label="ExpoDKR – Accueil">
-                    <span style="display:flex;align-items:center;justify-content:center;width:2.25rem;height:2.25rem;border-radius:.625rem;background:background: linear-gradient(135deg, #3B82F6, #1E5FD8);">
-            <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1786364683/ChatGPT_Image_10_ao%C3%BBt_2026__02_24_21-removebg-preview_spadbb.png" alt="Logo ExpoDakar" class="h-12 w-auto object-contain">
+            window.addEventListener('scroll', () => {
+                this.scrolled = window.scrollY > 60;
+            });
+        }
+    }"
+    x-init="init()"
+    :class="scrolled
+        ? 'bg-white shadow-md'
+        : 'bg-transparent'"
+    class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
 
-            </span>
-                <span class="font-display text-xl text-white">Expo<span class="text-gold-gradient">DKR</span></span>
+    {{-- CONTENEUR --}}
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+
+        <div class="flex items-center justify-between h-16 sm:h-20">
+
+            {{-- ═══════════════════════════════════════
+                 LOGO
+            ═══════════════════════════════════════ --}}
+            <a
+                href="{{ route('home') }}"
+                class="flex items-center gap-2 sm:gap-3 shrink-0"
+                aria-label="ExpoDakar">
+
+                <img
+                    src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782085416/ChatGPT_Image_Jun_21__2026__07_24_51_PM-removebg-preview_zi77k0.png"
+                    alt="Logo ExpoDakar"
+                    class="h-14 sm:h-16 w-auto object-contain"
+                    width="80"
+                    height="80"
+                    fetchpriority="high">
+
+                {{-- NOM EXPO DAKAR --}}
+                <span
+                    class="font-display text-xl sm:text-2xl font-semibold transition-colors duration-300"
+                    :class="scrolled ? 'text-black' : 'text-white'">
+
+                    Expo<span class="text-gold-gradient">Dakar</span>
+
+                </span>
+
             </a>
 
-            {{-- Nav desktop --}}
-            <nav class="hidden lg:flex items-center gap-7" aria-label="Navigation principale">
-                <a href="{{ route('user.events.index') }}"    class="text-sm font-medium text-white border-b border-white/30 pb-0.5">Événements</a>
-                <a href="" class="text-sm font-medium text-white/70 hover:text-white transition-colors">Exposants</a>
-                <a href="/#categories"                   class="text-sm font-medium text-white/70 hover:text-white transition-colors">Catégories</a>
+
+            {{-- ═══════════════════════════════════════
+                 MENU DESKTOP
+            ═══════════════════════════════════════ --}}
+            <nav
+                class="hidden lg:flex items-center gap-8">
+
+                <a
+                    href="#evenements"
+                    class="text-sm font-medium transition-colors duration-300"
+                    :class="scrolled
+                        ? 'text-black hover:text-blue-700'
+                        : 'text-white/90 hover:text-white'">
+                    Événements
+                </a>
+
+                <a
+                    href="{{ route('user.categories.index') }}"
+                    class="text-sm font-medium transition-colors duration-300"
+                    :class="scrolled
+                        ? 'text-black hover:text-blue-700'
+                        : 'text-white/90 hover:text-white'">
+                    Catégories
+                </a>
+
+                <a
+                    href="#calendrier"
+                    class="text-sm font-medium transition-colors duration-300"
+                    :class="scrolled
+                        ? 'text-black hover:text-blue-700'
+                        : 'text-white/90 hover:text-white'">
+                    Calendrier
+                </a>
+
+                <a
+                    href="#exposants"
+                    class="text-sm font-medium transition-colors duration-300"
+                    :class="scrolled
+                        ? 'text-black hover:text-blue-700'
+                        : 'text-white/90 hover:text-white'">
+                    Exposants
+                </a>
+
+                <a
+                    href="#faq"
+                    class="text-sm font-medium transition-colors duration-300"
+                    :class="scrolled
+                        ? 'text-black hover:text-blue-700'
+                        : 'text-white/90 hover:text-white'">
+                    FAQ
+                </a>
+
             </nav>
 
-            {{-- Actions --}}
-   
 
-            <button class="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg text-white hover:bg-white/10" aria-label="Menu">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-            </button>
+            {{-- ═══════════════════════════════════════
+                 ACTIONS DESKTOP
+            ═══════════════════════════════════════ --}}
+            <div class="hidden lg:flex items-center gap-3">
+
+                @guest
+
+                    {{-- CONNEXION --}}
+                    <a
+                        href="{{ route('login') }}"
+                        class="text-sm font-medium px-4 py-2 rounded-lg
+                               transition-all duration-300"
+                        :class="scrolled
+                            ? 'text-black hover:bg-gray-100'
+                            : 'text-white/90 hover:text-white hover:bg-white'">
+                        Connexion
+                    </a>
+
+
+                    {{-- INSCRIPTION --}}
+                    <a
+                        href="{{ route('register') }}"
+                        class="text-sm font-semibold text-white
+                               px-5 py-2.5 rounded-xl shadow-sm
+                               hover:shadow-md hover:-translate-y-0.5
+                               transition-all duration-200"
+                        style="background:linear-gradient(135deg,var(--gold),var(--gold-light));">
+                        S'inscrire
+                    </a>
+
+                @endguest
+
+
+                @auth
+
+                    {{-- MON ESPACE --}}
+                    <a
+                        href="{{ route('account') }}"
+                        class="text-sm font-semibold text-white
+                               px-5 py-2.5 rounded-xl shadow-sm
+                               hover:shadow-md hover:-translate-y-0.5
+                               transition-all duration-200"
+                        style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">
+                        Mon espace
+                    </a>
+
+                @endauth
+
+            </div>
+
+
+            {{-- ═══════════════════════════════════════
+                 MOBILE
+            ═══════════════════════════════════════ --}}
+            <div class="flex items-center gap-2 lg:hidden">
+
+                @auth
+
+                    <a
+                        href="{{ route('account') }}"
+                        class="text-xs font-semibold text-white
+                               px-3 py-1.5 rounded-lg shadow-sm"
+                        style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">
+                        Mon espace
+                    </a>
+
+                @endauth
+
+
+                {{-- BOUTON MENU --}}
+                <button
+                    @click="open = !open"
+                    type="button"
+                    class="flex items-center justify-center
+                           w-10 h-10 rounded-lg
+                           border transition-all duration-300"
+                    :class="scrolled
+                        ? 'text-black bg-white border-gray-200 hover:bg-gray-100'
+                        : 'text-white bg-white/10 border-white/20 hover:bg-white/20'"
+                    aria-label="Menu"
+                    :aria-expanded="open">
+
+                    {{-- HAMBURGER --}}
+                    <svg
+                        x-show="!open"
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24">
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M4 6h16M4 12h16M4 18h16"/>
+
+                    </svg>
+
+
+                    {{-- FERMER --}}
+                    <svg
+                        x-show="open"
+                        x-cloak
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24">
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6 18L18 6M6 6l12 12"/>
+
+                    </svg>
+
+                </button>
+
+            </div>
+
         </div>
     </div>
+
+
+    {{-- ═══════════════════════════════════════
+         MENU MOBILE
+    ═══════════════════════════════════════ --}}
+    <div
+        x-show="open"
+        x-cloak
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 -translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 -translate-y-2"
+        class="lg:hidden bg-white border-t border-gray-200 shadow-lg">
+
+        <nav class="flex flex-col gap-1 px-4 py-4">
+
+            <a
+                href="#evenements"
+                @click="open = false"
+                class="px-4 py-3 text-sm font-medium text-black
+                       hover:text-blue-700 hover:bg-gray-50
+                       rounded-lg transition">
+                Événements
+            </a>
+
+            <a
+                href="{{ route('user.categories.index') }}"
+                @click="open = false"
+                class="px-4 py-3 text-sm font-medium text-black
+                       hover:text-blue-700 hover:bg-gray-50
+                       rounded-lg transition">
+                Catégories
+            </a>
+
+            <a
+                href="#calendrier"
+                @click="open = false"
+                class="px-4 py-3 text-sm font-medium text-black
+                       hover:text-blue-700 hover:bg-gray-50
+                       rounded-lg transition">
+                Calendrier
+            </a>
+
+            <a
+                href="#exposants"
+                @click="open = false"
+                class="px-4 py-3 text-sm font-medium text-black
+                       hover:text-blue-700 hover:bg-gray-50
+                       rounded-lg transition">
+                Exposants
+            </a>
+
+            <a
+                href="#faq"
+                @click="open = false"
+                class="px-4 py-3 text-sm font-medium text-black
+                       hover:text-blue-700 hover:bg-gray-50
+                       rounded-lg transition">
+                FAQ
+            </a>
+
+            <hr class="border-gray-200 my-2">
+
+            @guest
+
+                <a
+                    href="{{ route('login') }}"
+                    class="px-4 py-3 text-sm font-medium text-black
+                           hover:text-blue-700 hover:bg-gray-50
+                           rounded-lg transition">
+                    Connexion
+                </a>
+
+                <a
+                    href="{{ route('register') }}"
+                    class="mt-1 px-4 py-3 text-sm font-semibold
+                           text-center rounded-xl"
+                    style="background:linear-gradient(135deg,var(--gold),var(--gold-light));
+                           color:var(--blue-night);">
+                    S'inscrire gratuitement
+                </a>
+
+            @endguest
+
+            @auth
+
+                <a
+                    href="{{ route('account') }}"
+                    class="px-4 py-3 text-sm font-semibold
+                           text-center text-white rounded-xl"
+                    style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">
+                    Mon espace
+                </a>
+
+            @endauth
+
+        </nav>
+    </div>
+
 </header>
+
 
 
 {{-- ══════════════════════════════════════════════════════════════
@@ -545,11 +844,23 @@
 <footer class="border-t" style="border-color: var(--gray-soft); background: white;" role="contentinfo">
     <div class="max-w-7xl mx-auto px-6 lg:px-16 py-8 flex flex-wrap items-center justify-between gap-4">
         <a href="{{ route('home') }}" class="flex items-center gap-2.5" aria-label="ExpoDKR">
-            <span style="display:flex;align-items:center;justify-content:center;width:2.25rem;height:2.25rem;border-radius:.625rem;background:background: linear-gradient(135deg, #3B82F6, #1E5FD8);">
-             <img src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782085416/ChatGPT_Image_Jun_21__2026__07_24_51_PM-removebg-preview_zi77k0.png"  alt="Logo ExpoDakar" class="h-12 w-auto object-contain">
 
-            </span>
-            <span class="font-display text-lg" style="color: var(--blue-night);">Expo<span style="color: var(--blue-electric);">DKR</span></span>
+                <img
+                    src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782085416/ChatGPT_Image_Jun_21__2026__07_24_51_PM-removebg-preview_zi77k0.png"
+                    alt="Logo ExpoDakar"
+                    class="h-14 sm:h-16 w-auto object-contain"
+                    width="80"
+                    height="80"
+                    fetchpriority="high">
+
+                {{-- NOM EXPO DAKAR --}}
+                <span
+                    class="font-display text-xl sm:text-2xl font-semibold transition-colors duration-300"
+                    :class="scrolled ? 'text-black' : 'text-white'">
+
+                    Expo<span class="text-gold-gradient">Dakar</span>
+
+                </span>
         </a>
         <p class="text-xs" style="color: var(--gray-mid);">© {{ date('Y') }} ExpoDKR · Tous droits réservés</p>
     </div>
