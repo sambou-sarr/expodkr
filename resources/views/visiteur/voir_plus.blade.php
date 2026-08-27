@@ -35,7 +35,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 
     <style>
-        /* ── Design tokens ───────────────────────────────────── */
         :root {
             --blue:         #1E5FD8;   /* Bleu Électrique */
             --blue-dark:    #10284D;   /* Bleu Profond */
