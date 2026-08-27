@@ -24,24 +24,28 @@
 
     <title>{{ $event->titre }} – ExpoDakar</title>
 
+    {{-- Préchargement polices : évite le flash de texte non stylé (FOIT) --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+    {{-- Vite : fournit uniquement les utilitaires Tailwind additionnels si besoin.
+         Le layout critique (header, hero, cards...) ne dépend plus de ces classes. --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    {{-- Librairies tierces en defer : ne bloquent pas le premier rendu --}}
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js" defer></script>
 
     <style>
         :root {
-            --blue:         #1E5FD8;   /* Bleu Électrique */
-            --blue-dark:    #10284D;   /* Bleu Profond */
-            --blue-night:   #0A1628;   /* Bleu Nuit */
+            --blue:         #1E5FD8;
+            --blue-dark:    #10284D;
+            --blue-night:   #0A1628;
             --blue-soft:    #EEF3FE;
-            --gold:         #C9A84C;   /* Or Premium */
-            --gold-light:   #E8C96A;   /* Or Clair */
+            --gold:         #C9A84C;
+            --gold-light:   #E8C96A;
             --pearl:        #F8F9FC;
             --gray-soft:    #EDEEF2;
             --gray-mid:     #8892A4;
@@ -54,7 +58,7 @@
         }
 
         *, *::before, *::after { box-sizing: border-box; }
-        html  { scroll-behavior: smooth; } /* fallback si JS désactivé ; neutralisé en JS une fois Lenis actif pour éviter tout conflit de fluidité */
+        html  { scroll-behavior: smooth; }
         body  {
             font-family: 'Inter', sans-serif;
             color: var(--blue-night);
@@ -67,7 +71,6 @@
         img, svg { max-width: 100%; }
         .font-display { font-family: 'Instrument Serif', serif; }
         .font-mono     { font-family: 'JetBrains Mono', monospace; }
-
         [x-cloak] { display: none !important; }
 
         .text-gold {
@@ -75,11 +78,93 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
 
-        /* ── Navbar ──────────────────────────────────────────── */
-        .navbar { position: fixed; inset: 0 0 auto 0; z-index: 50; transition: background .3s, box-shadow .3s, backdrop-filter .3s; }
-        .navbar.scrolled { background: rgba(10,22,40,.86); backdrop-filter: blur(14px); box-shadow: 0 2px 24px rgba(10,22,40,.2); }
-        .navbar-inner { max-width:80rem;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:4.5rem; }
-        .nav-cta-text { display:inline; }
+        /* ══════════════════════════════════════════════════════
+           HEADER / NAV — CSS pur (indépendant de Tailwind/Vite)
+           ══════════════════════════════════════════════════════ */
+        .site-header {
+            position: fixed; inset: 0 0 auto 0; z-index: 50;
+            transition: background .3s ease, box-shadow .3s ease;
+            background: transparent;
+        }
+        .site-header.scrolled { background: #fff; box-shadow: var(--shadow-sm); }
+
+        .header-inner {
+            width: 100%; max-width: 80rem; margin: 0 auto;
+            padding: 0 1rem;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 4rem;
+        }
+        @media (min-width: 640px)  { .header-inner { padding: 0 1.5rem; height: 5rem; } }
+        @media (min-width: 1024px) { .header-inner { padding: 0 4rem; } }
+
+        .header-logo { display: flex; align-items: center; gap: .5rem; text-decoration: none; flex-shrink: 0; }
+        @media (min-width: 640px) { .header-logo { gap: .75rem; } }
+        .header-logo img { height: 3.5rem; width: auto; object-fit: contain; }
+        @media (min-width: 640px) { .header-logo img { height: 4rem; } }
+        .header-logo-text { font-size: 1.25rem; font-weight: 600; transition: color .3s ease; color: #fff; }
+        .site-header.scrolled .header-logo-text { color: #000; }
+        @media (min-width: 640px) { .header-logo-text { font-size: 1.5rem; } }
+
+        .header-nav { display: none; align-items: center; gap: 2rem; }
+        @media (min-width: 1024px) { .header-nav { display: flex; } }
+        .header-nav a {
+            font-size: .875rem; font-weight: 500; text-decoration: none;
+            color: rgba(255,255,255,.9); transition: color .3s ease;
+        }
+        .header-nav a:hover { color: #fff; }
+        .site-header.scrolled .header-nav a { color: #000; }
+        .site-header.scrolled .header-nav a:hover { color: var(--blue); }
+
+        .header-actions { display: none; align-items: center; gap: .75rem; }
+        @media (min-width: 1024px) { .header-actions { display: flex; } }
+        .header-actions .btn-login {
+            font-size: .875rem; font-weight: 500; padding: .5rem 1rem; border-radius: .5rem;
+            text-decoration: none; color: rgba(255,255,255,.9); transition: all .3s ease;
+        }
+        .header-actions .btn-login:hover { background: #fff; color: #000; }
+        .site-header.scrolled .header-actions .btn-login { color: #000; }
+        .site-header.scrolled .header-actions .btn-login:hover { background: #f3f4f6; }
+        .header-actions .btn-register {
+            font-size: .875rem; font-weight: 600; color: #fff; padding: .6rem 1.25rem; border-radius: .75rem;
+            text-decoration: none; box-shadow: var(--shadow-sm); transition: all .2s ease;
+            background: linear-gradient(135deg,var(--gold),var(--gold-light));
+        }
+        .header-actions .btn-register:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+
+        .header-mobile-toggle {
+            display: flex; align-items: center; justify-content: center;
+            width: 2.5rem; height: 2.5rem; border-radius: .5rem; border: 1px solid rgba(255,255,255,.2);
+            background: rgba(255,255,255,.1); color: #fff; cursor: pointer; transition: all .3s ease;
+        }
+        .site-header.scrolled .header-mobile-toggle { color: #000; background: #fff; border-color: #e5e7eb; }
+        @media (min-width: 1024px) { .header-mobile-toggle { display: none; } }
+        .header-mobile-wrap { display: flex; align-items: center; gap: .5rem; }
+        @media (min-width: 1024px) { .header-mobile-wrap { display: none; } }
+
+        .header-mobile-menu { background: #fff; border-top: 1px solid #e5e7eb; box-shadow: var(--shadow-md); }
+        @media (min-width: 1024px) { .header-mobile-menu { display: none !important; } }
+        .header-mobile-menu nav { display: flex; flex-direction: column; gap: .25rem; padding: 1rem; }
+        .header-mobile-menu a {
+            padding: .75rem 1rem; font-size: .875rem; font-weight: 500; color: #000;
+            text-decoration: none; border-radius: .5rem; transition: all .2s ease;
+        }
+        .header-mobile-menu a:hover { color: var(--blue); background: #f9fafb; }
+        .header-mobile-menu hr { border: none; border-top: 1px solid #e5e7eb; margin: .5rem 0; }
+        .btn-register-mobile {
+            margin-top: .25rem; padding: .75rem 1rem; font-size: .875rem; font-weight: 600;
+            text-align: center; border-radius: .75rem; text-decoration: none; color: var(--blue-night);
+            background: linear-gradient(135deg,var(--gold),var(--gold-light));
+        }
+        .btn-account-mobile {
+            padding: .75rem 1rem; font-size: .875rem; font-weight: 600; text-align: center;
+            color: #fff; border-radius: .75rem; text-decoration: none;
+            background: linear-gradient(135deg,var(--blue),#1248b0);
+        }
+        .btn-account-header {
+            font-size: .75rem; font-weight: 600; color: #fff; padding: .4rem .75rem; border-radius: .5rem;
+            text-decoration: none; box-shadow: var(--shadow-sm);
+            background: linear-gradient(135deg,var(--blue),#1248b0);
+        }
 
         /* ── Hero atmosphere ─────────────────────────────────── */
         .hero-overlay { background: linear-gradient(to bottom, rgba(10,22,40,.30) 0%, rgba(10,22,40,.55) 45%, rgba(10,22,40,.94) 100%); }
@@ -92,24 +177,20 @@
         .hero-section { position:relative;min-height:94vh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden; }
         .hero-inner { position:relative;z-index:1;max-width:80rem;margin:0 auto;padding:2rem 1.5rem 5rem;width:100%; }
 
-        /* ── Glassmorphism ───────────────────────────────────── */
         .glass { background: rgba(255,255,255,.08); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,.16); }
         .glass-light { background: rgba(255,255,255,.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.6); }
 
-        /* ── Card system ─────────────────────────────────────── */
         .card-premium { border-radius: var(--radius); transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease, border-color .35s ease; }
         .card-premium:hover { transform: translateY(-6px) rotate(-.35deg); box-shadow: var(--shadow-lg); }
         .card-lift { transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s ease; }
         .card-lift:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
 
-        /* ── Reveal on scroll ────────────────────────────────── */
         .reveal { opacity: 0; transform: translateY(28px); filter: blur(4px); transition: opacity .75s cubic-bezier(.16,1,.3,1), transform .75s cubic-bezier(.16,1,.3,1), filter .75s ease; }
         .reveal.on { opacity: 1; transform: translateY(0); filter: blur(0); }
         .d1 { transition-delay: .08s; } .d2 { transition-delay: .16s; } .d3 { transition-delay: .24s; } .d4 { transition-delay: .32s; }
 
         .sidebar-sticky { position: sticky; top: 6rem; }
 
-        /* ── Hero fade-in helper (replaces duplicated inline style attrs) ── */
         .fade-block { transition: opacity .7s ease, transform .7s ease; }
         .fade-block.d-title { transition-delay: .1s; }
         .fade-block.d-sub { transition: opacity .8s ease .15s; }
@@ -117,7 +198,6 @@
         .fade-block.d-stats { transition: opacity .8s ease .3s, transform .8s ease .3s; }
         .fade-block.d-mockup { transition: opacity 1s ease .3s, transform 1s ease .3s; }
 
-        /* ── Buttons : magnetic + glow + ripple ──────────────── */
         .btn-premium {
             position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
             font-family: inherit; cursor: pointer; text-decoration: none; border: none;
@@ -155,7 +235,6 @@
         ::-webkit-scrollbar-track { background: var(--pearl); }
         ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 99px; }
 
-        /* ── Hero mockup (illustration signature) ───────────── */
         .mockup-wrap { position: relative; width: 100%; max-width: 420px; aspect-ratio: 1/1; margin-inline: auto; }
         .mockup-ring { position: absolute; inset: 0; border-radius: 50%; border: 1px dashed rgba(232,201,106,.35); }
         .mockup-card {
@@ -165,7 +244,6 @@
         }
         .mockup-glow { position: absolute; border-radius: 50%; filter: blur(90px); pointer-events: none; }
 
-        /* ── Masonry gallery ──────────────────────────────────── */
         .masonry { column-count: 1; column-gap: 1rem; }
         @media (min-width: 640px)  { .masonry { column-count: 2; } }
         @media (min-width: 1024px) { .masonry { column-count: 2; } }
@@ -175,22 +253,17 @@
         .gallery-tile img { transition: transform .55s cubic-bezier(.16,1,.3,1); }
         .gallery-tile:hover img { transform: scale(1.07); }
 
-        /* ── Stat cards ───────────────────────────────────────── */
         .stat-card { background: #fff; border: 1px solid var(--gray-soft); transition: all .3s ease; }
         .stat-card:hover { border-color: rgba(30,95,216,.25); box-shadow: var(--shadow-md); transform: translateY(-4px); }
 
-        /* ── Timeline ─────────────────────────────────────────── */
         .timeline-line { position: absolute; left: 19px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--gold), var(--gray-soft)); }
         .timeline-dot { width: 40px; height: 40px; border-radius: 50%; background: white; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; z-index: 1; box-shadow: 0 0 0 6px white; }
 
-        /* ── Accordion ────────────────────────────────────────── */
         .accordion-chevron { transition: transform .35s cubic-bezier(.16,1,.3,1); }
 
-        /* ── Partner logos ────────────────────────────────────── */
         .partner-logo { filter: grayscale(1) opacity(.5); transition: filter .4s ease, transform .4s ease; }
         .partner-logo:hover { filter: grayscale(0) opacity(1); transform: scale(1.06); }
 
-        /* ── Layout containers (extracted so mobile rules can target them) ── */
         .page-container { max-width:80rem;margin:0 auto;padding:5rem 1.5rem 6rem; }
         .two-col { display:grid;grid-template-columns:1fr 380px;gap:3rem;align-items:start; }
         .left-col { display:flex;flex-direction:column;gap:4rem; }
@@ -226,7 +299,6 @@
             .footer-inner { padding: 3rem 1.25rem 2rem !important; }
             .partners-grid { grid-template-columns: repeat(2,1fr) !important; }
             h2.font-display { font-size: 1.5rem !important; }
-            .nav-cta-text { display: none; }
         }
         @media (max-width: 640px) {
             .hero-title { font-size: clamp(2rem, 8vw, 3rem) !important; }
@@ -236,7 +308,6 @@
             .footer-grid { grid-template-columns: 1fr !important; }
             .partners-grid { grid-template-columns: repeat(2,1fr) !important; }
             .practical-card { padding: 1.25rem !important; }
-            .navbar-inner { padding: 0 1.25rem !important; height: 4rem !important; }
         }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
@@ -249,338 +320,81 @@
 <body x-data="{ lightboxOpen: false, lightboxSrc: '', lightboxAlt: '' }">
 
 <header
-    x-data="{
-        open: false,
-        scrolled: false,
-        init() {
-            this.scrolled = window.scrollY > 60;
-
-            window.addEventListener('scroll', () => {
-                this.scrolled = window.scrollY > 60;
-            });
-        }
-    }"
+    x-data="{ open: false, scrolled: false, init() { this.scrolled = window.scrollY > 60; window.addEventListener('scroll', () => { this.scrolled = window.scrollY > 60; }); } }"
     x-init="init()"
-    :class="scrolled
-        ? 'bg-white shadow-md'
-        : 'bg-transparent'"
-    class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
+    :class="scrolled ? 'site-header scrolled' : 'site-header'">
 
-    {{-- CONTENEUR --}}
-    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+    <div class="header-inner">
 
-        <div class="flex items-center justify-between h-16 sm:h-20">
+        <a href="{{ route('home') }}" class="header-logo" aria-label="ExpoDakar">
+            <img
+                src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782085416/ChatGPT_Image_Jun_21__2026__07_24_51_PM-removebg-preview_zi77k0.png"
+                alt="Logo ExpoDakar" width="80" height="80" fetchpriority="high">
+            <span class="header-logo-text font-display">Expo<span class="text-gold">Dakar</span></span>
+        </a>
 
-            {{-- ═══════════════════════════════════════
-                 LOGO
-            ═══════════════════════════════════════ --}}
-            <a
-                href="{{ route('home') }}"
-                class="flex items-center gap-2 sm:gap-3 shrink-0"
-                aria-label="ExpoDakar">
+        <nav class="header-nav">
+            <a href="#evenements">Événements</a>
+            <a href="{{ route('user.categories.index') }}">Catégories</a>
+            <a href="#calendrier">Calendrier</a>
+            <a href="#exposants">Exposants</a>
+            <a href="#faq">FAQ</a>
+        </nav>
 
-                <img
-                    src="https://res.cloudinary.com/dstbqtuxm/image/upload/v1782085416/ChatGPT_Image_Jun_21__2026__07_24_51_PM-removebg-preview_zi77k0.png"
-                    alt="Logo ExpoDakar"
-                    class="h-14 sm:h-16 w-auto object-contain"
-                    width="80"
-                    height="80"
-                    fetchpriority="high">
-
-                {{-- NOM EXPO DAKAR --}}
-                <span
-                    class="font-display text-xl sm:text-2xl font-semibold transition-colors duration-300"
-                    :class="scrolled ? 'text-black' : 'text-white'">
-
-                    Expo<span class="text-gold-gradient">Dakar</span>
-
-                </span>
-
-            </a>
-
-
-            {{-- ═══════════════════════════════════════
-                 MENU DESKTOP
-            ═══════════════════════════════════════ --}}
-            <nav
-                class="hidden lg:flex items-center gap-8">
-
-                <a
-                    href="#evenements"
-                    class="text-sm font-medium transition-colors duration-300"
-                    :class="scrolled
-                        ? 'text-black hover:text-blue-700'
-                        : 'text-white/90 hover:text-white'">
-                    Événements
-                </a>
-
-                <a
-                    href="{{ route('user.categories.index') }}"
-                    class="text-sm font-medium transition-colors duration-300"
-                    :class="scrolled
-                        ? 'text-black hover:text-blue-700'
-                        : 'text-white/90 hover:text-white'">
-                    Catégories
-                </a>
-
-                <a
-                    href="#calendrier"
-                    class="text-sm font-medium transition-colors duration-300"
-                    :class="scrolled
-                        ? 'text-black hover:text-blue-700'
-                        : 'text-white/90 hover:text-white'">
-                    Calendrier
-                </a>
-
-                <a
-                    href="#exposants"
-                    class="text-sm font-medium transition-colors duration-300"
-                    :class="scrolled
-                        ? 'text-black hover:text-blue-700'
-                        : 'text-white/90 hover:text-white'">
-                    Exposants
-                </a>
-
-                <a
-                    href="#faq"
-                    class="text-sm font-medium transition-colors duration-300"
-                    :class="scrolled
-                        ? 'text-black hover:text-blue-700'
-                        : 'text-white/90 hover:text-white'">
-                    FAQ
-                </a>
-
-            </nav>
-
-
-            {{-- ═══════════════════════════════════════
-                 ACTIONS DESKTOP
-            ═══════════════════════════════════════ --}}
-            <div class="hidden lg:flex items-center gap-3">
-
-                @guest
-
-                    {{-- CONNEXION --}}
-                    <a
-                        href="{{ route('login') }}"
-                        class="text-sm font-medium px-4 py-2 rounded-lg
-                               transition-all duration-300"
-                        :class="scrolled
-                            ? 'text-black hover:bg-gray-100'
-                            : 'text-white/90 hover:text-white hover:bg-white'">
-                        Connexion
-                    </a>
-
-
-                    {{-- INSCRIPTION --}}
-                    <a
-                        href="{{ route('register') }}"
-                        class="text-sm font-semibold text-white
-                               px-5 py-2.5 rounded-xl shadow-sm
-                               hover:shadow-md hover:-translate-y-0.5
-                               transition-all duration-200"
-                        style="background:linear-gradient(135deg,var(--gold),var(--gold-light));">
-                        S'inscrire
-                    </a>
-
-                @endguest
-
-
-                @auth
-
-                    {{-- MON ESPACE --}}
-                    <a
-                        href="{{ route('account') }}"
-                        class="text-sm font-semibold text-white
-                               px-5 py-2.5 rounded-xl shadow-sm
-                               hover:shadow-md hover:-translate-y-0.5
-                               transition-all duration-200"
-                        style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">
-                        Mon espace
-                    </a>
-
-                @endauth
-
-            </div>
-
-
-            {{-- ═══════════════════════════════════════
-                 MOBILE
-            ═══════════════════════════════════════ --}}
-            <div class="flex items-center gap-2 lg:hidden">
-
-                @auth
-
-                    <a
-                        href="{{ route('account') }}"
-                        class="text-xs font-semibold text-white
-                               px-3 py-1.5 rounded-lg shadow-sm"
-                        style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">
-                        Mon espace
-                    </a>
-
-                @endauth
-
-
-                {{-- BOUTON MENU --}}
-                <button
-                    @click="open = !open"
-                    type="button"
-                    class="flex items-center justify-center
-                           w-10 h-10 rounded-lg
-                           border transition-all duration-300"
-                    :class="scrolled
-                        ? 'text-black bg-white border-gray-200 hover:bg-gray-100'
-                        : 'text-white bg-white/10 border-white/20 hover:bg-white/20'"
-                    aria-label="Menu"
-                    :aria-expanded="open">
-
-                    {{-- HAMBURGER --}}
-                    <svg
-                        x-show="!open"
-                        class="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        viewBox="0 0 24 24">
-
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M4 6h16M4 12h16M4 18h16"/>
-
-                    </svg>
-
-
-                    {{-- FERMER --}}
-                    <svg
-                        x-show="open"
-                        x-cloak
-                        class="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        viewBox="0 0 24 24">
-
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M6 18L18 6M6 6l12 12"/>
-
-                    </svg>
-
-                </button>
-
-            </div>
-
+        <div class="header-actions">
+            @guest
+                <a href="{{ route('login') }}" class="btn-login">Connexion</a>
+                <a href="{{ route('register') }}" class="btn-register">S'inscrire</a>
+            @endguest
+            @auth
+                <a href="{{ route('account') }}" class="btn-register">Mon espace</a>
+            @endauth
         </div>
+
+        <div class="header-mobile-wrap">
+            @auth
+                <a href="{{ route('account') }}" class="btn-account-header">Mon espace</a>
+            @endauth
+            <button @click="open = !open" type="button" class="header-mobile-toggle" aria-label="Menu" :aria-expanded="open">
+                <svg x-show="!open" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+                <svg x-show="open" x-cloak width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
     </div>
 
-
-    {{-- ═══════════════════════════════════════
-         MENU MOBILE
-    ═══════════════════════════════════════ --}}
-    <div
-        x-show="open"
-        x-cloak
+    <div x-show="open" x-cloak
         x-transition:enter="transition ease-out duration-200"
-        x-transition:enter-start="opacity-0 -translate-y-2"
-        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
         x-transition:leave="transition ease-in duration-150"
-        x-transition:leave-start="opacity-100 translate-y-0"
-        x-transition:leave-end="opacity-0 -translate-y-2"
-        class="lg:hidden bg-white border-t border-gray-200 shadow-lg">
-
-        <nav class="flex flex-col gap-1 px-4 py-4">
-
-            <a
-                href="#evenements"
-                @click="open = false"
-                class="px-4 py-3 text-sm font-medium text-black
-                       hover:text-blue-700 hover:bg-gray-50
-                       rounded-lg transition">
-                Événements
-            </a>
-
-            <a
-                href="{{ route('user.categories.index') }}"
-                @click="open = false"
-                class="px-4 py-3 text-sm font-medium text-black
-                       hover:text-blue-700 hover:bg-gray-50
-                       rounded-lg transition">
-                Catégories
-            </a>
-
-            <a
-                href="#calendrier"
-                @click="open = false"
-                class="px-4 py-3 text-sm font-medium text-black
-                       hover:text-blue-700 hover:bg-gray-50
-                       rounded-lg transition">
-                Calendrier
-            </a>
-
-            <a
-                href="#exposants"
-                @click="open = false"
-                class="px-4 py-3 text-sm font-medium text-black
-                       hover:text-blue-700 hover:bg-gray-50
-                       rounded-lg transition">
-                Exposants
-            </a>
-
-            <a
-                href="#faq"
-                @click="open = false"
-                class="px-4 py-3 text-sm font-medium text-black
-                       hover:text-blue-700 hover:bg-gray-50
-                       rounded-lg transition">
-                FAQ
-            </a>
-
-            <hr class="border-gray-200 my-2">
-
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="header-mobile-menu">
+        <nav>
+            <a href="#evenements" @click="open = false">Événements</a>
+            <a href="{{ route('user.categories.index') }}" @click="open = false">Catégories</a>
+            <a href="#calendrier" @click="open = false">Calendrier</a>
+            <a href="#exposants" @click="open = false">Exposants</a>
+            <a href="#faq" @click="open = false">FAQ</a>
+            <hr>
             @guest
-
-                <a
-                    href="{{ route('login') }}"
-                    class="px-4 py-3 text-sm font-medium text-black
-                           hover:text-blue-700 hover:bg-gray-50
-                           rounded-lg transition">
-                    Connexion
-                </a>
-
-                <a
-                    href="{{ route('register') }}"
-                    class="mt-1 px-4 py-3 text-sm font-semibold
-                           text-center rounded-xl"
-                    style="background:linear-gradient(135deg,var(--gold),var(--gold-light));
-                           color:var(--blue-night);">
-                    S'inscrire gratuitement
-                </a>
-
+                <a href="{{ route('login') }}">Connexion</a>
+                <a href="{{ route('register') }}" class="btn-register-mobile">S'inscrire gratuitement</a>
             @endguest
-
             @auth
-
-                <a
-                    href="{{ route('account') }}"
-                    class="px-4 py-3 text-sm font-semibold
-                           text-center text-white rounded-xl"
-                    style="background:linear-gradient(135deg,var(--blue-electric),#1248b0);">
-                    Mon espace
-                </a>
-
+                <a href="{{ route('account') }}" class="btn-account-mobile">Mon espace</a>
             @endauth
-
         </nav>
     </div>
 
 </header>
-
-
 {{-- ══════════════════════════════════════════════════════════════
-     1. HERO IMMERSIF — image + illustration flottante à droite
+     1. HERO IMMERSIF — image + illustration flottante à droite 
      ══════════════════════════════════════════════════════════════ --}}
 <section id="hero" class="hero-section" x-data="{ visible: false }" x-init="setTimeout(() => visible = true, 100)" aria-label="Bannière de l'événement">
 
@@ -978,9 +792,9 @@
             {{-- ══════════════ Timeline exposant ══════════════ --}}
             @php
                 $timeline = [
-                    ['annee' => $event->exposant->annee_creation ?? '2001', 'titre' => 'Création', 'texte' => "Fondation de l'entreprise et premiers pas sur le marché sénégalais."],
-                    ['annee' => $event->exposant->annee_premiere_expo ?? '2005', 'titre' => 'Première exposition', 'texte' => "Participation au tout premier salon professionnel, point de départ d'une présence continue."],
-                    ['annee' => $event->exposant->annee_expansion ?? '2014', 'titre' => 'Expansion', 'texte' => "Ouverture à de nouveaux marchés régionaux et renforcement du réseau de partenaires."],
+                    ['annee' => $event->exposant->annee_creation ?? '', 'titre' => 'Création', 'texte' => "Fondation de l'entreprise et premiers pas sur le marché sénégalais."],
+                    ['annee' => $event->exposant->annee_premiere_expo ?? '', 'titre' => 'Première exposition', 'texte' => "Participation au tout premier salon professionnel, point de départ d'une présence continue."],
+                    ['annee' => $event->exposant->annee_expansion ?? '', 'titre' => 'Expansion', 'texte' => "Ouverture à de nouveaux marchés régionaux et renforcement du réseau de partenaires."],
                     ['annee' => 'Aujourd\'hui', 'titre' => "Aujourd'hui", 'texte' => "Un acteur reconnu, présent sur les plus grands salons professionnels d'Afrique de l'Ouest."],
                 ];
             @endphp
