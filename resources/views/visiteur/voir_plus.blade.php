@@ -1143,15 +1143,7 @@
                     height="80"
                     fetchpriority="high">
 
-                {{-- NOM EXPO DAKAR --}}
-                <span
-                    class="font-display text-xl sm:text-2xl font-semibold transition-colors duration-300"
-                    : class="text-white">
-
-                  <span class="font-display text-2xl text-white">Expo<span class="text-gold-gradient">Dakar</span></span>
-
-                </span>
-
+  
             </a>
                 <p style="font-size:.85rem;line-height:1.6;color:rgba(255,255,255,.5);max-width:22rem;margin:0;">La plateforme de référence pour les foires, salons et forums professionnels au Sénégal.</p>
             </div>
